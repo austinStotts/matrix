@@ -1,5 +1,5 @@
 // import Player from "./player.js";
-// import { Shell } from "./abilities.js";
+// import { Terraform_beta } from "./abilities.js";
 
 class Projectile {
     constructor(r, c, deltaR, deltaC, name, a) {
@@ -34,19 +34,20 @@ class Shell {
         this.info = "standard shell: travels forward until it hits something";
         this.damage_type = "standard";
         this.name = "shell";
-        this.speed = 200;
+        this.speed = 125;
 
     }
 
     cell (r, c) {
-        let _owner = this.owner; 
+        let _owner = this.owner;
+        let _damage = this.damage;
         return new class Shell_p {
             constructor () {
                 this.owner = _owner;
                 this.type = "projectile";
                 this.classname = "shell";
                 this.name = "shell"
-                this.dmg = 2;
+                this.damage = _damage;
                 this.id = getID();
                 this.row = r;
                 this.column = c;
@@ -54,73 +55,13 @@ class Shell {
             }
 
             beforeDelete () {
-                console.log(this.row, this.column)
+                console.log("shell projectile before delete")
             }
         }
     }
 }
+// α β γ
 
-class Terraform {
-    constructor() {
-        this.type = "projectile";
-        this.damage = 1;
-        this.cost = 3;
-        this.info = "forable arrand the eath to protect you";
-        this.damage_type = "standard";
-        this.name = "terraform";
-        this.speed = 150;
-
-    }
-
-    cell (r, c) {
-        let _owner = this.owner; 
-        return new class Terraform_p {
-            constructor () {
-                this.owner = _owner;
-                this.type = "projectile";
-                this.classname = "terraform";
-                this.name = "terraform"
-                this.dmg = 1;
-                this.id = getID();
-                this.row = r;
-                this.column = c;
-                this.delete = false
-            }
-
-            beforeDelete () {
-                let _owner = this.owner;
-                let _r = this.row;
-                let _c = this.column;
-                let _dr = this.dr;
-                let _dc = this.dc;
-                class Terraformation {
-                    constructor() {
-                        this.name = "terraformation";
-                        this.classname = "terraformation";
-                        this.owner = _owner;
-                        this.hp = 1;
-                        this.type = "construct";
-                        this.id = getID();
-                        this.delete = false;
-                        this.rd = _dr;
-                        this.dc = _dc;
-                    }
-
-                    takeDamage (n) {
-                        this.hp -= n;
-                        if(this.hp <= 0) { this.delete = true }
-                    }
-
-                    beforeDelete () {
-                        console.log("terraformation delete")
-                    }
-                }
-                console.log(_r, _c)
-                addToCell(_r - this.dr, _c - this.dc, new Terraformation(), false)
-            }
-        }
-    }
-}
 
 class Wall {
     constructor() {
@@ -134,11 +75,12 @@ class Wall {
 
     takeDamage (n) {
         this.hp -= n;
+        console.log("Wall construct take damage - hp:", this.hp)
         if(this.hp <= 0) { this.delete = true }
     }
 
     beforeDelete () {
-        console.log(this.row, this.column);
+        console.log("wall construct before delete", this.hp);
     }
 }
 
@@ -186,37 +128,41 @@ let calculateCell = (r, c) => {
             projectiles.push(matrix[r][c].children[key]);
         } else if(matrix[r][c].children[key].type == "construct") {
             constructs.push(matrix[r][c].children[key]);
-        } else if(matrix[r][c].children[key].type == "players") {
+        } else if(matrix[r][c].children[key].type == "player") {
             players.push(matrix[r][c].children[key]);
         }
     })
 
 
+
     if(constructs.length > 0 && projectiles.length > 0) {
-        let total = 0;
-        projectiles.forEach(projectile => {
-            console.log(projectile.owner)
-            total += projectile.dmg;
-        })
-        constructs.forEach(construct => {
-            // console.log("total damage: ", total)
-            
-            projectiles.forEach(projectile => {
-                // console.log(projectile.owner)
+        constructs.forEach((construct, i) => {
+            projectiles.forEach((projectile, i) => {
                 if(construct.owner == projectile.owner) {
                     //do nothing
                 } else {
-                    construct.takeDamage(projectile.dmg)
+                    construct.takeDamage(projectile.damage);
                 }
             })
         })
     }
 
-    if(constructs.length > 0) {
-        projectiles.forEach(p => { p.delete = true; })
+    if(players.length > 0 && projectiles.length > 0) {
+        console.log(players)
+        players.forEach((player, i) => {
+            projectiles.forEach((projectile, i) => {
+                if(player.name == projectile.owner) {
+                    //do nothing
+                } else {
+                    player.takeDamage(projectile.damage);
+                }
+            })
+        })
     }
 
-
+    if(constructs.length > 0 || players.length > 0) {
+        projectiles.forEach(p => { p.delete = true; })
+    }
 }
 
 
@@ -270,10 +216,6 @@ class Player {
         })
     }
 
-    drawProjectiles () {
-        this.projectiles.forEach(p => { matrix[p.row][p.column].class.push(p.name) })
-    }
-
     updateTurn () {
         this.movements = this.maxMovements;
         this.power = this.maxPower;
@@ -287,6 +229,7 @@ class Player {
     useAbility (dr, dc) {
         if(this.selectedAbility == 1) {
             if(this.power >= this.ability1.cost) {
+                addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
                 let p = this.ability1.cell(PLAYER.row, PLAYER.column);
                 drawAbility(p, dr, dc, this.ability1.speed);
                 this.power = this.power - this.ability1.cost;
@@ -297,6 +240,7 @@ class Player {
             }
         } else if(this.selectedAbility == 2) {
             if(this.power >= this.ability2.cost) {
+                addLog({ type: "ability", name: this.name, content: ` used ${this.ability2.name}` })
                 let p = this.ability2.cell(PLAYER.row, PLAYER.column);
                 drawAbility(p, dr, dc, this.ability2.speed);
                 this.power = this.power - this.ability2.cost;
@@ -311,19 +255,25 @@ class Player {
         }
     }
 
-    move (r,c) {
-        if(this.movements > 0) {
+    move (r,c, cost) {
+        if(this.movements >= cost) {
             this.set(r,c);
-            this.movements -= 1;
-            updateLabels()
+            this.movements -= cost;
+            updateLabels();
             return true
         } else {
             return false
         }
     }
 
+    takeDamage (n) {
+        this.hp -= n;
+        console.log("player take damage - hp:", this.hp)
+        if(this.hp <= 0) { this.delete = true }
+    }
+
     beforeDelete () {
-        console.log(this.row, this.column)
+        addLog({ type: "death", name: this.name, content: ` died` })
     }
 }
 
@@ -334,6 +284,20 @@ let animatePlayerMove = (r, c) => {
     //     cell.classList.remove("playermove")
     // }, 300)
 }
+
+let logw = document.getElementById("info-log");
+let anchor = document.getElementById("anchor");
+let logid = 1;
+let addLog = (log) => {
+    let l = document.createElement("div");
+    l.classList.add("log-row")
+    l.innerHTML = `<span class="log-id ${logid % 2 == 0 ? "log-even" : "log-odd"}">${logid}</span><span class="log-player">${log.name}</span><span class="log-content ${log.type}">${log.content}</span>`
+    logw.insertBefore(l, anchor);
+    console.log(log)
+    logid++;
+}
+
+logw.scroll(0, 100)
 
 let keyEvent = (e) => {
     if(inputMethod == "movement") {
@@ -389,8 +353,8 @@ let makeMatrix = (n) => {
             this.row = r;
             this.cell = c;
             this.class = ["cell"];
-            this.canEnter = true;
             this.children = {};
+            this.tile = new Plains();
         }
     }
 
@@ -420,8 +384,8 @@ let cellHover = (e) => {
     t.style.top = (e.target.offsetTop) + "px";
     // console.log(Object.keys(matrix[row][column].children))
     t.innerHTML = `
-        <div class="cordinates">X <span class="x-cord">${column}</span> Y <span class="y-cord">${row}</span></div>
-        <div class="cell-children-tt">${Object.keys(matrix[row][column].children).map((key) => { return (childFormatter(matrix[row][column].children[key])) }).join("<br>")}</div>`
+        <div class="cordinates">X <span class="x-cord">${column}</span> Y <span class="y-cord">${row}</span> <span class="tile-label-tt">${matrix[row][column].tile.name}</span></div>
+        <div class="cell-children-tt">${Object.keys(matrix[row][column].children).map((key) => { return (childFormatter(matrix[row][column].children[key])) }).join(`<div class="children-break-tt"></div>`)}</div>`
     e.target.parentElement.appendChild(t)
     // console.log(e)
 }
@@ -450,8 +414,9 @@ let drawMatrix = (n) => {
     }
 }
 
-
-let compairMatrix = () => {
+// only job is to make the visual matrix match the actual matrix
+let compairMatrix = () => { 
+    // console.log("compairing matrix");
     for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix[i].length; j++) {
             // calculateCell(i, j)
@@ -459,8 +424,8 @@ let compairMatrix = () => {
             let classname = 'cell';
             Object.keys(matrix[i][j].children).forEach(key => {
                 if(matrix[i][j].children[key].delete) {
-                    matrix[i][j].children[key].beforeDelete();
-                    removefromCell(i, j, matrix[i][j].children[key].id);
+                    // matrix[i][j].children[key].beforeDelete();
+                    // removefromCell(i, j, matrix[i][j].children[key].id);
                     
                 } else {
                     classname = classname + " " + matrix[i][j].children[key].classname;
@@ -468,50 +433,77 @@ let compairMatrix = () => {
                 
             })
 
+            classname = classname + " " + matrix[i][j].tile.classname;
+
             cell.className = classname;
+        }
+    }
+}
+
+// delete all nodes that are to be deleted
+let pruneMatrix = () => {
+    // console.log("pruning matrix");
+    for(let i = 0; i < matrix.length; i++) {
+        for(let j = 0; j < matrix[i].length; j++) {
+            Object.keys(matrix[i][j].children).forEach(key => {
+                if(matrix[i][j].children[key].delete) {
+                    console.log("prune deleting: ", i, j)
+                    matrix[i][j].children[key].beforeDelete();
+                    delete matrix[i][j].children[key];
+                }
+            })
         }
     }
 }
 
 let drawAbility = (p, dr, dc, speed) => {
     // console.log(p)
+    
     p.dr = dr;
     p.dc = dc;
     let x = setInterval(() => {
+        pruneMatrix()
         let con = checkForBoundry(p.row + dr, p.column + dc);
-        // compairMatrix();
-        // console.log(matrix[p.row][p.column].children)
         if(!con || p.delete) { 
-            // p.beforeDelete()
-            // removefromCell(p.row, p.column, p.id);
             p.delete = true;
             p.row = p.row + dr;
             p.column = p.column + dc;
-            // compairMatrix();
             clearInterval(x); 
+            pruneMatrix();
         } else {
+            if(p.update != undefined) { p.update() }
             removefromCell(p.row, p.column, p.id);
             p.row = p.row + dr;
             p.column = p.column + dc;
             addToCell(p.row, p.column, p);
-            calculateCell(p.row, p.column)
+            // calculateCell(p.row, p.column);
         }
     }, speed)
 }
 
-// whats happening:
-// when a projectile is to be deleted
-// as in, it went to the boundry or is hit another cell with something in it
-// i want to run a beforeDelete method to do things
-// but this often leads to infinite loops of adding a construct to the cell
-// only to be destroyed by the projectile that created it and so on. 
-// i also dont like how currently you cannot stack constructs... because they have to be in the same cell to interact
+// i think i got the order of opper ations fixed...
+// no more infinire loops
+// now i want to finish moving all the abilities to the othe rjs file
+// keep making new ones
+// and make a log under the other info items to show what has happened
+
+// add logs to all events
+
+// ...
+// the way this works now:
+// or how i think it does
+// everyframe the compair function runs to draw how the matrix looks
+// every action should call the prune function to actually delete nodes that are marked for deletion
+
+
+// add a check to the player move funtion that can change the cost of movement
+// ex: ice or goo cells can slow you down or speed you up
 
 let checkForBoundry = (r, c) => {
 
     if(matrix[r] == undefined) { return false }
     else if(matrix[r][c] == undefined) { return false }
-    else if(!matrix[r][c].canEnter) { return false }
+    else if(!matrix[r][c].tile.allowsMovement) { return false }
     else { return true }
 
     // update to not allow players in cells with constructs
@@ -525,21 +517,20 @@ let getID = () => {
 
 let removefromCell = (r, c, id) => {
     delete matrix[r][c].children[id];
-    compairMatrix()
+    // compairMatrix()
 }
 
 let addToCell = (r, c, x, update=true) => {
     matrix[r][c].children[x.id] = x;
     calculateCell(r, c);
-    update ? compairMatrix() : null;
+    // update ? compairMatrix() : null;
 }
 
 let movePlayer = (r, c) => {
-    if(checkForBoundry(r,c) && PLAYER.movements > 0) {
+    if(checkForBoundry(r,c) && PLAYER.movements >= matrix[r][c].tile.movementCost) {
         removefromCell(PLAYER.row, PLAYER.column, PLAYER.id);
-        animatePlayerMove(PLAYER.row, PLAYER.column)
         addToCell(r, c, PLAYER)
-        PLAYER.move(r,c);
+        PLAYER.move(r,c, matrix[r][c].tile.movementCost);
     }
 }
 
@@ -556,33 +547,28 @@ document.addEventListener("keydown", keyEvent)
 
 let matrix = makeMatrix(11);
 drawMatrix(11);
-let PLAYER = new Player(10,5,new Shell(), new Terraform(), new Shell());
+let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Shell());
 let ENEMY = new Player(0, 5, new Shell(), new Shell(), new Shell());
 let turn = 1;
 let inputMethod = "movement"
 
+matrix[7][5].tile = new Frozen();
 
 let w1 = new Wall("steve");
 addToCell(5,5,w1);
 addToCell(PLAYER.row, PLAYER.column, PLAYER);
 addToCell(ENEMY.row, ENEMY.column, ENEMY);
 
-console.log(matrix);
-
-
-// matrix[5][5].canEnter = false;
-matrix[5][5].class.push("barrier")
-
 updateTurn = () => {
     turn += 1;
     PLAYER.updateTurn();
-    PLAYER.updateProjectiles();
-    PLAYER.drawProjectiles();
+    console.log(matrix)
     updateLabels();
 }
 
 updateLabels();
 setInterval(() => {
+    // pruneMatrix();
     compairMatrix();
 }, (1000/60))
 
@@ -590,3 +576,5 @@ setInterval(() => {
 // setTimeout(() => {
 //     unselectCell(10,5)
 // }, 3000);
+
+// document.scrollingElement.scroll(0, 1);

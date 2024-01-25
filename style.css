@@ -1,4 +1,8 @@
 
+body {
+    
+}
+
 
 
 .game-wrapper {
@@ -13,6 +17,7 @@
 
 .info-wrapper {
     background-color: black;
+    /* overflow: hidden; */
 }
 
 .info-row {
@@ -67,6 +72,17 @@
     display: inline-block;
 }
 
+.plains {
+    background-color: rgba(68, 145, 68, 0.3);
+}
+
+.frozen {
+    background-color: rgba(1, 196, 255, 0.3);
+}
+
+
+
+
 .player {
     border: 1px solid #33FF33;
     animation: pulse1 0.5s infinite;
@@ -96,11 +112,27 @@
     border-color: rgb(255, 35, 35);
 }
 
-.terraform {
+.terraform-alpha {
+    border: 1px solid rgb(255, 226, 111);
+}
+.terraform-beta {
+    border: 1px solid rgb(206, 165, 0);
+}
+.terraform-gamma {
     border: 1px solid rgb(255, 204, 0);
 }
 
-.terraformation {
+.terraformation-alpha {
+    border: 1px solid rgb(255, 226, 111);
+    background-color: rgba(255, 226, 112, 0.5);
+}
+
+.terraformation-beta {
+    border: 1px solid rgb(206, 165, 0);
+    background-color: rgba(255, 215, 53, 0.5);
+}
+
+.terraformation-gamma {
     border: 1px solid rgb(255, 204, 0);
     background-color: rgba(255, 204, 0, 0.5);
 }
@@ -115,7 +147,7 @@
     position: absolute;
     z-index: 110;
     /* left: 400px; */
-    width: 200px;
+    width: 250px;
     height: 100px;
     background-color: black;
     color: white;
@@ -136,6 +168,68 @@
     syntax: '<angle>';
     initial-value: 0deg;
     inherits: false;
+}
+
+.scroller * {
+    overflow-anchor: none;
+}
+
+#anchor {
+    overflow-anchor: auto;
+    height: 1px;
+}
+
+.info-log {
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    padding: 4px;
+    overflow-y: scroll;
+    height: 170px;
+    max-height: 170px;
+    /* display: flex;
+    flex-direction: column-reverse; */
+}
+
+.log-filler {
+    height: 18px;
+}
+
+.log-row {
+    border-bottom: 1px solid rgba(85, 85, 85, 0.5);
+    height: 18px;
+}
+
+.log-even {
+    border-left: 1px solid #33FF33;
+}
+
+.log-odd {
+    border-left: 1px solid #3333FF;
+}
+
+.info-log::-webkit-scrollbar {
+    display: none;
+  }
+
+.log-id {
+    /* color: #33FF33; */
+    padding-left: 4px;
+}
+
+.log-id::after {
+    content: ">";
+    color: #33FF33;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.log-content {
+    font-size: 14px;
+}
+
+.log-player {
+    font-size: 14px;
+    font-style: italic;
 }
 
 .cordinates {
@@ -163,14 +257,25 @@
     text-shadow: 1px 1px blue;
 }
 
-.cell-children-tt {
+.children-break-tt {
+    
+}
 
+.cell-children-tt {
+    
+}
+
+
+
+.child-hp-tt {
+    color: #33FF33;
 }
 
 .child-line-tt {
     font-family: 'Courier New', Courier, monospace;
     font-size: 12px;
     background-color: rgb(48, 48, 48);
+    padding-left: 3px;
 }
 
 .child-type-tt {
@@ -194,3 +299,7 @@
       -webkit-box-shadow: 0 0 0 0 rgba(255,0,0, 0);
   }
 }
+
+
+
+
