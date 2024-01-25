@@ -73,11 +73,11 @@ body {
 }
 
 .plains {
-    background-color: rgba(68, 145, 68, 0.3);
+    background-image: url("./assets/plains.png")
 }
 
 .frozen {
-    background-color: rgba(1, 196, 255, 0.3);
+    background-image: url("./assets/frozen.png")
 }
 
 
@@ -302,4 +302,13 @@ body {
 
 
 
+
+.tile-label-tt {
+    float: right;
+    margin-right: 5px;
+}
+
+.plains-tt {
+    text-shadow: 2px 2px rgba(68, 145, 68, 1);
+}
 
