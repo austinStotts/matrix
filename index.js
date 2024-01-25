@@ -384,7 +384,7 @@ let cellHover = (e) => {
     t.style.top = (e.target.offsetTop) + "px";
     // console.log(Object.keys(matrix[row][column].children))
     t.innerHTML = `
-        <div class="cordinates">X <span class="x-cord">${column}</span> Y <span class="y-cord">${row}</span> <span class="tile-label-tt ${matrix[row][column].tile.name}-tt">${matrix[row][column].tile.name}</span></div>
+        <div class="cordinates">X <span class="x-cord">${column}</span> Y <span class="y-cord">${row}</span> <span class="tile-label-tt ${matrix[row][column].tile.name}-tt"><span class="mc-tt">${matrix[row][column].tile.movementCost}</span>${matrix[row][column].tile.name}</span></div>
         <div class="cell-children-tt">${Object.keys(matrix[row][column].children).map((key) => { return (childFormatter(matrix[row][column].children[key])) }).join(`<div class="children-break-tt"></div>`)}</div>`
     e.target.parentElement.appendChild(t)
     // console.log(e)

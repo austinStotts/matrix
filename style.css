@@ -1,6 +1,6 @@
 
 body {
-    
+    background-color: rgb(14, 14, 14);
 }
 
 
@@ -77,7 +77,8 @@ body {
 }
 
 .frozen {
-    background-image: url("./assets/frozen.png")
+    /* background-image: url("./assets/frozen.png") */
+    background-color: white;
 }
 
 
@@ -124,22 +125,24 @@ body {
 
 .terraformation-alpha {
     border: 1px solid rgb(255, 226, 111);
-    background-color: rgba(255, 226, 112, 0.5);
+    background-color: rgba(255, 226, 112, 0.5) important!;
+
 }
 
 .terraformation-beta {
     border: 1px solid rgb(206, 165, 0);
-    background-color: rgba(255, 215, 53, 0.5);
+    background-color: rgba(255, 215, 53, 0.5) important!;
 }
 
 .terraformation-gamma {
     border: 1px solid rgb(255, 204, 0);
-    background-color: rgba(255, 204, 0, 0.5);
+    background-color: rgba(255, 204, 0, 0.5) important!;
 }
 
 .wall {
     border-color: rgb(82, 174, 255);
-    background-color: rgba(82, 174, 255, 0.5);;
+    background-color: rgba(82, 174, 255, 0.5) important!;
+
 }
 
 
@@ -308,7 +311,26 @@ body {
     margin-right: 5px;
 }
 
+.mc-tt {
+    color: deeppink;
+    text-shadow: none;
+}
+
+.mc-tt::before {
+    content: "[";
+    color: #33FF33;
+}
+
+.mc-tt::after {
+    content: "]";
+    color: #33FF33;
+}
+
 .plains-tt {
     text-shadow: 2px 2px rgba(68, 145, 68, 1);
+}
+
+.frozen-tt {
+    text-shadow: 2px 2px rgb(47, 234, 255);
 }
 
