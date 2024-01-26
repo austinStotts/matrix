@@ -1,4 +1,4 @@
-class Player {
+class Enemy {
     constructor(r, c, a1, a2, a3, name=generateName()) {
         this.name = name;
         this.type = "player";

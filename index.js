@@ -159,7 +159,7 @@ class Player {
         } else if(this.selectedAbility == 3) {
             if(this.power >= this.ability3.cost) {
                 addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
-                let p = this.ability3.cell(PLAYER.row, PLAYER.column);
+                let p = this.ability3.cell(PLAYER.row, PLAYER.column, dr, dc);
                 drawAbility(p, dr, dc, this.ability3.speed);
                 this.power = this.power - this.ability3.cost;
                 updateLabels();
@@ -319,9 +319,11 @@ let ab1 = document.getElementById("ab-1");
 let ab2 = document.getElementById("ab-2");
 let ab3 = document.getElementById("ab-3");
 
+let classIndex = ["x", "F", "E", "Q"]
+
 let formatAbility = (a) => {
     return (`
-    <div class="ability-label"><span class="ability-label-name">${a.name}</span><span class="ability-label-class">${a.abilityClass}</span></div>
+    <div class="ability-label"><span class="ability-label-name">${a.name}</span><span class="ability-label-class acc">${classIndex[a.abilityClass]}</span></div>
     <div class="ability-icon"></div>
     <div class="ability-data">
         <div class="ability-data-cost"><span class="ability-data-label">cost</span><span class="ability-data-value adc-${a.cost}">${a.cost}</span></div>
@@ -446,22 +448,30 @@ let pruneMatrix = () => {
 let drawAbility = (p, dr, dc, speed) => {    
     p.dr = dr;
     p.dc = dc;
+    if(p.update != undefined) { p.update(dr, dc, p.row, p.column, p.id) }
     let x = setInterval(() => {
         pruneMatrix()
         let con = checkForBoundry(p.row + dr, p.column + dc);
-        if(!con || p.delete) { 
-            p.delete = true;
-            p.row = p.row + dr;
-            p.column = p.column + dc;
-            clearInterval(x); 
-            pruneMatrix();
-        } else {
-            if(p.update != undefined) { p.update() }
-            removefromCell(p.row, p.column, p.id);
-            p.row = p.row + dr;
-            p.column = p.column + dc;
-            addToCell(p.row, p.column, p);
+        if(p != undefined) {
+            if(!con || p.delete) { 
+                p.delete = true;
+                p.row = p.row + dr;
+                p.column = p.column + dc;
+                clearInterval(x); 
+                pruneMatrix();
+            } else {
+                if(p.update != undefined) { p.update(dr, dc, p.row, p.column, p.id) }
+                removefromCell(p.row, p.column, p.id);
+    
+    
+                p.row = p.row + dr; 
+                p.column = p.column + dc;
+                
+                
+                addToCell(p.row, p.column, p);
+            }
         }
+
     }, speed)
 }
 
@@ -505,7 +515,12 @@ let getID = () => {
 }
 
 let removefromCell = (r, c, id) => {
-    delete matrix[r][c].children[id];
+    if(matrix[r]) {
+        if(matrix[r][c]) {
+            delete matrix[r][c].children[id];
+        }
+    }
+
 }
 
 let addToCell = (r, c, x, update=true) => {
@@ -546,8 +561,8 @@ updateTurn = () => {
 
 let matrix = makeMatrix(11);
 drawMatrix(11);
-let PLAYER = new Player(10,5,new Terraform_beta(), new Terraform_gamma(), new Terraform_alpha);
-let ENEMY = new Player(0, 5, new Shell(), new Shell(), new Shell());
+let PLAYER = new Player(10,5,new Shell(), new Terraform_alpha(), new Slice());
+let ENEMY = new Enemy(0, 5, new Shell(), new Shell(), new Shell());
 let turn = 1;
 let inputMethod = "movement"
 

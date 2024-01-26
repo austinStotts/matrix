@@ -80,7 +80,7 @@ body {
 }
 
 .plains {
-    background-image: url("./assets/plains.png")
+    background-image: url("./assets/plains.gif");
 }
 
 .frozen {
@@ -96,6 +96,14 @@ body {
     animation: pulse1 0.5s infinite;
     background-image: none;
     background-color: #33ff3388;
+    z-index: 101;
+}
+
+.enemy {
+    border: 1px solid #FF3355;
+    animation: pulse2 0.5s infinite;
+    background-image: none;
+    background-color: #FF335588;
     z-index: 101;
 }
 
@@ -115,6 +123,25 @@ body {
 
 
 
+.slice {
+    border-color: red;
+    background-image: none;
+    background-color: rgb(255, 26, 26);
+    box-shadow: 15px 0px 10px 5px red;
+    z-index: 102;
+    animation: 0.1s slice linear infinite;
+
+}
+
+@keyframes slice {
+    from {
+        transform: translateX(-10px);
+      }
+    
+      to {
+        transform: translateX(10px);
+      }
+}
 
 
 .shell {
@@ -216,11 +243,11 @@ body {
 }
 
 .log-even {
-    border-left: 1px solid #33FF33;
+    /* border-left: 1px solid #33FF33; */
 }
 
 .log-odd {
-    border-left: 1px solid #3333FF;
+    /* border-left: 1px solid #3333FF; */
 }
 
 .info-log::-webkit-scrollbar {
@@ -316,6 +343,18 @@ body {
   }
 }
 
+@-webkit-keyframes pulse2 {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 #FF3355;
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 15px rgba(255,0,0, 0);
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 rgba(255,0,0, 0);
+    }
+  }
+
 
 
 
@@ -325,8 +364,9 @@ body {
 }
 
 .mc-tt {
-    color: deeppink;
+    color: white;
     text-shadow: none;
+    margin-right: 4px;
 }
 
 .mc-tt::before {
@@ -375,7 +415,26 @@ body {
 
 
 
+.acc::before {
+    content: "[";
+    color: #33FF33;
+    animation: blink 2s linear infinite;
+}
 
+.acc::after {
+    content: "]";
+    color: #33FF33;
+    animation: blink 2s linear infinite;
+
+}
+
+@keyframes blink {
+
+    50% {
+        opacity: 0%;
+    }
+
+}
 
 .adc-1 {
     color: green;
@@ -447,7 +506,8 @@ body {
 }
 
 .ability-label-name {
-
+    font-size: 14px;
+    font-style: italic;
 }
 
 .ability-label-class {
@@ -458,7 +518,7 @@ body {
     padding: 5px;
     height: 62px;
     border-bottom: 1px solid grey;
-    padding-bottom: 10px;
+    padding-bottom: 18px;
 }
 
 .ability-data-label {

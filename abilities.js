@@ -2,9 +2,9 @@
 
 let findSides = (r, c, dr, dc) => {
     if(Math.abs(dr) > 0) {
-        return {left: [r, c-1], right: [r, c+1]}
+        return { left: [r, c-1], right: [r, c+1], center: [r, c] }
     } else {
-        return {left: [r-1, c], right: [r+1, c]}
+        return { left: [r-1, c], right: [r+1, c], center: [r, c] }
     }
 }
 
@@ -318,6 +318,91 @@ class Terraform_gamma {
         }
     }
 }
+
+
+
+class Slice {
+    constructor() {
+        this.type = "spell";
+        this.damage = 2;
+        this.cost = 3;
+        this.info = "cutting attack forward";
+        this.damage_type = "slice";
+        this.name = "Slice";
+        // this.name = "terraform y";
+        this.speed = 50;
+        this.maxDistance = 0;
+        this.abilityClass = 3;
+    }
+
+    cell (r, c, dr, dc) {
+        let _owner = this.owner; 
+        let _damage = this.damage;
+        let _name = this.name;
+        let sides = findSides(r+dr, c+dc, dr, dc)
+        console.log(sides)
+        return new class Slice_p {
+            constructor () {
+                this.owner = _owner;
+                this.type = "spell";
+                this.classname = "slice";
+                this.name = _name;
+                this.damage = _damage;
+                this.id = getID();
+                this.sides = sides;
+                this.delete = false;
+                this.maxDistance = 0;
+                this.distance = 0;
+            }
+
+            update (dr, dc, r, c, id) {
+                let _o = this.owner;
+                class SliceHit {
+                    constructor() {
+                        this.owner = _o;
+                        this.id = getID();
+                        this.type = "projectile";
+                        this.damage = 2;
+                        this.delete = false;
+                        this.classname = "slice"
+                    }
+
+                    beforeDelete () {}
+                }
+
+                
+                
+                let x = new SliceHit();
+                if(checkForBoundry(this.sides.left[0], this.sides.left[1])) { addToCell(this.sides.left[0], this.sides.left[1], x); }
+                setTimeout(() => {
+                    removefromCell(this.sides.left[0], this.sides.left[1], x.id);
+                    let y = new SliceHit();
+                    if(checkForBoundry(this.sides.center[0], this.sides.center[1])) { addToCell(this.sides.center[0], this.sides.center[1], y); }
+                    setTimeout(() => {
+                        removefromCell(this.sides.center[0], this.sides.center[1], y.id);
+                        let z = new SliceHit();
+                        if(checkForBoundry(this.sides.right[0], this.sides.right[1])) { addToCell(this.sides.right[0], this.sides.right[1], z); }
+                        setTimeout(() => {
+                            removefromCell(this.sides.right[0], this.sides.right[1], z.id);
+                        }, 50)
+                    }, 50)
+                }, 50)
+
+
+
+
+                
+                // matrix[r][c].children[id].delete = true;
+            }
+
+            beforeDelete () {
+
+            }
+        }
+    }
+}
+
+
 
 
 class Plains {
