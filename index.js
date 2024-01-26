@@ -570,6 +570,15 @@ let inputMethod = "movement"
 
 let w1 = new Wall("steve");
 addToCell(5,5,w1);
+let w2 = new Wall("steve");
+addToCell(5,7,w2);
+let w3 = new Wall("steve");
+addToCell(5,9,w3);
+let w4 = new Wall("steve");
+addToCell(5,3,w4);
+let w5 = new Wall("steve");
+addToCell(5,1,w5);
+
 addToCell(PLAYER.row, PLAYER.column, PLAYER);
 addToCell(ENEMY.row, ENEMY.column, ENEMY);
 
