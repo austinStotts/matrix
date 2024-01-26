@@ -1,88 +1,3 @@
-// import Player from "./player.js";
-// import { Terraform_beta } from "./abilities.js";
-
-class Projectile {
-    constructor(r, c, deltaR, deltaC, name, a) {
-        this.name = name;
-        this.row = r;
-        this.column = c;
-        this.deltaR = deltaR;
-        this.deltaC = deltaC;
-        this.ability = a;
-    }
-
-    update () {
-        if(checkForBoundry(this.row + this.deltaR, this.column + this.deltaC)) {
-            removeClass(this.row, this.column, this.name)
-            this.row = this.row + this.deltaR;
-            this.column = this.column + this.deltaC;
-            // matrix[this.row][this.column].children[Object.keys(matrix[this.row][this.column].children).length] = 
-            return true;
-        } else {
-            removeClass(this.row, this.column, this.name)
-            return false;
-        }
-
-    }
-}
-
-class Shell {
-    constructor() {
-        this.type = "projectile";
-        this.damage = 2;
-        this.cost = 2;
-        this.info = "standard shell: travels forward until it hits something";
-        this.damage_type = "standard";
-        this.name = "shell";
-        this.speed = 125;
-
-    }
-
-    cell (r, c) {
-        let _owner = this.owner;
-        let _damage = this.damage;
-        return new class Shell_p {
-            constructor () {
-                this.owner = _owner;
-                this.type = "projectile";
-                this.classname = "shell";
-                this.name = "shell"
-                this.damage = _damage;
-                this.id = getID();
-                this.row = r;
-                this.column = c;
-                this.delete = false;
-            }
-
-            beforeDelete () {
-                console.log("shell projectile before delete")
-            }
-        }
-    }
-}
-// α β γ
-
-
-class Wall {
-    constructor() {
-        this.name = "wall";
-        this.hp = 2;
-        this.classname = "wall";
-        this.type = "construct";
-        this.id = getID();
-        this.delete = false;
-    }
-
-    takeDamage (n) {
-        this.hp -= n;
-        console.log("Wall construct take damage - hp:", this.hp)
-        if(this.hp <= 0) { this.delete = true }
-    }
-
-    beforeDelete () {
-        console.log("wall construct before delete", this.hp);
-    }
-}
 
 
 
@@ -94,6 +9,10 @@ class Wall {
 
 
 
+
+
+// _________________________________________________
+// cell and damage calculations
 
 
 let calculateDamage = (a, b) => {
@@ -104,20 +23,6 @@ let calculateDamage = (a, b) => {
 }
 
 let calculateCell = (r, c) => {
-    // 3 types of things can be in a cell
-    // player
-    // projectile
-    // construct
-
-    // when function is called on a cell
-    // check cell children to see what should happen
-    
-    // if constuct and projetile are in the cell > damage the construct and destroy the projectile
-    
-    // if player is in the cell > damage the player and destroy the projectile
-
-    // the move function should not allow players to be in the same cell as constructs
-
 
     let projectiles = [];
     let constructs = [];
@@ -164,10 +69,13 @@ let calculateCell = (r, c) => {
         projectiles.forEach(p => { p.delete = true; })
     }
 }
+// _____________________________________________________
 
 
 
 
+
+let matrix_wrapper = document.getElementById("matrix");
 
 
 let generateName = () => {
@@ -175,9 +83,6 @@ let generateName = () => {
     return (names[Math.floor(Math.random()*names.length)])
 }
 
-
-
-let matrix_wrapper = document.getElementById("matrix");
 
 
 
@@ -249,6 +154,17 @@ class Player {
             } else {
                 inputMethod = "movement";
             }
+        } else if(this.selectedAbility == 3) {
+            if(this.power >= this.ability3.cost) {
+                addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
+                let p = this.ability3.cell(PLAYER.row, PLAYER.column);
+                drawAbility(p, dr, dc, this.ability3.speed);
+                this.power = this.power - this.ability3.cost;
+                updateLabels();
+                inputMethod = "movement";
+            } else {
+                inputMethod = "movement";
+            }
         } 
         else {
             console.log("invalid ability selected: ", this.selectedAbility)
@@ -285,6 +201,13 @@ let animatePlayerMove = (r, c) => {
     // }, 300)
 }
 
+
+
+
+
+// _________________________________________________________
+// log events
+
 let logw = document.getElementById("info-log");
 let anchor = document.getElementById("anchor");
 let logid = 1;
@@ -297,7 +220,14 @@ let addLog = (log) => {
     logid++;
 }
 
-logw.scroll(0, 100)
+logw.scroll(0, 100);
+
+// ____________________________________________________________
+
+
+
+// player inputs
+
 
 let keyEvent = (e) => {
     if(inputMethod == "movement") {
@@ -323,6 +253,9 @@ let keyEvent = (e) => {
             case "e":
                 PLAYER.ability(2);
                 break
+            case "q":
+                PLAYER.ability(3);
+                break
             default:
                 break;
         }
@@ -344,30 +277,10 @@ let keyEvent = (e) => {
                 break;
         }
     }
-
 }
+document.addEventListener("keydown", keyEvent);
 
-let makeMatrix = (n) => {
-    class Cell {
-        constructor (r, c) {
-            this.row = r;
-            this.cell = c;
-            this.class = ["cell"];
-            this.children = {};
-            this.tile = new Plains();
-        }
-    }
 
-    let m = [];
-    for(let i = 0; i < n; i ++) {
-        let row = [];
-        for(let j = 0; j < n; j++) {
-            row.push(new Cell(i, j))
-        }
-        m.push(row)
-    }
-    return m;
-}
 
 let childFormatter = (node) => {
     return (`<div class="child-line-tt"><span class="child-type-tt ${node.type}-tt">${node.type}</span> <span class="child-name-tt">${node.name}</span> <span class="child-hp-tt">${node.hp}</span></div>`)
@@ -397,6 +310,66 @@ let cellLeave = (e) => {
     e.target.parentElement.removeChild(c)
 }
 
+// ____________________________________________________
+// ability boxes
+
+let ab1 = document.getElementById("ab-1");
+let ab2 = document.getElementById("ab-2");
+let ab3 = document.getElementById("ab-3");
+
+let formatAbility = (a) => {
+    return (`
+    <div class="ability-label"><span class="ability-label-name">${a.name}</span><span class="ability-label-class">${a.abilityClass}</span></div>
+    <div class="ability-icon"></div>
+    <div class="ability-data">
+        <div class="ability-data-cost"><span class="ability-data-label">cost</span><span class="ability-data-value adc-${a.cost}">${a.cost}</span></div>
+        <div class="ability-data-type"><span class="ability-data-label">type</span><span class="ability-data-value adv-text">${a.type}</span></div>
+        <div class="ability-data-damage"><span class="ability-data-label">damage</span><span class="ability-data-value adc-${a.damage}">${a.damage}</span></div>
+        <div class="ability-data-distance"><span class="ability-data-label">max distance</span><span class="ability-data-value">${a.maxDistance == -1 ? `<span class="infinity">∞</span>` : `<span class="max-distance-data">${a.maxDistance} </span>`}</span></div>
+    </div>
+    <div class="ability-info">${a.info}</div>
+    `)
+}
+
+let createAbilityBox = (n, ability) => {
+    if(n == 1) {
+        ab1.innerHTML = formatAbility(ability);
+    } else if (n == 2) {
+        ab2.innerHTML = formatAbility(ability);
+    } else if (n == 3) {
+        ab3.innerHTML = formatAbility(ability);
+    } else {
+        console.log("invalid ability number")
+    }
+}
+
+
+// __________________________________________________
+// matrix creation and management
+
+let makeMatrix = (n) => {
+    class Cell {
+        constructor (r, c) {
+            this.row = r;
+            this.cell = c;
+            this.class = ["cell"];
+            this.children = {};
+            this.tile = new Plains();
+        }
+    }
+
+    let m = [];
+    for(let i = 0; i < n; i ++) {
+        let row = [];
+        for(let j = 0; j < n; j++) {
+            row.push(new Cell(i, j))
+        }
+        m.push(row)
+    }
+    return m;
+}
+
+
 let drawMatrix = (n) => {
     for(let i = 0; i < n; i++) {
         let row = document.createElement("div");
@@ -416,21 +389,16 @@ let drawMatrix = (n) => {
 
 // only job is to make the visual matrix match the actual matrix
 let compairMatrix = () => { 
-    // console.log("compairing matrix");
     for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix[i].length; j++) {
-            // calculateCell(i, j)
             let cell = document.getElementById(`r${i}c${j}`);
             let classname = 'cell';
             Object.keys(matrix[i][j].children).forEach(key => {
                 if(matrix[i][j].children[key].delete) {
-                    // matrix[i][j].children[key].beforeDelete();
-                    // removefromCell(i, j, matrix[i][j].children[key].id);
-                    
+                    // do nothing
                 } else {
                     classname = classname + " " + matrix[i][j].children[key].classname;
                 }
-                
             })
 
             classname = classname + " " + matrix[i][j].tile.classname;
@@ -442,7 +410,6 @@ let compairMatrix = () => {
 
 // delete all nodes that are to be deleted
 let pruneMatrix = () => {
-    // console.log("pruning matrix");
     for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix[i].length; j++) {
             Object.keys(matrix[i][j].children).forEach(key => {
@@ -456,9 +423,7 @@ let pruneMatrix = () => {
     }
 }
 
-let drawAbility = (p, dr, dc, speed) => {
-    // console.log(p)
-    
+let drawAbility = (p, dr, dc, speed) => {    
     p.dr = dr;
     p.dc = dc;
     let x = setInterval(() => {
@@ -476,7 +441,6 @@ let drawAbility = (p, dr, dc, speed) => {
             p.row = p.row + dr;
             p.column = p.column + dc;
             addToCell(p.row, p.column, p);
-            // calculateCell(p.row, p.column);
         }
     }, speed)
 }
@@ -499,6 +463,11 @@ let drawAbility = (p, dr, dc, speed) => {
 // add a check to the player move funtion that can change the cost of movement
 // ex: ice or goo cells can slow you down or speed you up
 
+
+
+
+
+
 let checkForBoundry = (r, c) => {
 
     if(matrix[r] == undefined) { return false }
@@ -517,13 +486,11 @@ let getID = () => {
 
 let removefromCell = (r, c, id) => {
     delete matrix[r][c].children[id];
-    // compairMatrix()
 }
 
 let addToCell = (r, c, x, update=true) => {
     matrix[r][c].children[x.id] = x;
     calculateCell(r, c);
-    // update ? compairMatrix() : null;
 }
 
 let movePlayer = (r, c) => {
@@ -541,30 +508,38 @@ let updateLabels = () => {
     document.getElementById("power").innerText = PLAYER.power;
 }
 
-
-
-document.addEventListener("keydown", keyEvent)
-
-let matrix = makeMatrix(11);
-drawMatrix(11);
-let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Shell());
-let ENEMY = new Player(0, 5, new Shell(), new Shell(), new Shell());
-let turn = 1;
-let inputMethod = "movement"
-
-matrix[7][5].tile = new Frozen();
-
-let w1 = new Wall("steve");
-addToCell(5,5,w1);
-addToCell(PLAYER.row, PLAYER.column, PLAYER);
-addToCell(ENEMY.row, ENEMY.column, ENEMY);
-
 updateTurn = () => {
     turn += 1;
     PLAYER.updateTurn();
     console.log(matrix)
     updateLabels();
 }
+
+
+
+
+
+// _________________________________________________________
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// init and game loop
+
+let matrix = makeMatrix(11);
+drawMatrix(11);
+let PLAYER = new Player(10,5,new Terraform_beta(), new Terraform_gamma(), new Terraform_alpha);
+let ENEMY = new Player(0, 5, new Shell(), new Shell(), new Shell());
+let turn = 1;
+let inputMethod = "movement"
+
+// matrix[7][5].tile = new Frozen();
+
+let w1 = new Wall("steve");
+addToCell(5,5,w1);
+addToCell(PLAYER.row, PLAYER.column, PLAYER);
+addToCell(ENEMY.row, ENEMY.column, ENEMY);
+
+createAbilityBox(1, PLAYER.ability1);
+createAbilityBox(2, PLAYER.ability2);
+createAbilityBox(3, PLAYER.ability3);
 
 updateLabels();
 setInterval(() => {

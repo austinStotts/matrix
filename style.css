@@ -6,17 +6,24 @@ body {
 
 
 .game-wrapper {
-    display: grid;
-    grid-template-columns: 70% 30%;
+    /* display: grid;
+    grid-template-columns: 70% 30%; */
 }
 
 .matrix-wrapper {
-    margin-left: 25%;
+    /* margin-left: 25%; */
     /* margin-right: 50%; */
+    margin-left: 20px;
+    margin-top: 20px;
+    display: inline-block;
 }
 
 .info-wrapper {
     background-color: black;
+    display: inline-block;
+    margin-left: 40px;
+    margin-top: 20px;
+    width: 250px;
     /* overflow: hidden; */
 }
 
@@ -87,6 +94,7 @@ body {
 .player {
     border: 1px solid #33FF33;
     animation: pulse1 0.5s infinite;
+    background-image: none;
     background-color: #33ff3388;
     z-index: 101;
 }
@@ -125,23 +133,27 @@ body {
 
 .terraformation-alpha {
     border: 1px solid rgb(255, 226, 111);
-    background-color: rgba(255, 226, 112, 0.5) important!;
+    background-image: none;
+    background-color: rgba(255, 226, 112, 0.5);
 
 }
 
 .terraformation-beta {
     border: 1px solid rgb(206, 165, 0);
-    background-color: rgba(255, 215, 53, 0.5) important!;
+    background-image: none;
+    background-color: rgba(255, 215, 53, 0.5);
 }
 
 .terraformation-gamma {
     border: 1px solid rgb(255, 204, 0);
-    background-color: rgba(255, 204, 0, 0.5) important!;
+    background-image: none;
+    background-color: rgba(255, 204, 0, 0.5);
 }
 
 .wall {
     border-color: rgb(82, 174, 255);
-    background-color: rgba(82, 174, 255, 0.5) important!;
+    background-image: none;
+    background-color: rgba(82, 174, 255, 0.5) ;
 
 }
 
@@ -200,6 +212,7 @@ body {
 .log-row {
     border-bottom: 1px solid rgba(85, 85, 85, 0.5);
     height: 18px;
+    width: 250px;
 }
 
 .log-even {
@@ -333,4 +346,161 @@ body {
 .frozen-tt {
     text-shadow: 2px 2px rgb(47, 234, 255);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.adc-1 {
+    color: green;
+    text-shadow: 1px 1px rgb(125, 125, 125);
+}
+
+.adc-2 {
+    color: yellow;
+    text-shadow: 1px 1px rgb(125, 125, 125);
+}
+
+.adc-3 {
+    color: orange;
+    text-shadow: 1px 1px rgb(125, 125, 125);
+}
+
+.adc-4 {
+    color: orangered;
+    text-shadow: 1px 1px rgb(125, 125, 125);
+}
+
+.adc-5 {
+    color: red;
+    text-shadow: 1px 1px rgb(125, 125, 125);
+}
+
+.adc-6 {
+    color: red;
+    text-shadow: 1px 1px orangered;
+}
+
+
+
+.abilities-wrapper {
+    /* border: 1px solid blue; */
+    /* margin-left: 25%; */
+    width: 100%;
+   margin-top: 30px;
+}
+
+.ability-box {
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    width: 140px;
+    height: 180px;
+    display: inline-block;
+    margin-left: 10px;
+    margin-right: 10px;
+    vertical-align: top;
+    border: 1px solid white;
+}
+
+.ability-label {
+    padding: 3px;
+    height: 20px;
+    border-bottom: 1px solid #33FF33;
+}
+
+.ability-label:hover {
+    cursor: pointer;
+    background-color: white;
+    color: black;
+    
+}
+
+.ability-label-name {
+
+}
+
+.ability-label-class {
+    float: right;
+}
+
+.ability-data {
+    padding: 5px;
+    height: 62px;
+    border-bottom: 1px solid grey;
+    padding-bottom: 10px;
+}
+
+.ability-data-label {
+    font-size: 12px;
+}
+
+.infinity {
+    font-size: 22px;
+}
+
+.max-distance-data {
+    /* font-size: 20px; */
+
+}
+
+.ability-data-value {
+    font-size: 16px;
+    float: right;
+}
+
+.adv-text {
+    font-size: 12px !important;
+}
+
+.ability-data-cost {
+
+}
+
+.ability-data-type {
+
+}
+
+.ability-data-damage {
+
+}
+
+.ability-data-distance {
+
+}
+
+.ability-info {
+    font-size: 12px;
+    /* border: 1px solid orchid; */
+    padding: 5px;
+
+}
+
+
+
 
