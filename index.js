@@ -115,10 +115,12 @@ class Player {
         this.column = c;
     }
 
-    updateProjectiles () {
-        this.projectiles.forEach(p => {
-            p.update();
-        })
+    canAct () {
+        let abilitiesAvailable = [];
+        if(this.ability1.cost <= this.power) { abilitiesAvailable.push(1) }
+        if(this.ability2.cost <= this.power) { abilitiesAvailable.push(2) }
+        if(this.ability3.cost <= this.power) { abilitiesAvailable.push(3) }
+        return abilitiesAvailable;
     }
 
     updateTurn () {
@@ -343,6 +345,24 @@ let createAbilityBox = (n, ability) => {
     }
 }
 
+let showAvailableAbilities = () => {
+    let options = PLAYER.canAct();
+    ab1.classList.remove("available");
+    ab2.classList.remove("available");
+    ab3.classList.remove("available");
+    options.forEach(n => {
+        if(n == 1) {
+            ab1.classList.add("available");
+        } else if (n == 2) {
+            ab2.classList.add("available");
+        } else if (n == 3) {
+            ab3.classList.add("available");
+        } else {
+            console.log("invalid ability number")
+        }
+    })
+}
+
 
 // __________________________________________________
 // matrix creation and management
@@ -506,6 +526,7 @@ let updateLabels = () => {
     document.getElementById("hp").innerText = PLAYER.hp;
     document.getElementById("movements").innerText = PLAYER.movements;
     document.getElementById("power").innerText = PLAYER.power;
+    showAvailableAbilities()
 }
 
 updateTurn = () => {
