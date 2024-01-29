@@ -84,8 +84,8 @@ body {
 }
 
 .frozen {
-    /* background-image: url("./assets/frozen.png") */
-    background-color: white;
+    background-image: url("./assets/frozen.gif");
+    /* background-color: white; */
 }
 
 

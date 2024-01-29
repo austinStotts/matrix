@@ -376,7 +376,7 @@ let makeMatrix = (n) => {
             this.cell = c;
             this.class = ["cell"];
             this.children = {};
-            this.tile = new Plains();
+            this.tile = new Frozen();
         }
     }
 
