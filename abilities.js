@@ -412,6 +412,7 @@ class Plains {
         this.movementCost = 1;
         this.classname = "plains"
         this.name = "plains"
+        this.dot = 0;
     }
 }
 
@@ -422,5 +423,17 @@ class Frozen {
         this.movementCost = 2;
         this.classname = "frozen"
         this.name = "frozen"
+        this.dot = 0;
+    }
+}
+
+class Lava {
+    constructor() {
+        this.type = "tile"
+        this.allowsMovement = true;
+        this.movementCost = 2;
+        this.classname = "lava"
+        this.name = "lava"
+        this.dot = 1;
     }
 }

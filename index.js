@@ -69,6 +69,19 @@ let calculateCell = (r, c) => {
         projectiles.forEach(p => { p.delete = true; })
     }
 }
+
+let calculateTiles = () => {
+    for(let i = 0; i < matrix.length; i++) {
+        for(let j = 0; j < matrix[i].length; j++) {
+            Object.keys(matrix[i][j].children).forEach((key) => {
+                if(matrix[i][j].children[key].type == "player") {
+                    // contains players
+                    matrix[i][j].children[key].takeDamage(matrix[i][j].tile.dot)
+                }
+            })
+        }
+    }
+}
 // _____________________________________________________
 
 
@@ -104,6 +117,7 @@ class Player {
         this.maxPower = 5;
         this.power = 5;
         this.selectedAbility = 0;
+        this.gameIndex = 0;
 
         this.ability1.owner = this.name;
         this.ability2.owner = this.name;
@@ -190,6 +204,14 @@ class Player {
         if(this.hp <= 0) { this.delete = true }
     }
 
+    startTurn () {
+
+    }
+
+    endTurn () {
+        endTurn(this.gameIndex);
+    }
+
     beforeDelete () {
         addLog({ type: "death", name: this.name, content: ` died` })
     }
@@ -232,51 +254,53 @@ logw.scroll(0, 100);
 
 
 let keyEvent = (e) => {
-    if(inputMethod == "movement") {
-        switch (e.key) {
-            case "w":
-                movePlayer(PLAYER.row-1, PLAYER.column);
-                break;
-            case "a":
-                movePlayer(PLAYER.row, PLAYER.column-1);
-                break;
-            case "s":
-                movePlayer(PLAYER.row+1, PLAYER.column);
-                break;
-            case "d":
-                movePlayer(PLAYER.row, PLAYER.column+1);
-                break;
-            case " ":
-                updateTurn();
-                break
-            case "f":
-                PLAYER.ability(1);
-                break
-            case "e":
-                PLAYER.ability(2);
-                break
-            case "q":
-                PLAYER.ability(3);
-                break
-            default:
-                break;
-        }
-    } else if(inputMethod == "ability") {
-        switch (e.key) {
-            case "w":
-                PLAYER.useAbility(-1, 0);
-                break;
-            case "a":
-                PLAYER.useAbility(0, -1);
-                break;
-            case "s":
-                PLAYER.useAbility(1, 0);
-                break;
-            case "d":
-                PLAYER.useAbility(0, 1);
-                break;
-            default:
-                break;
+    if(PLAYER.gameIndex == _activePlayer) {
+        if(inputMethod == "movement") {
+            switch (e.key) {
+                case "w":
+                    movePlayer(PLAYER.row-1, PLAYER.column);
+                    break;
+                case "a":
+                    movePlayer(PLAYER.row, PLAYER.column-1);
+                    break;
+                case "s":
+                    movePlayer(PLAYER.row+1, PLAYER.column);
+                    break;
+                case "d":
+                    movePlayer(PLAYER.row, PLAYER.column+1);
+                    break;
+                case " ":
+                    PLAYER.endTurn();
+                    break
+                case "f":
+                    PLAYER.ability(1);
+                    break
+                case "e":
+                    PLAYER.ability(2);
+                    break
+                case "q":
+                    PLAYER.ability(3);
+                    break
+                default:
+                    break;
+            }
+        } else if(inputMethod == "ability") {
+            switch (e.key) {
+                case "w":
+                    PLAYER.useAbility(-1, 0);
+                    break;
+                case "a":
+                    PLAYER.useAbility(0, -1);
+                    break;
+                case "s":
+                    PLAYER.useAbility(1, 0);
+                    break;
+                case "d":
+                    PLAYER.useAbility(0, 1);
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
@@ -376,7 +400,7 @@ let makeMatrix = (n) => {
             this.cell = c;
             this.class = ["cell"];
             this.children = {};
-            this.tile = new Frozen();
+            this.tile = new Plains();
         }
     }
 
@@ -536,7 +560,10 @@ let movePlayer = (r, c) => {
     }
 }
 
+
+
 let updateLabels = () => {
+    document.getElementById("active-player").innerText = _players[_activePlayer].name;
     document.getElementById("turn").innerText = turn;
     document.getElementById("hp").innerText = PLAYER.hp;
     document.getElementById("movements").innerText = PLAYER.movements;
@@ -544,13 +571,28 @@ let updateLabels = () => {
     showAvailableAbilities()
 }
 
-updateTurn = () => {
+let updateTurns = () => {
+    calculateTiles();
     turn += 1;
+    _activePlayer = 0;
+    _players[_activePlayer].startTurn()
     PLAYER.updateTurn();
-    console.log(matrix)
+    ENEMY.updateTurn();
+    console.log(matrix);
     updateLabels();
+
 }
 
+let endTurn = (n) => {
+    let next = n+1;
+    if(next >= _players.length) {
+        // all players have gone
+        updateTurns();
+    } else {
+        _activePlayer = next;
+        _players[_activePlayer].startTurn();
+    }
+}
 
 
 
@@ -563,8 +605,12 @@ let matrix = makeMatrix(11);
 drawMatrix(11);
 let PLAYER = new Player(10,5,new Shell(), new Terraform_alpha(), new Slice());
 let ENEMY = new Enemy(0, 5, new Shell(), new Shell(), new Shell());
+PLAYER.gameIndex = 0;
+ENEMY.gameIndex = 1;
+let _players = [PLAYER, ENEMY];
+let _activePlayer = 0;
 let turn = 1;
-let inputMethod = "movement"
+let inputMethod = "movement";
 
 // matrix[7][5].tile = new Frozen();
 

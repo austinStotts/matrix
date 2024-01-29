@@ -15,6 +15,7 @@ class Enemy {
         this.maxPower = 5;
         this.power = 5;
         this.selectedAbility = 0;
+        this.gameIndex = 1;
 
         this.ability1.owner = this.name;
         this.ability2.owner = this.name;
@@ -99,6 +100,11 @@ class Enemy {
         this.hp -= n;
         console.log("player take damage - hp:", this.hp)
         if(this.hp <= 0) { this.delete = true }
+    }
+
+    startTurn () {
+        console.log("enemy ai v0.0.1");
+        endTurn(this.gameIndex);
     }
 
     beforeDelete () {

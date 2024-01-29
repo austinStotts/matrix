@@ -54,6 +54,11 @@ body {
     content: " power ";
 }
 
+.player-turn::after {
+    content: "'s turn";
+    color: #33FF33;
+    margin-left: 5px;
+}
 
 .matrix {
     border: 1px solid black;
