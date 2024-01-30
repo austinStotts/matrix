@@ -1,0 +1,137 @@
+body {
+    background-color: black;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+    height: 100%;
+    text-align: center;
+}
+
+
+.matrix-title-wrapper {
+    margin-top: 200px;
+    margin-bottom: 30px;
+}
+
+.matrix-title {
+    z-index: 200;
+    font-size: 40px;
+    font-weight: 400;
+    text-shadow: 4px 4px 3px black;
+}
+
+
+
+.matrix-info-wrapper {
+    margin: 20px 0px;
+}
+
+.matrix-info-overview {
+    margin: 20px 0px;
+    text-align: left;
+    margin-left: 30%;
+    width: 40%;
+    font-size: 20px;
+}
+
+.matrix-info-creation {
+    margin: 10px 0px;
+    text-align: left;
+    margin-left: 30%;
+    width: 40%;
+}
+
+.info-line {
+    margin: 10px 0px;
+    display: block;
+}
+
+.info-line::before {
+    content: ">";
+    color: #33FF33;
+    margin-right: 10px;
+    animation: blink 2s linear infinite;
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0%;
+    }
+}
+
+.link {
+    color: white;
+}
+
+
+
+.matrix-play-wrapper {
+    text-align: left;
+    margin-left: 30%;
+    width: 40%;
+}
+
+.matrix-play-abilities {
+    transition-duration: 0.2s;
+    width: fit-content;
+}
+
+.matrix-play-abilities:hover {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.matrix-play-levels {
+    transition-duration: 0.2s;
+    width: fit-content;
+}
+
+.matrix-play-levels:hover {
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.matrix-play-online {
+    width: fit-content;
+}
+
+.coming-soon {
+    opacity: 50%;
+}
+
+
+
+
+.grid {
+    position: fixed;
+    top: 60px;
+    left: calc(50% + 30px);
+    z-index: 90;
+    /* -webkit-transform: translate(-50%, -50%); */
+    transform: translate(calc(-50%), -50%);
+    rotate: -45deg;
+
+    border-right: 1px solid #33FF33;
+    border-top: 1px solid #33FF33;
+    /* border: 1px solid #33FF33; */
+    padding: 0px;
+    margin: 0px;
+    
+    
+}
+
+.row {
+    /* border-bottom: 1px solid #33FF33; */
+    padding: 0px;
+    margin: 0px;
+    display: block;
+    height: 31px;
+}
+
+.cell {
+    border-left: 1px solid #33FF33;
+    border-bottom: 1px solid #33FF33;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+}
+
