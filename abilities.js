@@ -591,3 +591,5 @@ class Lava {
         this.maxDecay = 3;
     }
 }
+
+let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire]
