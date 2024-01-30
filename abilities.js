@@ -17,6 +17,16 @@ let checkIfEmpty = (r,c) => {
     }
 }
 
+let isPlayerHere = (r, c) => {
+    let playerFound = false;
+    let playersFound = [];
+    Object.keys(matrix[r][c].children).forEach(key => {
+        if(matrix[r][c].children[key].type == "player") { playerFound = true; playersFound.push(matrix[r][c].children[key]) }
+    })
+
+    return {playerFound, playersFound};
+}
+
 
 class Wall {
     constructor() {
@@ -77,6 +87,8 @@ class Shell {
         this.speed = 125;
         this.maxDistance = -1;
         this.abilityClass = 1;
+        this.allowClick = false;
+        this.custom = false;
 
     }
 
@@ -116,6 +128,8 @@ class Terraform_alpha {
         this.speed = 150;
         this.maxDistance = -1;
         this.abilityClass = 2;
+        this.allowClick = false;
+        this.custom = false;
 
     }
 
@@ -188,6 +202,8 @@ class Terraform_beta {
         this.speed = 150;
         this.abilityClass = 2;
         this.maxDistance = -1;
+        this.allowClick = false;
+        this.custom = false;
     }
 
     cell (r, c) {
@@ -255,6 +271,8 @@ class Terraform_gamma {
         this.speed = 150;
         this.maxDistance = 5;
         this.abilityClass = 2;
+        this.allowClick = false;
+        this.custom = false;
 
     }
 
@@ -328,11 +346,13 @@ class Slice {
         this.cost = 3;
         this.info = "cutting attack forward";
         this.damage_type = "slice";
-        this.name = "Slice";
+        this.name = "slice";
         // this.name = "terraform y";
         this.speed = 50;
         this.maxDistance = 0;
         this.abilityClass = 3;
+        this.custom = false;
+        this.allowClick = false;
     }
 
     cell (r, c, dr, dc) {
@@ -402,8 +422,139 @@ class Slice {
     }
 }
 
+class Meteor_cryo {
+    constructor() {
+        this.type = "construct";
+        this.damage = 1;
+        this.cost = 4;
+        this.info = "call upon a meteor to alter the battlefield";
+        this.damage_type = "standard";
+        this.name = "meteor cryo";
+        this.speed = 150;
+        this.maxDistance = -1;
+        this.abilityClass = 2;
+        this.custom = true;
+        this.allowClick = true;
+
+    }
+
+    use (r, c) {
+        if(r == PLAYER.row || c == PLAYER.column) {
+            let playerCheck = isPlayerHere(r,c)
+            if(playerCheck.playerFound) {
+                playerCheck.playersFound.forEach(player => { player.takeDamage(this.damage) })
+            } else {
+                addToCell(r,c,this.cell());
+            }
+            if(checkForBoundry(r-1,c)) { matrix[r-1][c].tile = new Frozen() }
+            if(checkForBoundry(r,c-1)) { matrix[r][c-1].tile = new Frozen() }
+            if(checkForBoundry(r+1,c)) { matrix[r+1][c].tile = new Frozen() }
+            if(checkForBoundry(r,c+1)) { matrix[r][c+1].tile = new Frozen() }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    cell (r, c) {
+        let _owner = this.owner; 
+        let _damage = this.damage;
+        let _name = this.name;
+        return new class Meteor_p {
+            constructor () {
+                this.owner = _owner;
+                this.type = "construct";
+                this.classname = "meteor_cryo";
+                this.hp = 1;
+                this.name = _name;
+                this.damage = _damage;
+                this.id = getID();
+                this.row = r;
+                this.column = c;
+                this.delete = false;
+                this.maxDistance = 5;
+                this.distance = 0;
+            }
+
+            beforeDelete () {
+
+            }
+        }
+    }
+}
 
 
+class Meteor_fire {
+    constructor() {
+        this.type = "construct";
+        this.damage = 1;
+        this.cost = 4;
+        this.info = "call upon a meteor to alter the battlefield";
+        this.damage_type = "standard";
+        this.name = "meteor fire";
+        this.speed = 150;
+        this.maxDistance = -1;
+        this.abilityClass = 2;
+        this.custom = true;
+        this.allowClick = true;
+
+    }
+
+    use (r, c) {
+        if(r == PLAYER.row || c == PLAYER.column) {
+            let playerCheck = isPlayerHere(r,c)
+            if(playerCheck.playerFound) {
+                playerCheck.playersFound.forEach(player => { player.takeDamage(this.damage) })
+            } else {
+                addToCell(r,c,this.cell());
+            }
+            if(checkForBoundry(r-1,c)) { matrix[r-1][c].tile = new Lava() }
+            if(checkForBoundry(r,c-1)) { matrix[r][c-1].tile = new Lava() }
+            if(checkForBoundry(r+1,c)) { matrix[r+1][c].tile = new Lava() }
+            if(checkForBoundry(r,c+1)) { matrix[r][c+1].tile = new Lava() }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    cell (r, c) {
+        let _owner = this.owner; 
+        let _damage = this.damage;
+        let _name = this.name;
+        return new class Meteor_p {
+            constructor () {
+                this.owner = _owner;
+                this.type = "construct";
+                this.classname = "meteor_fire";
+                this.hp = 1;
+                this.name = _name;
+                this.damage = _damage;
+                this.id = getID();
+                this.row = r;
+                this.column = c;
+                this.delete = false;
+                this.maxDistance = 5;
+                this.distance = 0;
+            }
+
+            beforeDelete () {
+
+            }
+        }
+    }
+}
+
+
+class Gridline {
+    constructor() {
+        this.type = "visualaid"
+        this.allowsMovement = true;
+        this.classname = "gridlines"
+        this.name = "gridline"
+        this.hp = "";
+    }
+}
 
 class Plains {
     constructor() {
@@ -435,5 +586,8 @@ class Lava {
         this.classname = "lava"
         this.name = "lava"
         this.dot = 1;
+        this.decay = 1;
+        this.currentDecay = 0;
+        this.maxDecay = 3;
     }
 }

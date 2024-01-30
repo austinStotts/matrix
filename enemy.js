@@ -98,6 +98,7 @@ class Enemy {
 
     takeDamage (n) {
         this.hp -= n;
+        addLog({ type: "damage", name: this.name, content: ` took ${n} damage` })
         console.log("player take damage - hp:", this.hp)
         if(this.hp <= 0) { this.delete = true }
     }

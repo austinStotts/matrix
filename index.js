@@ -79,9 +79,16 @@ let calculateTiles = () => {
                     matrix[i][j].children[key].takeDamage(matrix[i][j].tile.dot)
                 }
             })
+            matrix[i][j].tile.currentDecay += matrix[i][j].tile.decay;
+            if(matrix[i][j].tile.currentDecay >= matrix[i][j].tile.maxDecay) {
+                matrix[i][j].tile = new Plains();
+            }
         }
     }
 }
+
+// add decay to tiles for things like constructs and biomes
+// also change the meteor to break if used on a player
 // _____________________________________________________
 
 
@@ -144,47 +151,110 @@ class Player {
 
     ability (x) {
         this.selectedAbility = x;
-        inputMethod = "ability"
+        showSelectedAbility(x);
+        if(PLAYER[`ability${PLAYER.selectedAbility}`]) {
+            if(PLAYER[`ability${PLAYER.selectedAbility}`].allowClick) {
+                showGridLines(this.row, this.column)
+            }
+        }
+        inputMethod = "ability";
+        updateLabels();
     }
 
     useAbility (dr, dc) {
         if(this.selectedAbility == 1) {
             if(this.power >= this.ability1.cost) {
-                addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
-                let p = this.ability1.cell(PLAYER.row, PLAYER.column);
-                drawAbility(p, dr, dc, this.ability1.speed);
-                this.power = this.power - this.ability1.cost;
-                updateLabels();
-                inputMethod = "movement";
+                if(this.ability1.custom) {
+                    let used = this.ability1.use(dr, dc);
+                    if(used) {
+                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
+                        this.power = this.power - this.ability2.cost;
+                        updateLabels();
+                        inputMethod = "movement";
+                        this.selectedAbility = 0;
+                        removeGridlines();
+                    } else {
+                        
+                    }
+                } else {
+                    addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
+                    let p = this.ability1.cell(PLAYER.row, PLAYER.column);
+                    drawAbility(p, dr, dc, this.ability1.speed);
+                    this.power = this.power - this.ability1.cost;
+                    updateLabels();
+                    inputMethod = "movement";
+                    this.selectedAbility = 0;
+                    removeGridlines();
+                }
             } else {
                 inputMethod = "movement";
+                this.selectedAbility = 0;
+                removeGridlines();
             }
         } else if(this.selectedAbility == 2) {
             if(this.power >= this.ability2.cost) {
-                addLog({ type: "ability", name: this.name, content: ` used ${this.ability2.name}` })
-                let p = this.ability2.cell(PLAYER.row, PLAYER.column);
-                drawAbility(p, dr, dc, this.ability2.speed);
-                this.power = this.power - this.ability2.cost;
-                updateLabels();
-                inputMethod = "movement";
+                if(this.ability2.custom) {
+                    let used = this.ability2.use(dr, dc);
+                    if(used) {
+                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability2.name}` })
+                        this.power = this.power - this.ability2.cost;
+                        updateLabels();
+                        inputMethod = "movement";
+                        this.selectedAbility = 0;
+                        removeGridlines();
+                    } else {
+                        
+                    }
+                } else {
+                    let p = this.ability2.cell(PLAYER.row, PLAYER.column);
+                    drawAbility(p, dr, dc, this.ability2.speed);
+                    addLog({ type: "ability", name: this.name, content: ` used ${this.ability2.name}` })
+                    this.power = this.power - this.ability2.cost;
+                    updateLabels();
+                    inputMethod = "movement";
+                    this.selectedAbility = 0;
+                    removeGridlines();
+                }
             } else {
                 inputMethod = "movement";
+                this.selectedAbility = 0;
+                removeGridlines();
             }
         } else if(this.selectedAbility == 3) {
             if(this.power >= this.ability3.cost) {
-                addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
-                let p = this.ability3.cell(PLAYER.row, PLAYER.column, dr, dc);
-                drawAbility(p, dr, dc, this.ability3.speed);
-                this.power = this.power - this.ability3.cost;
-                updateLabels();
-                inputMethod = "movement";
+                if(this.ability3.custom) {
+                    let used = this.ability3.use(dr, dc);
+                    if(used) {
+                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability2.name}` })
+                        this.power = this.power - this.ability2.cost;
+                        updateLabels();
+                        inputMethod = "movement";
+                        this.selectedAbility = 0;
+                        removeGridlines();
+                    } else {
+                        
+                    }
+                } else {
+                    addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
+                    let p = this.ability3.cell(PLAYER.row, PLAYER.column, dr, dc);
+                    drawAbility(p, dr, dc, this.ability3.speed);
+                    this.power = this.power - this.ability3.cost;
+                    updateLabels();
+                    inputMethod = "movement";
+                    this.selectedAbility = 0;
+                    removeGridlines();
+                }
             } else {
                 inputMethod = "movement";
+                this.selectedAbility = 0;
+                removeGridlines();
             }
         } 
         else {
             console.log("invalid ability selected: ", this.selectedAbility)
         }
+        updateLabels();
+        showSelectedAbility(this.selectedAbility);
     }
 
     move (r,c, cost) {
@@ -200,6 +270,7 @@ class Player {
 
     takeDamage (n) {
         this.hp -= n;
+        addLog({ type: "damage", name: this.name, content: ` took ${n} damage` })
         console.log("player take damage - hp:", this.hp)
         if(this.hp <= 0) { this.delete = true }
     }
@@ -298,6 +369,15 @@ let keyEvent = (e) => {
                 case "d":
                     PLAYER.useAbility(0, 1);
                     break;
+                case "f":
+                    if(PLAYER.selectedAbility == 1) { PLAYER.ability(); inputMethod = "movement"; updateLabels(); showSelectedAbility(0); removeGridlines(); }
+                    break
+                case "e":
+                    if(PLAYER.selectedAbility == 2) { PLAYER.ability(); inputMethod = "movement"; updateLabels(); showSelectedAbility(0); removeGridlines(); }
+                    break
+                case "q":
+                    if(PLAYER.selectedAbility == 3) { PLAYER.ability(); inputMethod = "movement"; updateLabels(); showSelectedAbility(0); removeGridlines(); }
+                    break
                 default:
                     break;
             }
@@ -305,6 +385,44 @@ let keyEvent = (e) => {
     }
 }
 document.addEventListener("keydown", keyEvent);
+
+
+let showGridLines = (r, c) => {
+    for(let i = 0; i < matrix.length; i++) {
+        for(let j = 0; j < matrix[i].length; j++) {
+            if(i == r || j == c) {
+                matrix[i][j].children.gridlines = new Gridline()
+            } 
+        }
+    }
+}
+
+let removeGridlines = () => {
+    for(let i = 0; i < matrix.length; i++) {
+        for(let j = 0; j < matrix[i].length; j++) {
+            delete matrix[i][j].children.gridlines;
+        }
+    }
+}
+
+
+
+
+let idToCord = (id) => {
+    let row = id.split("r")[1].split("c")[0];
+    let column = id.split("r")[1].split("c")[1];
+
+    return [row, column]
+}
+
+let cellClick = (e) => {
+    if(inputMethod == "ability" && PLAYER[`ability${PLAYER.selectedAbility}`].allowClick) {
+        let [row, column] = idToCord(e.target.id);
+        // console.log(e)
+        PLAYER.useAbility(Number(row), Number(column));
+    }
+}
+
 
 
 
@@ -315,15 +433,15 @@ let childFormatter = (node) => {
 let cellHover = (e) => {
     // console.log(matrix)
     let t = document.createElement("div");
-    let row = e.target.id.split("r")[1].split("c")[0];
-    let column = e.target.id.split("r")[1].split("c")[1];
+    let [row, column] = idToCord(e.target.id);
+
     t.id = `r${row}c${column}-tt`
     t.classList.add("cell-tooltip");
     t.style.left = (e.target.offsetLeft + 32) + "px";
     t.style.top = (e.target.offsetTop) + "px";
     // console.log(Object.keys(matrix[row][column].children))
     t.innerHTML = `
-        <div class="cordinates">X <span class="x-cord">${column}</span> Y <span class="y-cord">${row}</span> <span class="tile-label-tt ${matrix[row][column].tile.name}-tt"><span class="mc-tt">${matrix[row][column].tile.movementCost}</span>${matrix[row][column].tile.name}</span></div>
+        <div class="cordinates">X <span class="x-cord">${column}</span> Y <span class="y-cord">${row}</span> <span class="tile-label-tt ${matrix[row][column].tile.name}-tt">${matrix[row][column].tile.dot ? '<span class="mc-dot-tt">'+ matrix[row][column].tile.dot + '</span>' : ""}<span class="mc-tt">${matrix[row][column].tile.movementCost}</span>${matrix[row][column].tile.name}</span></div>
         <div class="cell-children-tt">${Object.keys(matrix[row][column].children).map((key) => { return (childFormatter(matrix[row][column].children[key])) }).join(`<div class="children-break-tt"></div>`)}</div>`
     e.target.parentElement.appendChild(t)
     // console.log(e)
@@ -389,6 +507,22 @@ let showAvailableAbilities = () => {
     })
 }
 
+let showSelectedAbility = (n) => {
+    let options = PLAYER.canAct();
+    ab1.classList.remove("ab-selected");
+    ab2.classList.remove("ab-selected");
+    ab3.classList.remove("ab-selected");
+    if(n == 1) {
+        ab1.classList.add("ab-selected");
+    } else if (n == 2) {
+        ab2.classList.add("ab-selected");
+    } else if (n == 3) {
+        ab3.classList.add("ab-selected");
+    } else {
+        // console.log("invalid ability number")
+    }
+}
+
 
 // __________________________________________________
 // matrix creation and management
@@ -427,6 +561,7 @@ let drawMatrix = (n) => {
             cell.classList.add("cell");
             cell.addEventListener("mouseover", cellHover);
             cell.addEventListener("mouseleave", cellLeave);
+            cell.addEventListener("click", cellClick);
             row.appendChild(cell);
         }
         matrix_wrapper.appendChild(row);
@@ -564,6 +699,7 @@ let movePlayer = (r, c) => {
 
 let updateLabels = () => {
     document.getElementById("active-player").innerText = _players[_activePlayer].name;
+    document.getElementById("input-method").innerHTML = `<span><span>input: </span><span class="input-method-value ${inputMethod == "ability" ? "imv-ability" : "imv-movement"}">${inputMethod}</span></span>`;
     document.getElementById("turn").innerText = turn;
     document.getElementById("hp").innerText = PLAYER.hp;
     document.getElementById("movements").innerText = PLAYER.movements;
@@ -603,7 +739,7 @@ let endTurn = (n) => {
 
 let matrix = makeMatrix(11);
 drawMatrix(11);
-let PLAYER = new Player(10,5,new Shell(), new Terraform_alpha(), new Slice());
+let PLAYER = new Player(10,5,new Shell(), new Meteor_fire(), new Slice());
 let ENEMY = new Enemy(0, 5, new Shell(), new Shell(), new Shell());
 PLAYER.gameIndex = 0;
 ENEMY.gameIndex = 1;

@@ -54,11 +54,34 @@ body {
     content: " power ";
 }
 
+.player-turn {
+    color: #88CCFF;
+}
+
 .player-turn::after {
     content: "'s turn";
-    color: #33FF33;
+    color: white;
     margin-left: 5px;
 }
+
+.input-method {
+
+}
+
+.input-method-value {
+    color: #33FF33;
+}
+
+.imv-ability {
+    color: #FF3355;
+    animation: blink 0.75s linear infinite;
+    font-weight: 700;
+}
+
+.ab-selected {
+    border-color: #FF3355 !important;
+}
+
 
 .matrix {
     border: 1px solid black;
@@ -93,7 +116,39 @@ body {
     /* background-color: white; */
 }
 
+.lava {
+    background-color: orangered;
+}
 
+.gridlines {
+    border-color: yellow;
+    border-style: dotted;
+    animation: g-fadein 0.2s linear 1;
+}
+
+@keyframes g-fadein {
+    from {
+        border-color: rgba(255, 255, 0, 0);
+    }
+
+    to {
+        border-color: rgb(255, 255, 0);
+    }
+}
+
+.mc-dot-tt {
+    text-shadow: none;
+}
+
+.mc-dot-tt::before {
+    color: #FF3355;
+    content: "[";
+}
+
+.mc-dot-tt::after {
+    color: #FF3355;
+    content: "]";
+}
 
 
 .player {
@@ -126,7 +181,17 @@ body {
 
 
 
+.meteor_cryo {
+    background-image: none;
+    background-color: blue;
+    border-color: aqua;
+}
 
+.meteor_fire {
+    background-image: none;
+    background-color: red;
+    border-color: orangered;
+}
 
 .slice {
     border-color: red;
@@ -151,6 +216,7 @@ body {
 
 .shell {
     border-color: rgb(255, 35, 35);
+    box-shadow: inset 0px 0px 15px 3px rgb(255, 35, 35);
 }
 
 .terraform-alpha {
@@ -390,6 +456,10 @@ body {
 
 .frozen-tt {
     text-shadow: 2px 2px rgb(47, 234, 255);
+}
+
+.lava-tt {
+    text-shadow: 2px 2px rgb(255, 71, 47);
 }
 
 
