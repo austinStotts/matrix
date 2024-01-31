@@ -733,10 +733,12 @@ let endTurn = (n) => {
 
 let getSavedAbilities = () => {
     let ls = JSON.parse(window.localStorage.getItem("abilities"));
-    console.log(ls)
-    PLAYER.ability1 = new abilities[ls[1]]();
-    PLAYER.ability2 = new abilities[ls[2]]();
-    PLAYER.ability3 = new abilities[ls[3]]();
+    if(ls) {
+        PLAYER.ability1 = new abilities[ls[1]]();
+        PLAYER.ability2 = new abilities[ls[2]]();
+        PLAYER.ability3 = new abilities[ls[3]]();
+    }
+
 }
 
 
