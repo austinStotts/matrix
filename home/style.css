@@ -31,6 +31,7 @@ body {
     margin-left: 30%;
     width: 40%;
     font-size: 20px;
+    text-align: center;
 }
 
 .matrix-info-creation {
@@ -86,6 +87,16 @@ body {
 }
 
 .matrix-play-levels:hover {
+    /* cursor: pointer;
+    margin-left: 10px; */
+}
+
+.matrix-play-game {
+    transition-duration: 0.2s;
+    width: fit-content;
+}
+
+.matrix-play-game:hover {
     cursor: pointer;
     margin-left: 10px;
 }

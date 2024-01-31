@@ -47,6 +47,7 @@ body {
 }
 
 .a-save {
+    display: inline-block;
     color: white;
     border: 1px solid white;
     padding: 5px;
@@ -56,6 +57,23 @@ body {
 }
 
 .a-save:hover {
+    background-color: white;
+    color: black;
+    cursor: pointer;
+}
+
+.a-back {
+    display: inline-block;
+    color: white;
+    border: 1px solid white;
+    padding: 5px;
+    margin: 20px;
+    width: fit-content;
+    transition-duration: 0.2s;
+    text-decoration: none;
+}
+
+.a-back:hover {
     background-color: white;
     color: black;
     cursor: pointer;
