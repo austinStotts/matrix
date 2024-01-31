@@ -16,6 +16,11 @@ body {
     margin-left: 20px;
     margin-top: 20px;
     display: inline-block;
+    padding-bottom: 1px;
+    border: 1px solid;
+    --angle: 0deg;
+    border-image: linear-gradient(var(--angle), #FF3355, #33FF33) 1;
+    animation: 5s rotate linear infinite;
 }
 
 .info-wrapper {

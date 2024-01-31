@@ -731,6 +731,13 @@ let endTurn = (n) => {
 }
 
 
+let getSavedAbilities = () => {
+    let ls = JSON.parse(window.localStorage.getItem("abilities"));
+    console.log(ls)
+    PLAYER.ability1 = new abilities[ls[1]]();
+    PLAYER.ability2 = new abilities[ls[2]]();
+    PLAYER.ability3 = new abilities[ls[3]]();
+}
 
 
 // _________________________________________________________
@@ -739,7 +746,7 @@ let endTurn = (n) => {
 
 let matrix = makeMatrix(11);
 drawMatrix(11);
-let PLAYER = new Player(10,5,new Shell(), new Meteor_fire(), new Slice());
+let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Slice());
 let ENEMY = new Enemy(0, 5, new Shell(), new Shell(), new Shell());
 PLAYER.gameIndex = 0;
 ENEMY.gameIndex = 1;
@@ -747,6 +754,7 @@ let _players = [PLAYER, ENEMY];
 let _activePlayer = 0;
 let turn = 1;
 let inputMethod = "movement";
+getSavedAbilities();
 
 // matrix[7][5].tile = new Frozen();
 
