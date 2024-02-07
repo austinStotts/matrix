@@ -7,9 +7,25 @@
 
 
 
+let checkIfPlayer = (r,c) => {
+    let isPlayer = false;
+    Object.keys(matrix[r][c].children).forEach((key) => {
+        if(matrix[r][c].children[key].type == "player") {
+            // contains players
+            isPlayer = true;
+        }
+    })
+    return isPlayer;
+}
 
-
-
+let getRandomColor = () => {
+    let letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
 
 // _________________________________________________
 // cell and damage calculations
@@ -535,6 +551,7 @@ let makeMatrix = (n) => {
             this.class = ["cell"];
             this.children = {};
             this.tile = new Plains();
+            this.canvas = undefined;
         }
     }
 
@@ -550,6 +567,65 @@ let makeMatrix = (n) => {
 }
 
 
+// KONVA SETUP
+let stage = new Konva.Stage({
+    container: 'canvas',
+    width: 376,
+    height: 376,
+});
+
+let layer = new Konva.Layer();
+stage.add(layer);
+
+
+// add them to the matrix so they can be updated later
+let drawCanvas = () => {
+    for(let i = 0; i < matrix.length; i++) {
+        for(let j = 0; j < matrix[i].length; j++) {
+
+            let box = new Konva.Rect({
+                x: 2+(j*32)+(j*2),
+                y: 2+(i*32)+(i*2),
+                width: 32,
+                height: 32,
+                opacity: 0,
+                // fill: getRandomColor(),
+                stroke: 'black',
+                strokeWidth: 0,
+                draggable: false,
+            });
+            matrix[i][j].canvas = box;
+            layer.add(box);
+        
+        }
+    }
+}
+
+let playerimage = new Image()
+playerimage.src = "./assets/player.png"
+
+let updateCanvas = () => {
+    for(let i = 0; i < matrix.length; i++) {
+        for(let j = 0; j < matrix[i].length; j++) {
+            if(checkIfPlayer(i, j)) {
+                matrix[i][j].canvas.opacity(1);
+                // matrix[i][j].canvas.strokeWidth(2);
+                // matrix[i][j].canvas.draw();
+                matrix[i][j].canvas.fillPatternImage(playerimage);
+            } else {
+                matrix[i][j].canvas.fillPatternImage(undefined)
+                matrix[i][j].canvas.opacity(0);
+                // matrix[i][j].canvas.strokeWidth(0);
+                // matrix[i][j].canvas.draw();
+            }
+        }
+    }
+    layer.draw()
+}
+
+
+
+// create the html version of the matrix
 let drawMatrix = (n) => {
     for(let i = 0; i < n; i++) {
         let row = document.createElement("div");
@@ -778,10 +854,12 @@ createAbilityBox(1, PLAYER.ability1);
 createAbilityBox(2, PLAYER.ability2);
 createAbilityBox(3, PLAYER.ability3);
 
+drawCanvas();
 updateLabels();
 setInterval(() => {
     // pruneMatrix();
     compairMatrix();
+    updateCanvas();
 }, (1000/60))
 
 
