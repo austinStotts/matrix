@@ -79,7 +79,7 @@ class Projectile { // not doing anything
 class Shell {
     constructor() {
         this.type = "projectile";
-        this.damage = 2;
+        this.damage = 1;
         this.cost = 2;
         this.info = "standard shell - travels forward until it hits something";
         this.damage_type = "standard";

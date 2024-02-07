@@ -5,7 +5,7 @@
 
 
 
-
+const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 let checkIfPlayer = (r,c) => {
     let isPlayer = false;
@@ -644,6 +644,14 @@ let drawMatrix = (n) => {
     }
 }
 
+let checkForWinner = () => {
+    if(PLAYER.hp <= 0) {
+        console.log("YOU LOSE");
+    } else if (ENEMY.hp <= 0) {
+        console.log("YOU WIN");
+    }
+}
+
 // only job is to make the visual matrix match the actual matrix
 let compairMatrix = () => { 
     for(let i = 0; i < matrix.length; i++) {
@@ -764,16 +772,25 @@ let addToCell = (r, c, x, update=true) => {
 }
 
 let movePlayer = (r, c) => {
-    if(checkForBoundry(r,c) && PLAYER.movements >= matrix[r][c].tile.movementCost) {
+    if(checkForBoundry(r,c) && PLAYER.movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c)) {
         removefromCell(PLAYER.row, PLAYER.column, PLAYER.id);
-        addToCell(r, c, PLAYER)
+        addToCell(r, c, PLAYER);
         PLAYER.move(r,c, matrix[r][c].tile.movementCost);
+    }
+}
+
+let moveEnemy = (r, c) => {
+    if(checkForBoundry(r,c) && ENEMY.movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c)) {
+        removefromCell(ENEMY.row, ENEMY.column, ENEMY.id);
+        addToCell(r, c, ENEMY);
+        ENEMY.move(r,c, matrix[r][c].tile.movementCost);
     }
 }
 
 
 
 let updateLabels = () => {
+    checkForWinner();
     document.getElementById("active-player").innerText = _players[_activePlayer].name;
     document.getElementById("input-method").innerHTML = `<span><span>input: </span><span class="input-method-value ${inputMethod == "ability" ? "imv-ability" : "imv-movement"}">${inputMethod}</span></span>`;
     document.getElementById("turn").innerText = turn;

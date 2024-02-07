@@ -1,3 +1,56 @@
+let attackPlayer = (y1, x1, y2, x2) => {
+    let dx = (x2-x1);
+    let dy = (y2-y1);
+    if(dx > dy) {
+        if(dx > 0) {
+            // move right
+            ENEMY.useAbility(0, 1);
+        } else if(dx < 0) {
+            // move left
+            ENEMY.useAbility(0, -1);
+        } else {
+            // dont move
+        }
+    } else {
+        if(dy > 0) {
+            // move down
+            ENEMY.useAbility(1, 0);
+        } else if(dy < 0) {
+            // move up
+            ENEMY.useAbility(-1, 0);
+        } else {
+            // dont move
+        }
+    }
+}
+
+let moveTowardsPlayer = (y1, x1, y2, x2) => {
+    let dx = (x2-x1);
+    let dy = (y2-y1);
+
+    if(dx > dy) {
+        if(dx > 0) {
+            // move right
+            moveEnemy(y1, x1+1);
+        } else if(dx < 0) {
+            // move left
+            moveEnemy(y1, x1-1);
+        } else {
+            // dont move
+        }
+    } else {
+        if(dy > 0) {
+            // move down
+            moveEnemy(y1+1, x1);
+        } else if(dy < 0) {
+            // move up
+            moveEnemy(y1-1, x1);
+        } else {
+            // dont move
+        }
+    }
+}
+
 class Enemy {
     constructor(r, c, a1, a2, a3, name=generateName()) {
         this.name = name;
@@ -9,12 +62,12 @@ class Enemy {
         this.ability1 = a1;
         this.ability2 = a2;
         this.ability3 = a3;
-        this.hp = 3;
-        this.maxMovements = 2;
-        this.movements = 2;
+        this.hp = 5;
+        this.maxMovements = 3;
+        this.movements = 1;
         this.maxPower = 5;
-        this.power = 5;
-        this.selectedAbility = 0;
+        this.power = 2;
+        this.selectedAbility = 1;
         this.gameIndex = 1;
 
         this.ability1.owner = this.name;
@@ -49,7 +102,7 @@ class Enemy {
         if(this.selectedAbility == 1) {
             if(this.power >= this.ability1.cost) {
                 addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
-                let p = this.ability1.cell(PLAYER.row, PLAYER.column);
+                let p = this.ability1.cell(this.row, this.column);
                 drawAbility(p, dr, dc, this.ability1.speed);
                 this.power = this.power - this.ability1.cost;
                 updateLabels();
@@ -103,8 +156,22 @@ class Enemy {
         if(this.hp <= 0) { this.delete = true }
     }
 
-    startTurn () {
+    async startTurn () {
         console.log("enemy ai v0.0.1");
+
+        // move first
+        for(let i = 0; i < this.maxMovements; i++) {
+            moveTowardsPlayer(this.row, this.column, PLAYER.row, PLAYER.column);
+            await sleep(500);
+        }
+
+        // attack
+
+        for(let i = 0; i < this.maxPower; i++) {
+            attackPlayer(this.row, this.column, PLAYER.row, PLAYER.column);
+            await sleep(500);
+        }
+
         endTurn(this.gameIndex);
     }
 
