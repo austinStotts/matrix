@@ -6,6 +6,20 @@ let findSlope = (r1,c1,r2,c2) => {
     return Math.ceil((r2-r1)-(c2-c1))
 }
 
+let getDirection = (dr, dc) => {
+    if(dr == -1) {
+        return "up"
+    } else if(dr == 1) {
+        return "down"
+    } else if(dc == -1) {
+        return "left"
+    } else if(dc == 1) {
+        return "right"
+    } else {
+
+    }
+}
+
 let checkForConstruct = (r,c) => {
     let blocks = false;
     Object.keys(matrix[r][c].children).forEach((key) => {
@@ -574,6 +588,7 @@ let calculateProjectile = (a, ir, ic, dr, dc) => {
     console.log(a)
     console.log(ir,ic,cr,cc);
     while(!stop) {
+        // console.log(matrix[cr][cc].canvas)
         if(cellsTraveled.length >= a.maxDistance && a.maxDistance != -1) {
             console.log("HIT MAX DISTANCE", cr,cc);
             try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
@@ -624,50 +639,17 @@ images.terraform_gamma.src = "./assets/shell.png"
 let animateProjectile = (cells, dr, dc, imagename, speed) => {
     if(cells.length > 1) {
 
-        console.log(dr,dc)
-        let data = []
-        if(dr == 1) {
-            let x1 = document.getElementById(`r${cells[0][0]-dr}c${cells[0][1]-dc}`);
-            let rect1 = x1.getBoundingClientRect();
-            data.push({x:rect1.x-32+(-32*dc), y: rect1.y-32+(-32*dr)})
-    
-            let x2 = document.getElementById(`r${cells[cells.length-1][0]}c${cells[cells.length-1][1]}`);
-            let rect2 = x2.getBoundingClientRect();
-            data.push({x:(rect2.x-32)+(-32*dc), y: (rect2.y-32)+(-32*dr)})
-        } 
-        
-        else if(dr == -1) {
-            let x1 = document.getElementById(`r${cells[0][0]-dr}c${cells[0][1]-dc}`);
-            let rect1 = x1.getBoundingClientRect();
-            data.push({x:rect1.x-32+(32*dc), y: rect1.y-32+(32*dr)})
-    
-            let x2 = document.getElementById(`r${cells[cells.length-1][0]}c${cells[cells.length-1][1]}`);
-            let rect2 = x2.getBoundingClientRect();
-            data.push({x:(rect2.x-32)+(32*dc), y: (rect2.y-32)+(32*dr)})
-        } 
-        
-        else if (dc == 1) {
-            console.log("dc = 1")
-            let x1 = document.getElementById(`r${cells[0][0]-dr}c${cells[0][1]-dc}`);
-            let rect1 = x1.getBoundingClientRect();
-            data.push({x:rect1.x, y:rect1.y-72})
-    
-            let x2 = document.getElementById(`r${cells[cells.length-1][0]}c${cells[cells.length-1][1]}`);
-            let rect2 = x2.getBoundingClientRect();
-            data.push({x:rect2.x-32, y:rect2.y-72})
-        } 
-        
-        else if(dc == -1) {
-            console.log("dc = -1")
-            let x1 = document.getElementById(`r${cells[0][0]-dr}c${cells[0][1]-dc}`);
-            let rect1 = x1.getBoundingClientRect();
-            data.push({x:rect1.x, y:rect1.y-72})
-    
-            let x2 = document.getElementById(`r${cells[cells.length-1][0]}c${cells[cells.length-1][1]}`);
-            let rect2 = x2.getBoundingClientRect();
-            data.push({x:rect2.x-32, y:rect2.y-72})
-        } 
 
+        let data = []
+
+        let r1 = cells[0][0];
+        let c1 = cells[0][1];
+
+        let r2 = cells[cells.length-1][0];
+        let c2 = cells[cells.length-1][1];
+
+        data.push({x: matrix[r1][c1].canvas.attrs.x, y: matrix[r1][c1].canvas.attrs.y});
+        data.push({x: matrix[r2][c2].canvas.attrs.x, y: matrix[r2][c2].canvas.attrs.y});
 
 
 
@@ -675,7 +657,7 @@ let animateProjectile = (cells, dr, dc, imagename, speed) => {
             x: 0,
             y: 0,
         });
-        layer.add(path)
+        layer.add(path);
 
         var p = "M" + data[0].x + " " + data[0].y;
         for (var i = 1; i < data.length; i = i + 1){
@@ -699,8 +681,7 @@ let animateProjectile = (cells, dr, dc, imagename, speed) => {
         p.fillPatternImage(images[imagename]);
         layer.add(p);
 
-        let s = Math.abs(findSlope(cells[0][0],cells[0][1], cells[cells.length-1][0],cells[cells.length-1][1]))*speed
-        console.log(s)
+        let s = Math.abs(findSlope(r1,c1,r2,c2))*speed
         let steps = s // number of steps in animation
         let pathLen = path.getLength();
         let step = pathLen / steps;
