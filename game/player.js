@@ -123,7 +123,7 @@ class Player {
                 if(this.ability3.custom) {
                     let used = this.ability3.use(dr, dc);
                     if(used) {
-                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability2.name}` })
+                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
                         this.power = this.power - this.ability2.cost;
                         updateLabels();
                         inputMethod = "movement";
