@@ -29,8 +29,10 @@ let isPlayerHere = (r, c) => {
 
 
 class Wall {
-    constructor() {
+    constructor(owner) {
         this.name = "wall";
+        this.owner = owner;
+        this.blocksMovement = true;
         this.hp = 2;
         this.classname = "wall";
         this.type = "construct";
@@ -84,7 +86,8 @@ class Shell {
         this.info = "standard shell - travels forward until it hits something";
         this.damage_type = "standard";
         this.name = "shell";
-        this.speed = 125;
+        this.imagename = "shell";
+        this.speed = 3;
         this.maxDistance = -1;
         this.abilityClass = 1;
         this.allowClick = false;
@@ -125,7 +128,8 @@ class Terraform_alpha {
         this.info = "forcibly arrange the earth to protect you";
         this.damage_type = "standard";
         this.name = "terraform α";
-        this.speed = 150;
+        this.imagename = "terraform_alpha";
+        this.speed = 10;
         this.maxDistance = -1;
         this.abilityClass = 2;
         this.allowClick = false;
@@ -133,61 +137,37 @@ class Terraform_alpha {
 
     }
 
-    cell (r, c) {
+    beforeDelete (cr,cc,pr,pc) {
         let _owner = this.owner;
-        let _damage = this.damage;
-        let _name = this.name;
-        return new class Terraform_p {
-            constructor () {
+        class Terraformation {
+            constructor() {
+                this.name = "terraformation α";
+                this.classname = "terraformation-alpha";
                 this.owner = _owner;
-                this.type = "projectile";
-                this.classname = "terraform-alpha";
-                this.name = _name;
-                this.damage = _damage;
+                this.hp = 2;
+                this.blocksMovement = true;
+                this.type = "construct";
                 this.id = getID();
-                this.row = r;
-                this.column = c;
-                this.delete = false
+                this.delete = false;
+            }
+
+            takeDamage (n) {
+                this.hp -= n;
+                if(this.hp <= 0) { this.delete = true }
             }
 
             beforeDelete () {
-                let _owner = this.owner;
-                let _r = this.row;
-                let _c = this.column;
-                let _dr = this.dr;
-                let _dc = this.dc;
-                
-                class Terraformation {
-                    constructor() {
-                        this.name = "terraformation α";
-                        this.classname = "terraformation-alpha";
-                        this.owner = _owner;
-                        this.hp = 2;
-                        this.type = "construct";
-                        this.id = getID();
-                        this.delete = false;
-                        this.dr = _dr;
-                        this.dc = _dc;
-                    }
-
-                    takeDamage (n) {
-                        this.hp -= n;
-                        if(this.hp <= 0) { this.delete = true }
-                    }
-
-                    beforeDelete () {
-                        console.log("terraformation construct before delete");
-                    }
-                }
-
-                addToCell(_r - this.dr, _c - this.dc, new Terraformation(), false)
-                let s = findSides(_r - this.dr, _c - this.dc, this.dr, this.dc);
-                if(checkIfEmpty(s.left[0], s.left[1])) { addToCell(s.left[0], s.left[1], new Terraformation(), false) }
-                if(checkIfEmpty(s.right[0], s.right[1])) { addToCell(s.right[0], s.right[1], new Terraformation(), false) }
-                
+                console.log("terraformation construct before delete")
             }
         }
+
+        addToCell(pr, pc, new Terraformation(), false)
+        let s = findSides(pr, pc, cr-pr, cc-pc);
+        if(checkIfEmpty(s.left[0], s.left[1])) { addToCell(s.left[0], s.left[1], new Terraformation(), false) }
+        if(checkIfEmpty(s.right[0], s.right[1])) { addToCell(s.right[0], s.right[1], new Terraformation(), false) }
+
     }
+
 }
 
 
@@ -199,11 +179,39 @@ class Terraform_beta {
         this.info = "forcibly arrange the earth to protect you";
         this.damage_type = "standard";
         this.name = "terraform β";
-        this.speed = 150;
+        this.imagename = "terraform_beta";
+        this.speed = 10;
         this.abilityClass = 2;
         this.maxDistance = -1;
         this.allowClick = false;
         this.custom = false;
+    }
+
+    beforeDelete (cr,cc,pr,pc) {
+        let _owner = this.owner;
+        class Terraformation {
+            constructor() {
+                this.name = "terraformation β";
+                this.classname = "terraformation-beta";
+                this.owner = _owner;
+                this.hp = 2;
+                this.blocksMovement = true;
+                this.type = "construct";
+                this.id = getID();
+                this.delete = false;
+            }
+
+            takeDamage (n) {
+                this.hp -= n;
+                if(this.hp <= 0) { this.delete = true }
+            }
+
+            beforeDelete () {
+                console.log("terraformation construct before delete")
+            }
+        }
+        
+        addToCell(pr,pc, new Terraformation(), false)
     }
 
     cell (r, c) {
@@ -223,37 +231,7 @@ class Terraform_beta {
                 this.delete = false
             }
 
-            beforeDelete () {
-                let _owner = this.owner;
-                let _r = this.row;
-                let _c = this.column;
-                let _dr = this.dr;
-                let _dc = this.dc;
-                class Terraformation {
-                    constructor() {
-                        this.name = "terraformation β";
-                        this.classname = "terraformation-beta";
-                        this.owner = _owner;
-                        this.hp = 2;
-                        this.type = "construct";
-                        this.id = getID();
-                        this.delete = false;
-                        this.rd = _dr;
-                        this.dc = _dc;
-                    }
 
-                    takeDamage (n) {
-                        this.hp -= n;
-                        if(this.hp <= 0) { this.delete = true }
-                    }
-
-                    beforeDelete () {
-                        console.log("terraformation construct before delete")
-                    }
-                }
-                
-                addToCell(_r - this.dr, _c - this.dc, new Terraformation(), false)
-            }
         }
     }
 }
@@ -267,8 +245,9 @@ class Terraform_gamma {
         this.info = "forcibly arrange the earth to protect you";
         this.damage_type = "standard";
         this.name = "terraform γ";
+        this.imagename = "terraform_gamma";
         // this.name = "terraform y";
-        this.speed = 150;
+        this.speed = 10;
         this.maxDistance = 5;
         this.abilityClass = 2;
         this.allowClick = false;
@@ -276,65 +255,44 @@ class Terraform_gamma {
 
     }
 
-    cell (r, c) {
-        let _owner = this.owner; 
-        let _damage = this.damage;
-        let _name = this.name;
-        return new class Terraform_p {
-            constructor () {
+    
+    // update () {
+    //     this.distance += 1;
+    //     if(this.distance >= this.maxDistance) {
+    //         this.delete = true;
+    //     }
+    // }
+
+    beforeDelete (cr,cc,pr,pc) {
+        let _owner = this.owner;
+        class Terraformation {
+            constructor() {
+                this.name = "terraformation γ";
+                this.classname = "terraformation-gamma";
                 this.owner = _owner;
-                this.type = "projectile";
-                this.classname = "terraform-gamma";
-                this.name = _name;
-                this.damage = _damage;
+                this.hp = 1;
+                this.blocksMovement = true;
+                this.type = "construct";
                 this.id = getID();
-                this.row = r;
-                this.column = c;
                 this.delete = false;
-                this.maxDistance = 5;
-                this.distance = 0;
             }
 
-            update () {
-                this.distance += 1;
-                if(this.distance >= this.maxDistance) {
-                    this.delete = true;
-                }
+            takeDamage (n) {
+                this.hp -= n;
+                if(this.hp <= 0) { this.delete = true }
             }
 
             beforeDelete () {
-                let _owner = this.owner;
-                let _r = this.row;
-                let _c = this.column;
-                let _dr = this.dr;
-                let _dc = this.dc;
-                class Terraformation {
-                    constructor() {
-                        this.name = "terraformation γ";
-                        this.classname = "terraformation-gamma";
-                        this.owner = _owner;
-                        this.hp = 1;
-                        this.type = "construct";
-                        this.id = getID();
-                        this.delete = false;
-                        this.rd = _dr;
-                        this.dc = _dc;
-                    }
-
-                    takeDamage (n) {
-                        this.hp -= n;
-                        if(this.hp <= 0) { this.delete = true }
-                    }
-
-                    beforeDelete () {
-                        console.log("terraformation construct before delete")
-                    }
-                }
-                
-                addToCell(_r - this.dr, _c - this.dc, new Terraformation(), false)
+                console.log("terraformation construct before delete")
             }
         }
+        
+        addToCell(pr,pc, new Terraformation(), false)
+
+
     }
+
+
 }
 
 
@@ -546,6 +504,38 @@ class Meteor_fire {
 }
 
 
+class Focus {
+    constructor() {
+        this.type = "spell";
+        this.damage = 0;
+        this.cost = 2;
+        this.info = "end turn and gain +1 movement & +1 power next turn";
+        this.damage_type = "none";
+        this.name = "focus";
+        // this.name = "terraform y";
+        this.speed = 50;
+        this.maxDistance = 0;
+        this.abilityClass = 3;
+        this.custom = true;
+        this.allowClick = false;
+    }
+
+
+    use (r, c) {
+        PLAYER.endTurn();
+        PLAYER.bonusMovements = 1;
+        PLAYER.bonusPower = 1;
+        return true;
+    }
+
+    beforeDelete () {
+
+    }
+}
+
+
+
+
 class Gridline {
     constructor() {
         this.type = "visualaid"
@@ -592,4 +582,4 @@ class Lava {
     }
 }
 
-let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire]
+let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus]

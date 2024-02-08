@@ -1,9 +1,31 @@
 
+// fix enemy projectiles to hit first cell infront of them
+// add this.blocksMovement to all construct cells
 
+let findSlope = (r1,c1,r2,c2) => {
+    return Math.ceil((r2-r1)-(c2-c1))
+}
 
+let checkForConstruct = (r,c) => {
+    let blocks = false;
+    Object.keys(matrix[r][c].children).forEach((key) => {
+        if(matrix[r][c].children[key].type == "construct") {
+            if(matrix[r][c].children[key].blocksMovement) {
+                blocks = true;
+            }
+        }
+    })
+    return blocks;
+}
 
-
-
+let checkAroundCell = (r, c) => {
+    let cc = [[r-1,c],[r-1,c+1],[r,c+1],[r+1,c+1],[r+1,c],[r+1,c-1],[r,c-1],[r-1,c-1]];
+    for(let i = 0; i < cc.length; i++) {
+        if(checkForBoundry(cc[i][0], cc[i][1]) && checkIfPlayer(cc[i][0], cc[i][1])) {
+            console.log("FOUND EDGE OR PLAYER AT: ", cc[i][0], cc[i][1])
+        }
+    }
+}
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -25,7 +47,13 @@ let getRandomColor = () => {
       color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-  }
+}
+
+let generateName = () => {
+    names = ["tom", "bill", "roger", "fox", "zero", "gabby", "lenny", "gus", "arlo", "nora", "noland", "ethan", "paul"]
+    return (names[Math.floor(Math.random()*names.length)])
+}
+
 
 // _________________________________________________
 // cell and damage calculations
@@ -36,6 +64,22 @@ let calculateDamage = (a, b) => {
     // constructs are resistant to standard damage
     console.log("A: ",a)
     console.log("B: ",b)
+}
+
+let damageConstructs = (r,c,damage) => {
+    Object.keys(matrix[r][c].children).forEach(key => {
+        if(matrix[r][c].children[key].type == "construct") {
+            matrix[r][c].children[key].takeDamage(damage);
+        }
+    })
+}
+
+let damagePlayers = (r,c,damage) => {
+    Object.keys(matrix[r][c].children).forEach(key => {
+        if(matrix[r][c].children[key].type == "player") {
+            matrix[r][c].children[key].takeDamage(damage);
+        }
+    })
 }
 
 let calculateCell = (r, c) => {
@@ -114,195 +158,7 @@ let calculateTiles = () => {
 let matrix_wrapper = document.getElementById("matrix");
 
 
-let generateName = () => {
-    names = ["tom", "bill", "roger", "fox", "zero", "gabby", "lenny", "gus", "arlo", "nora", "noland", "ethan", "paul"]
-    return (names[Math.floor(Math.random()*names.length)])
-}
 
-
-
-
-class Player {
-    constructor(r, c, a1, a2, a3, name=generateName()) {
-        this.name = name;
-        this.type = "player";
-        this.classname = "player";
-        this.id = getID();
-        this.row = r;
-        this.column = c;
-        this.ability1 = a1;
-        this.ability2 = a2;
-        this.ability3 = a3;
-        this.hp = 3;
-        this.projectiles = [];
-        this.maxMovements = 2;
-        this.movements = 2;
-        this.maxPower = 5;
-        this.power = 5;
-        this.selectedAbility = 0;
-        this.gameIndex = 0;
-
-        this.ability1.owner = this.name;
-        this.ability2.owner = this.name;
-        this.ability3.owner = this.name;
-    } 
-
-    set(r, c) {
-        this.row = r;
-        this.column = c;
-    }
-
-    canAct () {
-        let abilitiesAvailable = [];
-        if(this.ability1.cost <= this.power) { abilitiesAvailable.push(1) }
-        if(this.ability2.cost <= this.power) { abilitiesAvailable.push(2) }
-        if(this.ability3.cost <= this.power) { abilitiesAvailable.push(3) }
-        return abilitiesAvailable;
-    }
-
-    updateTurn () {
-        this.movements = this.maxMovements;
-        this.power = this.maxPower;
-    }
-
-    ability (x) {
-        this.selectedAbility = x;
-        showSelectedAbility(x);
-        if(PLAYER[`ability${PLAYER.selectedAbility}`]) {
-            if(PLAYER[`ability${PLAYER.selectedAbility}`].allowClick) {
-                showGridLines(this.row, this.column)
-            }
-        }
-        inputMethod = "ability";
-        updateLabels();
-    }
-
-    useAbility (dr, dc) {
-        if(this.selectedAbility == 1) {
-            if(this.power >= this.ability1.cost) {
-                if(this.ability1.custom) {
-                    let used = this.ability1.use(dr, dc);
-                    if(used) {
-                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
-                        this.power = this.power - this.ability2.cost;
-                        updateLabels();
-                        inputMethod = "movement";
-                        this.selectedAbility = 0;
-                        removeGridlines();
-                    } else {
-                        
-                    }
-                } else {
-                    addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
-                    let p = this.ability1.cell(PLAYER.row, PLAYER.column);
-                    drawAbility(p, dr, dc, this.ability1.speed);
-                    this.power = this.power - this.ability1.cost;
-                    updateLabels();
-                    inputMethod = "movement";
-                    this.selectedAbility = 0;
-                    removeGridlines();
-                }
-            } else {
-                inputMethod = "movement";
-                this.selectedAbility = 0;
-                removeGridlines();
-            }
-        } else if(this.selectedAbility == 2) {
-            if(this.power >= this.ability2.cost) {
-                if(this.ability2.custom) {
-                    let used = this.ability2.use(dr, dc);
-                    if(used) {
-                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability2.name}` })
-                        this.power = this.power - this.ability2.cost;
-                        updateLabels();
-                        inputMethod = "movement";
-                        this.selectedAbility = 0;
-                        removeGridlines();
-                    } else {
-                        
-                    }
-                } else {
-                    let p = this.ability2.cell(PLAYER.row, PLAYER.column);
-                    drawAbility(p, dr, dc, this.ability2.speed);
-                    addLog({ type: "ability", name: this.name, content: ` used ${this.ability2.name}` })
-                    this.power = this.power - this.ability2.cost;
-                    updateLabels();
-                    inputMethod = "movement";
-                    this.selectedAbility = 0;
-                    removeGridlines();
-                }
-            } else {
-                inputMethod = "movement";
-                this.selectedAbility = 0;
-                removeGridlines();
-            }
-        } else if(this.selectedAbility == 3) {
-            if(this.power >= this.ability3.cost) {
-                if(this.ability3.custom) {
-                    let used = this.ability3.use(dr, dc);
-                    if(used) {
-                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability2.name}` })
-                        this.power = this.power - this.ability2.cost;
-                        updateLabels();
-                        inputMethod = "movement";
-                        this.selectedAbility = 0;
-                        removeGridlines();
-                    } else {
-                        
-                    }
-                } else {
-                    addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
-                    let p = this.ability3.cell(PLAYER.row, PLAYER.column, dr, dc);
-                    drawAbility(p, dr, dc, this.ability3.speed);
-                    this.power = this.power - this.ability3.cost;
-                    updateLabels();
-                    inputMethod = "movement";
-                    this.selectedAbility = 0;
-                    removeGridlines();
-                }
-            } else {
-                inputMethod = "movement";
-                this.selectedAbility = 0;
-                removeGridlines();
-            }
-        } 
-        else {
-            console.log("invalid ability selected: ", this.selectedAbility)
-        }
-        updateLabels();
-        showSelectedAbility(this.selectedAbility);
-    }
-
-    move (r,c, cost) {
-        if(this.movements >= cost) {
-            this.set(r,c);
-            this.movements -= cost;
-            updateLabels();
-            return true
-        } else {
-            return false
-        }
-    }
-
-    takeDamage (n) {
-        this.hp -= n;
-        addLog({ type: "damage", name: this.name, content: ` took ${n} damage` })
-        console.log("player take damage - hp:", this.hp)
-        if(this.hp <= 0) { this.delete = true }
-    }
-
-    startTurn () {
-
-    }
-
-    endTurn () {
-        endTurn(this.gameIndex);
-    }
-
-    beforeDelete () {
-        addLog({ type: "death", name: this.name, content: ` died` })
-    }
-}
 
 let animatePlayerMove = (r, c) => {
     // let cell = document.getElementById(`r${r}c${c}`);
@@ -402,6 +258,21 @@ let keyEvent = (e) => {
 }
 document.addEventListener("keydown", keyEvent);
 
+let helpdialog = document.getElementById("game-help-dialog");
+let helpdialogIsHidden = true;
+
+let gamehelp = (e) => {
+    if(helpdialogIsHidden) {
+        helpdialog.show();
+        helpdialogIsHidden = !helpdialogIsHidden;
+    } else {
+        helpdialog.close();
+        helpdialogIsHidden = !helpdialogIsHidden;
+    }
+}
+
+document.getElementById("togglehelp").addEventListener("click", gamehelp);
+document.getElementById("closehelp").addEventListener("click", gamehelp);
 
 let showGridLines = (r, c) => {
     for(let i = 0; i < matrix.length; i++) {
@@ -481,7 +352,7 @@ let classIndex = ["x", "F", "E", "Q"]
 
 let formatAbility = (a) => {
     return (`
-    <div class="ability-label"><span class="ability-label-name">${a.name}</span><span class="ability-label-class acc">${classIndex[a.abilityClass]}</span></div>
+    <div id="as-${a.abilityClass}" class="ability-label"><span class="ability-label-name">${a.name}</span><span class="ability-label-class acc">${classIndex[a.abilityClass]}</span></div>
     <div class="ability-icon"></div>
     <div class="ability-data">
         <div class="ability-data-cost"><span class="ability-data-label">cost</span><span class="ability-data-value adc-${a.cost}">${a.cost}</span></div>
@@ -688,6 +559,170 @@ let pruneMatrix = () => {
     }
 }
 
+// new idea
+// when a projectile is used
+// do all the calculations before
+// and save each cell that the projectile moved through
+// when all is figured out
+// animate the cells effected
+
+let calculateProjectile = (a, ir, ic, dr, dc) => {
+    let cellsTraveled = [];
+    let cr = ir+dr;
+    let cc = ic+dc;
+    let stop = false;
+    console.log(a)
+    console.log(ir,ic,cr,cc);
+    while(!stop) {
+        if(cellsTraveled.length >= a.maxDistance && a.maxDistance != -1) {
+            console.log("HIT MAX DISTANCE", cr,cc);
+            try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
+            stop = true;
+        }
+        else if(!checkForBoundry(cr,cc)) { // just animate the movement then move on
+            console.log("HIT BOUNDRY", cr,cc);
+            try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
+            stop = true;
+        } 
+        else if(checkForConstruct(cr,cc)) { // animate the movement then damage the construct
+            console.log("HIT COSTRUCT", cr,cc);
+            damageConstructs(cr,cc,a.damage);
+            try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
+            stop = true;
+        }
+        else if (checkIfPlayer(cr,cc)) { // animate the movement then damage the player
+            console.log("HIT PLAYER", cr,cc);
+            damagePlayers(cr,cc,a.damage);
+            try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
+            stop = true;
+        } 
+        else {
+            cellsTraveled.push([cr,cc]);
+            cr = cr+dr;
+            cc = cc+dc;
+        }
+
+
+    }
+    // cellsTraveled.push([cr,cc]);
+    console.log(cellsTraveled);
+    animateProjectile(cellsTraveled, dr, dc, a.imagename, a.speed);
+    pruneMatrix();
+}
+
+let images = {
+    shell: new Image(),
+    terraform_alpha: new Image(),
+    terraform_beta: new Image(),
+    terraform_gamma: new Image(),
+}
+images.shell.src = "./assets/shell.png"
+images.terraform_alpha.src = "./assets/shell.png"
+images.terraform_beta.src = "./assets/shell.png"
+images.terraform_gamma.src = "./assets/shell.png"
+
+let animateProjectile = (cells, dr, dc, imagename, speed) => {
+    if(cells.length > 1) {
+
+        console.log(dr,dc)
+        let data = []
+        if(dr == 1) {
+            let x1 = document.getElementById(`r${cells[0][0]-dr}c${cells[0][1]-dc}`);
+            let rect1 = x1.getBoundingClientRect();
+            data.push({x:rect1.x-32+(-32*dc), y: rect1.y-32+(-32*dr)})
+    
+            let x2 = document.getElementById(`r${cells[cells.length-1][0]}c${cells[cells.length-1][1]}`);
+            let rect2 = x2.getBoundingClientRect();
+            data.push({x:(rect2.x-32)+(-32*dc), y: (rect2.y-32)+(-32*dr)})
+        } 
+        
+        else if(dr == -1) {
+            let x1 = document.getElementById(`r${cells[0][0]-dr}c${cells[0][1]-dc}`);
+            let rect1 = x1.getBoundingClientRect();
+            data.push({x:rect1.x-32+(32*dc), y: rect1.y-32+(32*dr)})
+    
+            let x2 = document.getElementById(`r${cells[cells.length-1][0]}c${cells[cells.length-1][1]}`);
+            let rect2 = x2.getBoundingClientRect();
+            data.push({x:(rect2.x-32)+(32*dc), y: (rect2.y-32)+(32*dr)})
+        } 
+        
+        else if (dc == 1) {
+            console.log("dc = 1")
+            let x1 = document.getElementById(`r${cells[0][0]-dr}c${cells[0][1]-dc}`);
+            let rect1 = x1.getBoundingClientRect();
+            data.push({x:rect1.x, y:rect1.y-72})
+    
+            let x2 = document.getElementById(`r${cells[cells.length-1][0]}c${cells[cells.length-1][1]}`);
+            let rect2 = x2.getBoundingClientRect();
+            data.push({x:rect2.x-32, y:rect2.y-72})
+        } 
+        
+        else if(dc == -1) {
+            console.log("dc = -1")
+            let x1 = document.getElementById(`r${cells[0][0]-dr}c${cells[0][1]-dc}`);
+            let rect1 = x1.getBoundingClientRect();
+            data.push({x:rect1.x, y:rect1.y-72})
+    
+            let x2 = document.getElementById(`r${cells[cells.length-1][0]}c${cells[cells.length-1][1]}`);
+            let rect2 = x2.getBoundingClientRect();
+            data.push({x:rect2.x-32, y:rect2.y-72})
+        } 
+
+
+
+
+        let path = new Konva.Path({
+            x: 0,
+            y: 0,
+        });
+        layer.add(path)
+
+        var p = "M" + data[0].x + " " + data[0].y;
+        for (var i = 1; i < data.length; i = i + 1){
+        p = p + " L" + data[i].x + " " + data[i].y;
+        }
+        path.setData(p);
+
+
+
+        var p = new Konva.Rect({ 
+            x: data[0].x,
+            y: data[0].y,
+            width: 32,
+            height: 32,
+            opacity: 1,
+            // fill: getRandomColor(),
+            stroke: 'black',
+            strokeWidth: 0,
+            draggable: false,
+        });
+        p.fillPatternImage(images[imagename]);
+        layer.add(p);
+
+        let s = Math.abs(findSlope(cells[0][0],cells[0][1], cells[cells.length-1][0],cells[cells.length-1][1]))*speed
+        console.log(s)
+        let steps = s // number of steps in animation
+        let pathLen = path.getLength();
+        let step = pathLen / steps;
+        let frameCnt = 0, pos =0, pt;
+    
+        anim = new Konva.Animation(function(frame) {
+            pos = pos + 1;
+            pt = path.getPointAtLength(pos * step);
+            p.position({x: pt.x, y: pt.y});
+            if(pos > steps) {
+                anim.stop();
+                path.destroy();
+                p.destroy();
+                layer.draw();
+            }   
+        }, layer);
+    
+        anim.start();
+    }
+
+}
+
 let drawAbility = (p, dr, dc, speed) => {    
     p.dr = dr;
     p.dc = dc;
@@ -745,7 +780,6 @@ let checkForBoundry = (r, c) => {
 
     if(matrix[r] == undefined) { return false }
     else if(matrix[r][c] == undefined) { return false }
-    else if(!matrix[r][c].tile.allowsMovement) { return false }
     else { return true }
 
     // update to not allow players in cells with constructs
@@ -870,6 +904,11 @@ addToCell(ENEMY.row, ENEMY.column, ENEMY);
 createAbilityBox(1, PLAYER.ability1);
 createAbilityBox(2, PLAYER.ability2);
 createAbilityBox(3, PLAYER.ability3);
+document.getElementById("as-1").addEventListener("click", (e) => { PLAYER.ability(1) })
+document.getElementById("as-2").addEventListener("click", (e) => { PLAYER.ability(2) })
+document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.ability(3) })
+
+checkAroundCell(9,5)
 
 drawCanvas();
 updateLabels();

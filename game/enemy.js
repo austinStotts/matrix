@@ -102,8 +102,9 @@ class Enemy {
         if(this.selectedAbility == 1) {
             if(this.power >= this.ability1.cost) {
                 addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
-                let p = this.ability1.cell(this.row, this.column);
-                drawAbility(p, dr, dc, this.ability1.speed);
+                // let p = this.ability1.cell(this.row, this.column);
+                // drawAbility(p, dr, dc, this.ability1.speed);
+                calculateProjectile(this.ability1, this.row, this.column, dr, dc)
                 this.power = this.power - this.ability1.cost;
                 updateLabels();
                 inputMethod = "movement";

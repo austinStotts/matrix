@@ -6,6 +6,59 @@ body {
 
 
 
+
+.game-help-dialog {
+    position: fixed;
+    top: 50%;
+    -webkit-transform: translateX(0%) translateY(-50%);
+    -moz-transform: translateX(0%) translateY(-50%);
+    -ms-transform: translateX(0%) translateY(-50%);
+    transform: translateX(0%) translateY(-50%);
+    width: 60%;
+    height: 40%;
+    background-color: black;
+    color: white;
+    overflow: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;
+}
+
+.game-help-dialog::-webkit-scrollbar {
+    display: none;
+  }
+
+.help-btn-wrapper {
+    margin: 20px 0px 0px 20px;
+}
+
+.togglehelp {
+    border: none;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 5px 10px;
+    background-color: transparent;
+    color: white;
+    /* transition-duration: 0.1s; */
+}
+
+.togglehelp:hover {
+    cursor: pointer;
+    padding: 4px 9px;
+    border: 1px solid white;
+    
+}
+
+.help-text {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.grad-border {
+    border: 1px solid;
+    --angle: 0deg;
+    border-image: linear-gradient(var(--angle), #FF3355, #ff78ce, #8e8eff) 1;
+    animation: 7s rotate linear infinite;
+}
+
+
 .canvas {
     position: absolute;
     pointer-events: none;
@@ -179,8 +232,8 @@ body {
 .enemy {
     border: 1px solid #FF3355;
     animation: pulse2 0.5s infinite;
-    background-image: none;
-    background-color: #FF335588;
+    /* background-image: none;
+    background-color: #FF335588; */
     z-index: 101;
 }
 

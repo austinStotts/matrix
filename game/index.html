@@ -50,13 +50,41 @@
         <div class="abilities-wrapper">
             <div id="ab-1" class="ability-box"></div><div id="ab-2" class="ability-box"></div><div id="ab-3" class="ability-box"></div>
         </div>
-    </div>
-
-    
+        
 
     </div>
+    <div class="help-btn-wrapper"><button id="togglehelp" class="togglehelp">help</button></div>
+    <dialog id="game-help-dialog" class="game-help-dialog grad-border">
+        <div class="help-top-bar"><button id="closehelp" class="togglehelp">close</button></div>
+        <div class="help-text">
+            <br>
+            (will make this prettier later)
+            <br>
+            <br>
+            all controlls use:
+            <br>
+            [w] [a] [s] [d] + [f] [e] [q] + [l mouse]
+            <br>
+            <br>
+            use [w] [a] [s] [d] to move when the input method is [movement]
+            <br>
+            <br>
+            to use an ability > press the key shown above the ability
+            <br>
+            when pressed, the input method will switch in the info panel on the right
+            <br>
+            now the game is waiting for a directional input using [w] [a] [s] [d]
+            <br>
+            some abilities allow for a mouse click to select a cell in the matrix
+            <br>
+            a grid will be shown on the matrix when this is an option
+            <br>
+        </div>
+    </dialog>
+
     <script src="https://unpkg.com/konva@9/konva.min.js"></script>
     <script src="./abilities.js"></script>
+    <script src="./player.js"></script>
     <script src="./enemy.js"></script>
     <script src="./index.js"></script>
 </body>
