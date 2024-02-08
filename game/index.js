@@ -150,7 +150,7 @@ let calculateTiles = () => {
             Object.keys(matrix[i][j].children).forEach((key) => {
                 if(matrix[i][j].children[key].type == "player") {
                     // contains players
-                    matrix[i][j].children[key].takeDamage(matrix[i][j].tile.dot)
+                    if(matrix[i][j].tile.dot > 0) { matrix[i][j].children[key].takeDamage(matrix[i][j].tile.dot) }
                 }
             })
             matrix[i][j].tile.currentDecay += matrix[i][j].tile.decay;
