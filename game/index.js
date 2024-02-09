@@ -292,6 +292,7 @@ logw.scroll(0, 100);
 
 
 let keyEvent = (e) => {
+    if(e.key == ".") { playerCanAct = !playerCanAct }
     if(playerCanAct) {
         if(PLAYER.gameIndex == _activePlayer) {
             if(inputMethod == "movement") {
@@ -937,7 +938,7 @@ ENEMY.gameIndex = 1;
 let _players = [PLAYER, ENEMY];
 let _activePlayer = 0;
 let turn = 1;
-let playerCanAct = true;
+let playerCanAct = false;
 let inputMethod = "movement";
 getSavedAbilities();
 
@@ -967,7 +968,7 @@ document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.abilit
 // checkAroundCell(9,5)
 
 
-// showMessage(gametext.missions.one.opening);
+showMessage(gametext.missions.one.opening);
 
 drawCanvas();
 updateLabels();
