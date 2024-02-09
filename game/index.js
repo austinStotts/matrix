@@ -5,12 +5,7 @@
 
 let destination = document.getElementById("typedtext");
 
-let mission_1_text = new Array(
-    "mission 1:", 
-    "defeat the enemy at any cost",
-    "failure is not an option",
-    "..."
-);
+
 
 let showMessage = (aText) => {
 
@@ -621,9 +616,12 @@ let drawMatrix = (n) => {
 
 let checkForWinner = () => {
     if(PLAYER.hp <= 0) {
+        playerCanAct = false;
         console.log("YOU LOSE");
     } else if (ENEMY.hp <= 0) {
+        playerCanAct = false;
         console.log("YOU WIN");
+        showMessage(gametext.missions.one.closing);
     }
 }
 
@@ -983,7 +981,7 @@ document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.abilit
 checkAroundCell(9,5)
 
 
-showMessage(mission_1_text);
+showMessage(gametext.missions.one.opening);
 
 drawCanvas();
 updateLabels();
