@@ -540,7 +540,7 @@ class Shotgun {
     constructor() {
         this.type = "projectile";
         this.damage = 2;
-        this.cost = 4;
+        this.cost = 5;
         this.info = "damage in a V shape forward";
         this.damage_type = "standard";
         this.name = "shotgun";
@@ -575,10 +575,13 @@ class Shotgun {
                         cells.push([cr, cc-i]);
                         break
                     case "down":
+                        cells.push([cr, cc+i]);
                         break
                     case "left":
+                        cells.push([cr+i, cc]);
                         break
                     case "right":
+                        cells.push([cr-i, cc]);
                         break
                 }
             }
@@ -589,10 +592,13 @@ class Shotgun {
                         cells.push([cr, cc+i]);
                         break
                     case "down":
+                        cells.push([cr, cc-i]);
                         break
                     case "left":
+                        cells.push([cr-i, cc]);
                         break
                     case "right":
+                        cells.push([cr+i, cc]);
                         break
                 }
             }
@@ -605,14 +611,19 @@ class Shotgun {
         }
 
         console.log(cells);
-        cells.forEach(cell => {
-            damageConstructs(cell[0], cell[1], this.damage);
-            damagePlayers(cell[0], cell[1], this.damage);
-            matrix[cell[0]][cell[1]].children.shotgunpath = new ShotgunSpread();
-            setTimeout(() => {
-                delete matrix[cell[0]][cell[1]].children.shotgunpath;
-            }, 1000)
-        });
+        let newCells = [];
+        for(let f = 0; f < cells.length; f++) {
+            if(checkForBoundry(cells[f][0], cells[f][1])) {
+                newCells.push(cells[f])
+                damageConstructs(cells[f][0], cells[f][1], this.damage);
+                damagePlayers(cells[f][0], cells[f][1], this.damage);
+                matrix[cells[f][0]][cells[f][1]].children.shotgunpath = new ShotgunSpread();
+                setTimeout(() => {
+                    delete matrix[cells[f][0]][cells[f][1]].children.shotgunpath;
+                }, 1000)
+            } 
+        }
+
 
         console.log(matrix)
 
@@ -622,13 +633,13 @@ class Shotgun {
         let r1 = PLAYER.row;
         let c1 = PLAYER.column;
 
-        let r2 = cells[cells.length-1][0];
-        let c2 = cells[cells.length-1][1];
+        let r2 = newCells[newCells.length-1][0];
+        let c2 = newCells[newCells.length-1][1];
 
-        let r3 = cells[cells.length-3][0];
-        let c3 = cells[cells.length-3][1];
+        let r3 = newCells[newCells.length-3][0];
+        let c3 = newCells[newCells.length-3][1];
 
-        console.log(r2, c2, r3, c3)
+        // console.log(r2, c2, r3, c3)
 
         d1.push({x: matrix[r1][c1].canvas.attrs.x+16, y: matrix[r1][c1].canvas.attrs.y});
         d1.push({x: matrix[r2][c2].canvas.attrs.x+16, y: matrix[r2][c2].canvas.attrs.y});
@@ -636,42 +647,48 @@ class Shotgun {
         d2.push({x: matrix[r1][c1].canvas.attrs.x+16, y: matrix[r1][c1].canvas.attrs.y});
         d2.push({x: matrix[r3][c3].canvas.attrs.x+16, y: matrix[r3][c3].canvas.attrs.y});
 
-        console.log(d1, d2)
+        // console.log(d1, d2)
+        for(let k = 1; k < 10; k++) {
+            
+            let p1 = new Konva.Path({
+                x: 0,
+                y: 0,
+                stroke: 'red',
+            });
+            layer.add(p1);
 
-        let p1 = new Konva.Path({
-            x: 0,
-            y: 0,
-            stroke: 'black',
-        });
-        layer.add(p1);
 
-        var p = "M" + d1[0].x + " " + d1[0].y;
-        for (var i = 1; i < d1.length; i = i + 1){
-        p = p + " L" + d1[i].x + " " + d1[i].y;
+            var p = "M" + d1[0].x + " " + d1[0].y;
+            for (var i = 1; i < d1.length; i = i + 1){
+            p = p + " L" + d1[i].x + " " + d1[i].y;
+            }
+            p1.setData(p);
+
+            let p2 = new Konva.Path({
+                x: 0,
+                y: 0,
+                stroke: 'red',
+            });
+            layer.add(p2);
+
+            var p = "M" + d2[0].x + " " + d2[0].y;
+            for (var i = 1; i < d2.length; i = i + 1){
+            p = p + " L" + d2[i].x + " " + d2[i].y;
+            }
+            p2.setData(p);
+
+
+            
+            setTimeout(() => {
+                p1.destroy();
+                p2.destroy();
+                
+            }, 200)
         }
-        p1.setData(p);
-
-        let p2 = new Konva.Path({
-            x: 0,
-            y: 0,
-            stroke: 'black',
-        });
-        layer.add(p2);
-
-        var p = "M" + d2[0].x + " " + d2[0].y;
-        for (var i = 1; i < d2.length; i = i + 1){
-        p = p + " L" + d2[i].x + " " + d2[i].y;
-        }
-        p2.setData(p);
 
 
-        
-        setTimeout(() => {
-            p1.destroy();
-            p2.destroy();
-            pruneMatrix();
-        }, 1000)
 
+        pruneMatrix();
         return true;
     }
 

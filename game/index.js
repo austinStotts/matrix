@@ -210,7 +210,6 @@ let calculateCell = (r, c) => {
     }
 
     if(players.length > 0 && projectiles.length > 0) {
-        console.log(players)
         players.forEach((player, i) => {
             projectiles.forEach((projectile, i) => {
                 if(player.name == projectile.owner) {
@@ -280,7 +279,6 @@ let addLog = (log) => {
     l.classList.add("log-row")
     l.innerHTML = `<span class="log-id ${logid % 2 == 0 ? "log-even" : "log-odd"}">${logid}</span><span class="log-player">${log.name}</span><span class="log-content ${log.type}">${log.content}</span>`
     logw.insertBefore(l, anchor);
-    console.log(log)
     logid++;
 }
 
@@ -404,7 +402,6 @@ let idToCord = (id) => {
 let cellClick = (e) => {
     if(inputMethod == "ability" && PLAYER[`ability${PLAYER.selectedAbility}`].allowClick) {
         let [row, column] = idToCord(e.target.id);
-        // console.log(e)
         PLAYER.useAbility(Number(row), Number(column));
     }
 }
@@ -417,7 +414,6 @@ let childFormatter = (node) => {
 }
 
 let cellHover = (e) => {
-    // console.log(matrix)
     let t = document.createElement("div");
     let [row, column] = idToCord(e.target.id);
 
@@ -425,12 +421,10 @@ let cellHover = (e) => {
     t.classList.add("cell-tooltip");
     t.style.left = (e.target.offsetLeft + 32) + "px";
     t.style.top = (e.target.offsetTop) + "px";
-    // console.log(Object.keys(matrix[row][column].children))
     t.innerHTML = `
         <div class="cordinates">X <span class="x-cord">${column}</span> Y <span class="y-cord">${row}</span> <span class="tile-label-tt ${matrix[row][column].tile.name}-tt">${matrix[row][column].tile.dot ? '<span class="mc-dot-tt">'+ matrix[row][column].tile.dot + '</span>' : ""}<span class="mc-tt">${matrix[row][column].tile.movementCost}</span>${matrix[row][column].tile.name}</span></div>
         <div class="cell-children-tt">${Object.keys(matrix[row][column].children).map((key) => { return (childFormatter(matrix[row][column].children[key])) }).join(`<div class="children-break-tt"></div>`)}</div>`
     e.target.parentElement.appendChild(t)
-    // console.log(e)
 }
 
 let cellLeave = (e) => {
@@ -652,7 +646,6 @@ let pruneMatrix = () => {
         for(let j = 0; j < matrix[i].length; j++) {
             Object.keys(matrix[i][j].children).forEach(key => {
                 if(matrix[i][j].children[key].delete) {
-                    console.log("prune deleting: ", i, j)
                     matrix[i][j].children[key].beforeDelete();
                     delete matrix[i][j].children[key];
                 }
@@ -673,28 +666,22 @@ let calculateProjectile = (a, ir, ic, dr, dc) => {
     let cr = ir+dr;
     let cc = ic+dc;
     let stop = false;
-    console.log(a)
-    console.log(ir,ic,cr,cc);
     while(!stop) {
         // console.log(matrix[cr][cc].canvas)
         if(cellsTraveled.length >= a.maxDistance && a.maxDistance != -1) {
-            console.log("HIT MAX DISTANCE", cr,cc);
             try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
             stop = true;
         }
         else if(!checkForBoundry(cr,cc)) { // just animate the movement then move on
-            console.log("HIT BOUNDRY", cr,cc);
             try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
             stop = true;
         } 
         else if(checkForConstruct(cr,cc)) { // animate the movement then damage the construct
-            console.log("HIT COSTRUCT", cr,cc);
             damageConstructs(cr,cc,a.damage);
             try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
             stop = true;
         }
         else if (checkIfPlayer(cr,cc)) { // animate the movement then damage the player
-            console.log("HIT PLAYER", cr,cc);
             damagePlayers(cr,cc,a.damage);
             try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
             stop = true;
@@ -708,7 +695,6 @@ let calculateProjectile = (a, ir, ic, dr, dc) => {
 
     }
     // cellsTraveled.push([cr,cc]);
-    console.log(cellsTraveled);
     animateProjectile(cellsTraveled, dr, dc, a.imagename, a.speed);
     pruneMatrix();
 }
@@ -951,7 +937,7 @@ ENEMY.gameIndex = 1;
 let _players = [PLAYER, ENEMY];
 let _activePlayer = 0;
 let turn = 1;
-let playerCanAct = false;
+let playerCanAct = true;
 let inputMethod = "movement";
 getSavedAbilities();
 
@@ -978,10 +964,10 @@ document.getElementById("as-1").addEventListener("click", (e) => { PLAYER.abilit
 document.getElementById("as-2").addEventListener("click", (e) => { PLAYER.ability(2) })
 document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.ability(3) })
 
-checkAroundCell(9,5)
+// checkAroundCell(9,5)
 
 
-showMessage(gametext.missions.one.opening);
+// showMessage(gametext.missions.one.opening);
 
 drawCanvas();
 updateLabels();

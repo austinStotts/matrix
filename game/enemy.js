@@ -27,7 +27,7 @@ let attackPlayer = (y1, x1, y2, x2) => {
 let moveTowardsPlayer = (y1, x1, y2, x2) => {
     let dx = (x2-x1);
     let dy = (y2-y1);
-    console.log(dx,dy)
+    // console.log(dx,dy)
     if(dx > dy) {
         if(dx > 0) {
             // move right
@@ -153,7 +153,7 @@ class Enemy {
     takeDamage (n) {
         this.hp -= n;
         addLog({ type: "damage", name: this.name, content: ` took ${n} damage` })
-        console.log("player take damage - hp:", this.hp)
+        // console.log("player take damage - hp:", this.hp)
         if(this.hp <= 0) { this.delete = true }
     }
 

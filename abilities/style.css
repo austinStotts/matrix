@@ -46,6 +46,10 @@ body {
     column-gap: 10px;
 }
 
+.a-text {
+    color: white;
+}
+
 .a-save {
     display: inline-block;
     color: white;

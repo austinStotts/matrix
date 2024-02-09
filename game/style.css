@@ -12,7 +12,19 @@ body {
 
 
 
+.home-wrapper {
+    margin: 10px 0px 0px 20px;
+}
 
+.home-link {
+    color: white;
+    text-decoration: none;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.home-link:hover {
+    text-decoration: underline;
+}
 
 .hidden-t {
     display: none;

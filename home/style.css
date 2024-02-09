@@ -61,6 +61,7 @@ body {
 
 .link {
     color: white;
+    text-decoration: none;
 }
 
 
@@ -74,9 +75,11 @@ body {
 .matrix-play-abilities {
     transition-duration: 0.2s;
     width: fit-content;
+    text-decoration: none;
 }
 
 .matrix-play-abilities:hover {
+    text-decoration: underline;
     cursor: pointer;
     margin-left: 10px;
 }
@@ -94,15 +97,21 @@ body {
 .matrix-play-game {
     transition-duration: 0.2s;
     width: fit-content;
+
 }
 
 .matrix-play-game:hover {
     cursor: pointer;
     margin-left: 10px;
+    text-decoration: underline;
 }
 
 .matrix-play-online {
     width: fit-content;
+}
+
+.matrix-play-online:hover {
+    /* text-decoration: underline; */
 }
 
 .coming-soon {
