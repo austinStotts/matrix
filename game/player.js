@@ -64,7 +64,7 @@ class Player {
                     let used = this.ability1.use(dr, dc);
                     if(used) {
                         addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
-                        this.power = this.power - this.ability2.cost;
+                        this.power = this.power - this.ability1.cost;
                         updateLabels();
                         inputMethod = "movement";
                         this.selectedAbility = 0;

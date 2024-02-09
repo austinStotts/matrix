@@ -28,6 +28,9 @@ let isPlayerHere = (r, c) => {
 }
 
 
+
+
+
 class Wall {
     constructor(owner) {
         this.name = "wall";
@@ -533,6 +536,150 @@ class Focus {
     }
 }
 
+class Shotgun {
+    constructor() {
+        this.type = "projectile";
+        this.damage = 2;
+        this.cost = 4;
+        this.info = "damage in a V shape forward";
+        this.damage_type = "standard";
+        this.name = "shotgun";
+        this.imagename = "shotgun";
+        this.speed = 3;
+        this.maxDistance = 4;
+        this.abilityClass = 1;
+        this.allowClick = false;
+        this.custom = true;
+
+    }
+
+    use (dr,dc) {
+        let cells = [];
+        let distance = 1;
+        let width = 1;
+        let cr = PLAYER.row + dr;
+        let cc = PLAYER.column + dc;
+        let dir = getDirection(dr, dc);
+        while(distance < this.maxDistance) {
+            
+            let l = (Math.floor(width/2)* -1);
+            let r = Math.abs(l);
+            console.log("l:",l,"w:",width,"r:",r);
+
+            // do middle
+            cells.push([cr,cc]);
+            // do left
+            for(let i = 1; i <= Math.abs(l); i++) {
+                switch (dir) {
+                    case "up":
+                        cells.push([cr, cc-i]);
+                        break
+                    case "down":
+                        break
+                    case "left":
+                        break
+                    case "right":
+                        break
+                }
+            }
+            // do right
+            for(let i = 1; i <= Math.abs(r); i++) {
+                switch (dir) {
+                    case "up":
+                        cells.push([cr, cc+i]);
+                        break
+                    case "down":
+                        break
+                    case "left":
+                        break
+                    case "right":
+                        break
+                }
+            }
+
+
+            cr = cr + dr;
+            cc = cc + dc;
+            width = width + 2;
+            distance++;
+        }
+
+        console.log(cells);
+        cells.forEach(cell => {
+            damageConstructs(cell[0], cell[1], this.damage);
+            damagePlayers(cell[0], cell[1], this.damage);
+            matrix[cell[0]][cell[1]].children.shotgunpath = new ShotgunSpread();
+            setTimeout(() => {
+                delete matrix[cell[0]][cell[1]].children.shotgunpath;
+            }, 1000)
+        });
+
+        console.log(matrix)
+
+        let d1 = [];
+        let d2 = []
+
+        let r1 = PLAYER.row;
+        let c1 = PLAYER.column;
+
+        let r2 = cells[cells.length-1][0];
+        let c2 = cells[cells.length-1][1];
+
+        let r3 = cells[cells.length-3][0];
+        let c3 = cells[cells.length-3][1];
+
+        console.log(r2, c2, r3, c3)
+
+        d1.push({x: matrix[r1][c1].canvas.attrs.x+16, y: matrix[r1][c1].canvas.attrs.y});
+        d1.push({x: matrix[r2][c2].canvas.attrs.x+16, y: matrix[r2][c2].canvas.attrs.y});
+
+        d2.push({x: matrix[r1][c1].canvas.attrs.x+16, y: matrix[r1][c1].canvas.attrs.y});
+        d2.push({x: matrix[r3][c3].canvas.attrs.x+16, y: matrix[r3][c3].canvas.attrs.y});
+
+        console.log(d1, d2)
+
+        let p1 = new Konva.Path({
+            x: 0,
+            y: 0,
+            stroke: 'black',
+        });
+        layer.add(p1);
+
+        var p = "M" + d1[0].x + " " + d1[0].y;
+        for (var i = 1; i < d1.length; i = i + 1){
+        p = p + " L" + d1[i].x + " " + d1[i].y;
+        }
+        p1.setData(p);
+
+        let p2 = new Konva.Path({
+            x: 0,
+            y: 0,
+            stroke: 'black',
+        });
+        layer.add(p2);
+
+        var p = "M" + d2[0].x + " " + d2[0].y;
+        for (var i = 1; i < d2.length; i = i + 1){
+        p = p + " L" + d2[i].x + " " + d2[i].y;
+        }
+        p2.setData(p);
+
+
+        
+        setTimeout(() => {
+            p1.destroy();
+            p2.destroy();
+            pruneMatrix();
+        }, 1000)
+
+        return true;
+    }
+
+    beforeDelete () {
+
+    }
+}
+
 
 
 
@@ -542,6 +689,16 @@ class Gridline {
         this.allowsMovement = true;
         this.classname = "gridlines"
         this.name = "gridline"
+        this.hp = "";
+    }
+}
+
+class ShotgunSpread {
+    constructor() {
+        this.type = "visualaid"
+        this.allowsMovement = true;
+        this.classname = "shotgun-spread"
+        this.name = "shotgunspread"
         this.hp = "";
     }
 }
@@ -582,4 +739,4 @@ class Lava {
     }
 }
 
-let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus]
+let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun]

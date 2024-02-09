@@ -196,6 +196,11 @@ body {
     animation: g-fadein 0.2s linear 1;
 }
 
+.shotgun-spread {
+    border-color: red;
+    border-style: dotted;
+}
+
 @keyframes g-fadein {
     from {
         border-color: rgba(255, 255, 0, 0);
