@@ -997,3 +997,33 @@ setInterval(() => {
 // }, 3000);
 
 // document.scrollingElement.scroll(0, 1);
+
+
+
+
+
+
+
+
+
+
+
+
+// 2-9-24
+// todo:
+//
+// add damage calculations for different types of damage
+// > basically most attacks should do half damage to constructs
+//
+// refine enemy ai
+// > allow for another attack with more variation in patterns
+//
+// refine menus
+// > should be able to go back and forth from game to menu
+//
+// add more animations
+//
+// 
+// maze runner type exploring map + other factions doing the same
+// world is a matrix
+// distopian 
