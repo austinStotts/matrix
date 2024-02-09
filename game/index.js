@@ -1,4 +1,92 @@
 
+
+// set up text to print, each item in array is new line
+
+
+let destination = document.getElementById("typedtext");
+
+let mission_1_text = new Array(
+    "mission 1:", 
+    "defeat the enemy at any cost",
+    "failure is not an option",
+    "..."
+);
+
+let showMessage = (aText) => {
+
+    let iSpeed = 100; // time delay of print out
+    let iIndex = 0; // start printing array at this posision
+    let iArrLength = aText[0].length; // the length of the text array
+    let iScrollAt = 2; // start scrolling up at this many lines
+        
+    let iTextPos = 0; // initialise text position
+    let sContents = ''; // initialise contents letiable
+    let iRow; // initialise current row
+    
+        
+    function typewriter() {
+        sContents = " ";
+        iRow = Math.max(0, iIndex - iScrollAt);
+        
+
+        while (iRow < iIndex) {
+            sContents += aText[iRow++] + "<br />";
+        }
+        destination.innerHTML =
+        sContents + aText[iIndex].substring(0, iTextPos) + "_";
+        if (iTextPos++ == iArrLength) {
+            iTextPos = 0;
+            iIndex++;
+            if (iIndex != aText.length) {
+                iArrLength = aText[iIndex].length;
+                setTimeout(typewriter, 500);
+                
+            } else {
+                // runs at the end of message
+                setTimeout(() => {
+                    destination.classList.add("fadeout-t");
+                    setTimeout(() => {
+                        destination.classList.add("hidden-t");
+                        destination.classList.remove("fadeout-t");
+                        playerCanAct = true;
+                    }, 950)
+                },500)
+            }
+        } else {
+            setTimeout(typewriter, iSpeed);
+            
+        }
+    }
+
+    destination.classList.remove("hidden-t")
+    typewriter();
+}
+    
+    
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // fix enemy projectiles to hit first cell infront of them
 // add this.blocksMovement to all construct cells
 
@@ -211,61 +299,63 @@ logw.scroll(0, 100);
 
 
 let keyEvent = (e) => {
-    if(PLAYER.gameIndex == _activePlayer) {
-        if(inputMethod == "movement") {
-            switch (e.key) {
-                case "w":
-                    movePlayer(PLAYER.row-1, PLAYER.column);
-                    break;
-                case "a":
-                    movePlayer(PLAYER.row, PLAYER.column-1);
-                    break;
-                case "s":
-                    movePlayer(PLAYER.row+1, PLAYER.column);
-                    break;
-                case "d":
-                    movePlayer(PLAYER.row, PLAYER.column+1);
-                    break;
-                case " ":
-                    PLAYER.endTurn();
-                    break
-                case "f":
-                    PLAYER.ability(1);
-                    break
-                case "e":
-                    PLAYER.ability(2);
-                    break
-                case "q":
-                    PLAYER.ability(3);
-                    break
-                default:
-                    break;
-            }
-        } else if(inputMethod == "ability") {
-            switch (e.key) {
-                case "w":
-                    PLAYER.useAbility(-1, 0);
-                    break;
-                case "a":
-                    PLAYER.useAbility(0, -1);
-                    break;
-                case "s":
-                    PLAYER.useAbility(1, 0);
-                    break;
-                case "d":
-                    PLAYER.useAbility(0, 1);
-                    break;
-                case "f":
-                    if(PLAYER.selectedAbility == 1) { PLAYER.ability(); inputMethod = "movement"; updateLabels(); showSelectedAbility(0); removeGridlines(); }
-                    break
-                case "e":
-                    if(PLAYER.selectedAbility == 2) { PLAYER.ability(); inputMethod = "movement"; updateLabels(); showSelectedAbility(0); removeGridlines(); }
-                    break
-                case "q":
-                    if(PLAYER.selectedAbility == 3) { PLAYER.ability(); inputMethod = "movement"; updateLabels(); showSelectedAbility(0); removeGridlines(); }
-                    break
-                default:
-                    break;
+    if(playerCanAct) {
+        if(PLAYER.gameIndex == _activePlayer) {
+            if(inputMethod == "movement") {
+                switch (e.key) {
+                    case "w":
+                        movePlayer(PLAYER.row-1, PLAYER.column);
+                        break;
+                    case "a":
+                        movePlayer(PLAYER.row, PLAYER.column-1);
+                        break;
+                    case "s":
+                        movePlayer(PLAYER.row+1, PLAYER.column);
+                        break;
+                    case "d":
+                        movePlayer(PLAYER.row, PLAYER.column+1);
+                        break;
+                    case " ":
+                        PLAYER.endTurn();
+                        break
+                    case "f":
+                        PLAYER.ability(1);
+                        break
+                    case "e":
+                        PLAYER.ability(2);
+                        break
+                    case "q":
+                        PLAYER.ability(3);
+                        break
+                    default:
+                        break;
+                }
+            } else if(inputMethod == "ability") {
+                switch (e.key) {
+                    case "w":
+                        PLAYER.useAbility(-1, 0);
+                        break;
+                    case "a":
+                        PLAYER.useAbility(0, -1);
+                        break;
+                    case "s":
+                        PLAYER.useAbility(1, 0);
+                        break;
+                    case "d":
+                        PLAYER.useAbility(0, 1);
+                        break;
+                    case "f":
+                        if(PLAYER.selectedAbility == 1) { PLAYER.ability(); inputMethod = "movement"; updateLabels(); showSelectedAbility(0); removeGridlines(); }
+                        break
+                    case "e":
+                        if(PLAYER.selectedAbility == 2) { PLAYER.ability(); inputMethod = "movement"; updateLabels(); showSelectedAbility(0); removeGridlines(); }
+                        break
+                    case "q":
+                        if(PLAYER.selectedAbility == 3) { PLAYER.ability(); inputMethod = "movement"; updateLabels(); showSelectedAbility(0); removeGridlines(); }
+                        break
+                    default:
+                        break;
+                }
             }
         }
     }
@@ -787,7 +877,7 @@ let addToCell = (r, c, x, update=true) => {
 }
 
 let movePlayer = (r, c) => {
-    if(checkForBoundry(r,c) && PLAYER.movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c)) {
+    if(checkForBoundry(r,c) && PLAYER.movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c) && !checkForConstruct(r,c)) {
         removefromCell(PLAYER.row, PLAYER.column, PLAYER.id);
         addToCell(r, c, PLAYER);
         PLAYER.move(r,c, matrix[r][c].tile.movementCost);
@@ -795,7 +885,7 @@ let movePlayer = (r, c) => {
 }
 
 let moveEnemy = (r, c) => {
-    if(checkForBoundry(r,c) && ENEMY.movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c)) {
+    if(checkForBoundry(r,c) && ENEMY.movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c) && !checkForConstruct(r,c)) {
         removefromCell(ENEMY.row, ENEMY.column, ENEMY.id);
         addToCell(r, c, ENEMY);
         ENEMY.move(r,c, matrix[r][c].tile.movementCost);
@@ -863,6 +953,7 @@ ENEMY.gameIndex = 1;
 let _players = [PLAYER, ENEMY];
 let _activePlayer = 0;
 let turn = 1;
+let playerCanAct = false;
 let inputMethod = "movement";
 getSavedAbilities();
 
@@ -890,6 +981,9 @@ document.getElementById("as-2").addEventListener("click", (e) => { PLAYER.abilit
 document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.ability(3) })
 
 checkAroundCell(9,5)
+
+
+showMessage(mission_1_text);
 
 drawCanvas();
 updateLabels();

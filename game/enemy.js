@@ -27,7 +27,7 @@ let attackPlayer = (y1, x1, y2, x2) => {
 let moveTowardsPlayer = (y1, x1, y2, x2) => {
     let dx = (x2-x1);
     let dy = (y2-y1);
-
+    console.log(dx,dy)
     if(dx > dy) {
         if(dx > 0) {
             // move right
