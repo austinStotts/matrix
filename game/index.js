@@ -569,10 +569,12 @@ let drawCanvas = () => {
 let playerimage = new Image()
 playerimage.src = "./assets/player.png"
 
+
 let updateCanvas = () => {
     for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix[i].length; j++) {
             if(checkIfPlayer(i, j)) {
+                
                 matrix[i][j].canvas.opacity(1);
                 // matrix[i][j].canvas.strokeWidth(2);
                 // matrix[i][j].canvas.draw();
@@ -969,7 +971,6 @@ document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.abilit
 
 
 showMessage(gametext.missions.one.opening);
-
 drawCanvas();
 updateLabels();
 setInterval(() => {
