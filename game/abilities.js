@@ -697,7 +697,11 @@ class Shotgun {
     }
 }
 
-
+// new spell class abilities:
+// leap - move anywhere on the matrix - ends turn and lowers movement and power next turn
+// advance - move forward until you hit something
+// heal - turn power into hp - cost goes up every use
+// expend - turn 1 power into 1 movement
 
 
 class Gridline {

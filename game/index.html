@@ -7,86 +7,87 @@
     <title>matrix</title>
 </head>
 <body>
-    <div class="home-wrapper"><a class="home-link" href="../home/index.html">home</a></div>
-    <div class="game-wrapper">
-        <div class="matrix-wrapper">
-            <div id="matrix" class="matrix"></div>
-            <div id="canvas" class="canvas"></div>
-        </div>
-        <div class="info-wrapper">
-            <div class="info-row">
-                <div id="active-player" class="player-turn info-label">1</div>
+    <div class="game-wrapper-body">
+        <div class="home-wrapper"><a class="home-link" href="../home/index.html">home</a></div>
+        <div class="game-wrapper">
+            <div class="matrix-wrapper">
+                <div id="matrix" class="matrix"></div>
+                <div id="canvas" class="canvas"></div>
             </div>
-            <div class="info-row">
-                <div id="input-method" class="input-method info-label">1</div>
+            <div class="info-wrapper">
+                <div class="info-row">
+                    <div id="active-player" class="player-turn info-label">1</div>
+                </div>
+                <div class="info-row">
+                    <div id="input-method" class="input-method info-label">1</div>
+                </div>
+                <div class="info-row">
+                    <div id="turn" class="turn info-label">1</div>
+                </div>
+                <div class="info-row">
+                    <div id="hp" class="hp info-label">1</div>
+                </div>
+                <div class="info-row">
+                    <div id="movements" class="movements info-label">1</div>
+                </div>
+                <div class="info-row">
+                    <div id="power" class="power info-label">1</div>
+                </div>
+                <div id="info-log" class="info-log scroller">
+                    <div class="log-filler"></div>
+                    <div class="log-filler"></div>
+                    <div class="log-filler"></div>
+                    <div class="log-filler"></div>
+                    <div class="log-filler"></div>
+                    <div class="log-filler"></div>
+                    <div class="log-filler"></div>
+                    <div class="log-filler"></div>
+                    <div class="log-filler"></div>
+                    <div class="log-filler"></div>
+                    <div class="log-filler"></div>
+                    <div id="anchor"></div>
+                </div>
             </div>
-            <div class="info-row">
-                <div id="turn" class="turn info-label">1</div>
-            </div>
-            <div class="info-row">
-                <div id="hp" class="hp info-label">1</div>
-            </div>
-            <div class="info-row">
-                <div id="movements" class="movements info-label">1</div>
-            </div>
-            <div class="info-row">
-                <div id="power" class="power info-label">1</div>
-            </div>
-            <div id="info-log" class="info-log scroller">
-                <div class="log-filler"></div>
-                <div class="log-filler"></div>
-                <div class="log-filler"></div>
-                <div class="log-filler"></div>
-                <div class="log-filler"></div>
-                <div class="log-filler"></div>
-                <div class="log-filler"></div>
-                <div class="log-filler"></div>
-                <div class="log-filler"></div>
-                <div class="log-filler"></div>
-                <div class="log-filler"></div>
-                <div id="anchor"></div>
-            </div>
-        </div>
 
-        <div class="abilities-wrapper">
-            <div id="ab-1" class="ability-box"></div><div id="ab-2" class="ability-box"></div><div id="ab-3" class="ability-box"></div>
+            <div class="abilities-wrapper">
+                <div id="ab-1" class="ability-box"></div><div id="ab-2" class="ability-box"></div><div id="ab-3" class="ability-box"></div>
+            </div>
+            
+
         </div>
+        <div class="help-btn-wrapper"><button id="togglehelp" class="togglehelp">help</button></div>
+        <dialog id="game-help-dialog" class="game-help-dialog grad-border">
+            <div class="help-top-bar"><button id="closehelp" class="togglehelp">close</button></div>
+            <div class="help-text">
+                <br>
+                (will make this prettier later)
+                <br>
+                <br>
+                all controlls use:
+                <br>
+                [w] [a] [s] [d] + [f] [e] [q] + [l mouse]
+                <br>
+                <br>
+                use [w] [a] [s] [d] to move when the input method is [movement]
+                <br>
+                <br>
+                to use an ability > press the key shown above the ability
+                <br>
+                when pressed, the input method will switch in the info panel on the right
+                <br>
+                now the game is waiting for a directional input using [w] [a] [s] [d]
+                <br>
+                some abilities allow for a mouse click to select a cell in the matrix
+                <br>
+                a grid will be shown on the matrix when this is an option
+                <br>
+            </div>
+        </dialog>
+        <!-- <dialog id="textbox">
+        </dialog> -->
         
-
+        <div id="typedtext" class="hidden-t"></div>
     </div>
-    <div class="help-btn-wrapper"><button id="togglehelp" class="togglehelp">help</button></div>
-    <dialog id="game-help-dialog" class="game-help-dialog grad-border">
-        <div class="help-top-bar"><button id="closehelp" class="togglehelp">close</button></div>
-        <div class="help-text">
-            <br>
-            (will make this prettier later)
-            <br>
-            <br>
-            all controlls use:
-            <br>
-            [w] [a] [s] [d] + [f] [e] [q] + [l mouse]
-            <br>
-            <br>
-            use [w] [a] [s] [d] to move when the input method is [movement]
-            <br>
-            <br>
-            to use an ability > press the key shown above the ability
-            <br>
-            when pressed, the input method will switch in the info panel on the right
-            <br>
-            now the game is waiting for a directional input using [w] [a] [s] [d]
-            <br>
-            some abilities allow for a mouse click to select a cell in the matrix
-            <br>
-            a grid will be shown on the matrix when this is an option
-            <br>
-        </div>
-    </dialog>
-    <!-- <dialog id="textbox">
-    </dialog> -->
-    
-    <div id="typedtext" class="hidden-t"></div>
-
 
 
     <script src="https://unpkg.com/konva@9/konva.min.js"></script>

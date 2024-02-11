@@ -542,7 +542,7 @@ let stage = new Konva.Stage({
 let layer = new Konva.Layer();
 stage.add(layer);
 
-
+ 
 // add them to the matrix so they can be updated later
 let drawCanvas = () => {
     for(let i = 0; i < matrix.length; i++) {
