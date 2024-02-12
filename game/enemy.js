@@ -1,6 +1,4 @@
-// need improvements to enemy ai
-// currently with take poor pathing
-// will not hit player when could have
+
 
 let reduceToOne = (n) => {
     if(n == 0) { return -1 }
@@ -215,24 +213,29 @@ class Enemy {
 
     async startTurn () {
         console.log("enemy ai v0.0.1");
+        if(this.hp > 0) {
+            // move first
+            for(let i = 0; i < this.maxMovements; i++) {
+                moveTowardsPlayer(this.row, this.column, PLAYER.row, PLAYER.column);
+                await sleep(500);
+                console.log(distanceFromPlayer(this.row, this.column, PLAYER.row, PLAYER.column));
+                console.log("can hit player?: ", canHit(this.row, this.column, PLAYER.row, PLAYER.column));
+            }
 
+            // attack
 
-        // move first
-        for(let i = 0; i < this.maxMovements; i++) {
-            moveTowardsPlayer(this.row, this.column, PLAYER.row, PLAYER.column);
-            await sleep(500);
-            console.log(distanceFromPlayer(this.row, this.column, PLAYER.row, PLAYER.column));
-            console.log("can hit player?: ", canHit(this.row, this.column, PLAYER.row, PLAYER.column));
+            for(let i = 0; i < this.maxPower; i++) {
+                attackPlayer(this.row, this.column, PLAYER.row, PLAYER.column);
+                await sleep(500);
+            }
+
+            endTurn(this.gameIndex);
+        } else {
+            endTurn(this.gameIndex);
         }
 
-        // attack
 
-        for(let i = 0; i < this.maxPower; i++) {
-            attackPlayer(this.row, this.column, PLAYER.row, PLAYER.column);
-            await sleep(500);
-        }
 
-        endTurn(this.gameIndex);
     }
 
     beforeDelete () {

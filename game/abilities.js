@@ -426,6 +426,7 @@ class Meteor_cryo {
                 this.owner = _owner;
                 this.type = "construct";
                 this.classname = "meteor_cryo";
+                this.blocksMovement = true;
                 this.hp = 1;
                 this.name = _name;
                 this.damage = _damage;
@@ -435,6 +436,12 @@ class Meteor_cryo {
                 this.delete = false;
                 this.maxDistance = 5;
                 this.distance = 0;
+            }
+
+            takeDamage (n) {
+                this.hp -= n;
+                console.log("Wall construct take damage - hp:", this.hp)
+                if(this.hp <= 0) { this.delete = true }
             }
 
             beforeDelete () {
@@ -488,6 +495,7 @@ class Meteor_fire {
                 this.owner = _owner;
                 this.type = "construct";
                 this.classname = "meteor_fire";
+                this.blocksMovement = true;
                 this.hp = 1;
                 this.name = _name;
                 this.damage = _damage;
@@ -497,6 +505,12 @@ class Meteor_fire {
                 this.delete = false;
                 this.maxDistance = 5;
                 this.distance = 0;
+            }
+
+            takeDamage (n) {
+                this.hp -= n;
+                console.log("Wall construct take damage - hp:", this.hp)
+                if(this.hp <= 0) { this.delete = true }
             }
 
             beforeDelete () {

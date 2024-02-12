@@ -842,7 +842,6 @@ let drawAbility = (p, dr, dc, speed) => {
 
 
 
-
 let checkForBoundry = (r, c) => {
 
     if(matrix[r] == undefined) { return false }
@@ -979,7 +978,7 @@ document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.abilit
 // checkAroundCell(9,5)
 
 
-showMessage(gametext.missions.one.opening);
+showMessage(gametext.missions[2].opening);
 drawCanvas();
 updateLabels();
 setInterval(() => {
@@ -1024,3 +1023,12 @@ setInterval(() => {
 // maze runner type exploring map + other factions doing the same
 // world is a matrix
 // distopian 
+
+
+
+
+// potential gameplay loop:
+// have 3 starter abilities
+// each mission complete gives new abilities
+// but you cannot change abilities until you die
+// could be an alternate gamemode
