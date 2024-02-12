@@ -1,6 +1,38 @@
-let attackPlayer = (y1, x1, y2, x2) => {
-    let dx = (x2-x1);
-    let dy = (y2-y1);
+// need improvements to enemy ai
+// currently with take poor pathing
+// will not hit player when could have
+
+let reduceToOne = (n) => {
+    if(n == 0) { return -1 }
+    else if(n > 0) { return 1 }
+    else { return -1 }
+}
+
+let canHit = (er, ec, pr, pc) => {
+    if(er == pr || ec == pc) { return true }
+    else { return false }
+}
+
+let distanceFromPlayer = (er, ec, pr, pc) => {
+    let rows = pr - er;
+    let columns = pc - ec;
+    return { rows, columns };
+}
+
+let moveToAttack = () => {
+
+}
+
+let attackPlayer = (er, ec, pr, pc) => {
+    let d = distanceFromPlayer(er, ec, pr, pc);
+    if((Math.abs(d.rows) + Math.abs(d.columns)) < 3) {
+        console.log("real close");
+        ENEMY.ability(3);
+    } else {
+        ENEMY.ability(1);
+    }
+    let dx = (pc-ec);
+    let dy = (pr-er);
     if(dx > dy) {
         if(dx > 0) {
             // move right
@@ -24,31 +56,39 @@ let attackPlayer = (y1, x1, y2, x2) => {
     }
 }
 
-let moveTowardsPlayer = (y1, x1, y2, x2) => {
-    let dx = (x2-x1);
-    let dy = (y2-y1);
-    // console.log(dx,dy)
-    if(dx > dy) {
-        if(dx > 0) {
-            // move right
-            moveEnemy(y1, x1+1);
-        } else if(dx < 0) {
-            // move left
-            moveEnemy(y1, x1-1);
+let moveTowardsPlayer = (er, ec, pr, pc) => {
+    let d = distanceFromPlayer(er, ec, pr, pc);
+    if(Math.round(Math.random())) {
+        if(canHit(er, ec, pr, pc) || (d.rows + d.columns) < 3) {
+            //attack
+            console.log("ATTACK");
         } else {
-            // dont move
+            if(Math.abs(d.rows) <= ENEMY.movements) {
+                console.log("in range of rows!")
+                // move 1 row towards player
+                moveEnemy(er + reduceToOne(d.rows), ec);
+            } else if (Math.abs(d.columns) <= ENEMY.movements) {
+                console.log("in range of columns!")
+                // move 1 column towards player
+                moveEnemy(er, ec + reduceToOne(d.columns));
+            } else {
+                // out of range and cannot hit
+                if(d.rows >= d.columns) {
+                    moveEnemy(er + reduceToOne(d.rows), ec);
+                } else {
+                    moveEnemy(er, ec + reduceToOne(d.columns))
+                }
+            }
         }
     } else {
-        if(dy > 0) {
-            // move down
-            moveEnemy(y1+1, x1);
-        } else if(dy < 0) {
-            // move up
-            moveEnemy(y1-1, x1);
+        if(d.rows >= d.columns) {
+            moveEnemy(er + reduceToOne(d.rows), ec);
         } else {
-            // dont move
+            moveEnemy(er, ec + reduceToOne(d.columns))
         }
     }
+
+
 }
 
 class Enemy {
@@ -63,7 +103,7 @@ class Enemy {
         this.ability2 = a2;
         this.ability3 = a3;
         this.hp = 5;
-        this.maxMovements = 3;
+        this.maxMovements = 2;
         this.movements = 1;
         this.maxPower = 5;
         this.power = 2;
@@ -124,12 +164,28 @@ class Enemy {
             }
         } else if(this.selectedAbility == 3) {
             if(this.power >= this.ability3.cost) {
-                addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
-                let p = this.ability3.cell(PLAYER.row, PLAYER.column);
-                drawAbility(p, dr, dc, this.ability3.speed);
-                this.power = this.power - this.ability3.cost;
-                updateLabels();
-                inputMethod = "movement";
+                if(this.ability3.custom) {
+                    let used = this.ability3.use(dr, dc);
+                    if(used) {
+                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
+                        this.power = this.power - this.ability2.cost;
+                        updateLabels();
+                        inputMethod = "movement";
+                        this.selectedAbility = 0;
+                        removeGridlines();
+                    } else {
+                        
+                    }
+                } else {
+                    addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
+                    let p = this.ability3.cell(this.row, this.column, dr, dc);
+                    drawAbility(p, dr, dc, this.ability3.speed);
+                    this.power = this.power - this.ability3.cost;
+                    updateLabels();
+                    inputMethod = "movement";
+                    this.selectedAbility = 0;
+                    removeGridlines();
+                }
             } else {
                 inputMethod = "movement";
             }
@@ -160,10 +216,13 @@ class Enemy {
     async startTurn () {
         console.log("enemy ai v0.0.1");
 
+
         // move first
         for(let i = 0; i < this.maxMovements; i++) {
             moveTowardsPlayer(this.row, this.column, PLAYER.row, PLAYER.column);
             await sleep(500);
+            console.log(distanceFromPlayer(this.row, this.column, PLAYER.row, PLAYER.column));
+            console.log("can hit player?: ", canHit(this.row, this.column, PLAYER.row, PLAYER.column));
         }
 
         // attack

@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="game-wrapper-body">
-        <div class="home-wrapper"><a class="home-link" href="../home/index.html">home</a></div>
+        <div class="home-wrapper"><a class="home-link" href="../home/index.html">home</a><button id="togglehelp" class="togglehelp">help</button></div>
         <div class="game-wrapper">
             <div class="matrix-wrapper">
                 <div id="matrix" class="matrix"></div>
@@ -55,9 +55,10 @@
             
 
         </div>
-        <div class="help-btn-wrapper"><button id="togglehelp" class="togglehelp">help</button></div>
+        
         <dialog id="game-help-dialog" class="game-help-dialog grad-border">
             <div class="help-top-bar"><button id="closehelp" class="togglehelp">close</button></div>
+            <!-- would like a large dialog with tabs for controls - ui info - enemy info -->
             <div class="help-text">
                 <br>
                 (will make this prettier later)
@@ -86,7 +87,9 @@
         <!-- <dialog id="textbox">
         </dialog> -->
         
-        <div id="typedtext" class="hidden-t"></div>
+        <div id="typedtext-wrapper" class="hidden-t">
+            <div id="typedtext"></div>
+        </div>
     </div>
 
 

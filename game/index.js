@@ -3,16 +3,18 @@
 // set up text to print, each item in array is new line
 
 
-let destination = document.getElementById("typedtext");
+let ttwrapper = document.getElementById("typedtext-wrapper");
+let ttheader = document.getElementById("typedtext-header");
+let ttbody = document.getElementById("typedtext");
 
 
 
-let showMessage = (aText) => {
+let showMessage = (aText, goHome=false) => {
 
     let iSpeed = 100; // time delay of print out
     let iIndex = 0; // start printing array at this posision
     let iArrLength = aText[0].length; // the length of the text array
-    let iScrollAt = 2; // start scrolling up at this many lines
+    let iScrollAt = 3; // start scrolling up at this many lines
         
     let iTextPos = 0; // initialise text position
     let sContents = ''; // initialise contents letiable
@@ -27,7 +29,7 @@ let showMessage = (aText) => {
         while (iRow < iIndex) {
             sContents += aText[iRow++] + "<br />";
         }
-        destination.innerHTML =
+        ttbody.innerHTML =
         sContents + aText[iIndex].substring(0, iTextPos) + "_";
         if (iTextPos++ == iArrLength) {
             iTextPos = 0;
@@ -39,13 +41,19 @@ let showMessage = (aText) => {
             } else {
                 // runs at the end of message
                 setTimeout(() => {
-                    destination.classList.add("fadeout-t");
+                    ttwrapper.classList.add("fadeout-t");
                     setTimeout(() => {
-                        destination.classList.add("hidden-t");
-                        destination.classList.remove("fadeout-t");
+                        ttwrapper.classList.add("hidden-t");
+                        ttwrapper.classList.remove("fadeout-t");
                         playerCanAct = true;
+                        ttbody.innerHTML = "";
+                        if(goHome) {
+                            setTimeout(() => {
+                                window.location.href = "../home/index.html";
+                            }, 500)
+                        }
                     }, 950)
-                },500)
+                },1000)
             }
         } else {
             setTimeout(typewriter, iSpeed);
@@ -53,7 +61,7 @@ let showMessage = (aText) => {
         }
     }
 
-    destination.classList.remove("hidden-t")
+    ttwrapper.classList.remove("hidden-t");
     typewriter();
 }
     
@@ -615,10 +623,11 @@ let checkForWinner = () => {
     if(PLAYER.hp <= 0) {
         playerCanAct = false;
         console.log("YOU LOSE");
+        showMessage(gametext.missions.one.failure, true);
     } else if (ENEMY.hp <= 0) {
         playerCanAct = false;
         console.log("YOU WIN");
-        showMessage(gametext.missions.one.closing);
+        showMessage(gametext.missions.one.closing, true);
     }
 }
 
@@ -882,7 +891,6 @@ let moveEnemy = (r, c) => {
 
 
 let updateLabels = () => {
-    checkForWinner();
     document.getElementById("active-player").innerText = _players[_activePlayer].name;
     document.getElementById("input-method").innerHTML = `<span><span>input: </span><span class="input-method-value ${inputMethod == "ability" ? "imv-ability" : "imv-movement"}">${inputMethod}</span></span>`;
     document.getElementById("turn").innerText = turn;
@@ -893,6 +901,7 @@ let updateLabels = () => {
 }
 
 let updateTurns = () => {
+    checkForWinner();
     calculateTiles();
     turn += 1;
     _activePlayer = 0;
@@ -934,7 +943,7 @@ let getSavedAbilities = () => {
 let matrix = makeMatrix(11);
 drawMatrix(11);
 let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Slice());
-let ENEMY = new Enemy(0, 5, new Shell(), new Shell(), new Shell());
+let ENEMY = new Enemy(0, 5, new Shell(), new Shell(), new Slice());
 PLAYER.gameIndex = 0;
 ENEMY.gameIndex = 1;
 let _players = [PLAYER, ENEMY];

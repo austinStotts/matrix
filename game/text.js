@@ -1,11 +1,10 @@
 let gametext = {
     "missions": {
         "one": {
-            "opening": [    
-                "mission 1:", 
+            "opening": [
+                "mission 1:",  
                 "defeat the enemy at any cost",
                 "failure is not an option",
-                "..."
             ],
             "closing": [     
                 "mission complete",
@@ -15,6 +14,11 @@ let gametext = {
                 "alive",
                 "live",
                 ".-.. .. ...- ."
+            ],
+            "failure": [
+                "(647,2847)",
+                "mission failure",
+                "diagnostics unrecoverable"
             ]
         },
         "two": {
