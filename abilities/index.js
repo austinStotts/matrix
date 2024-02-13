@@ -2,6 +2,8 @@ let a1w = document.getElementById("ac-1");
 let a2w = document.getElementById("ac-2");
 let a3w = document.getElementById("ac-3");
 
+let sn = document.getElementById("saved-notif");
+
 let _a = {
 
 }
@@ -15,6 +17,13 @@ let currentSelection = {
 let save = (e) => {
     if(_a[1] && _a[1] && _a[1]) {
         window.localStorage.setItem("abilities", JSON.stringify(_a));
+        sn.classList.add("sn-slide");
+        setTimeout(() => {
+            sn.classList.add("sn-fadeout");
+            setTimeout(() => {
+                sn.classList.remove("sn-slide", "sn-fadeout");
+            }, 1000)
+        }, 1000);
     }
 }
 

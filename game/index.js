@@ -1044,3 +1044,12 @@ setInterval(() => {
 // each mission complete gives new abilities
 // but you cannot change abilities until you die
 // could be an alternate gamemode
+
+
+
+// add S.A.M. for dialog
+// use same name until the character dies
+// add item pickups in map for things like new abilities
+// add after match completion stars
+// > 1 = complete | 2 = did not take damage | 3 = collected all items
+// add another image for handler 2

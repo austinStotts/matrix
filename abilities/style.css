@@ -8,6 +8,39 @@ body {
 
 
 
+
+.saved-notif {
+    /* position: absolute; */
+    /* right: 0px; */
+    opacity: 0%;
+    color: #33FF33;
+    text-align: center;
+    margin: 5px 0px 20px 0px;
+}
+
+.sn-slide {
+    animation: fadein 1s linear infinite;
+}
+
+.sn-fadeout {
+    animation: fadeout 1s linear infinite;
+}
+
+@keyframes fadein {
+    100% {
+        opacity: 100%;
+    }
+}
+
+@keyframes fadeout {
+    100% {
+        opacity: 0%;
+    }
+}
+
+
+
+
 .selected {
     border-color: #33FF33 !important;
     box-shadow: 1px 1px 5px #33FF33;

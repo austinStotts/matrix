@@ -26,6 +26,7 @@ let gametext = {
                 "do not fail",
             ],
             "handler": `
+               handler one
             ⠀⠀⠀⠀⢀⣤⣄⣀⣤⡀⠀⠀⠀⠀⠀
             ⠀⠀⠀⠀⣼⣿⡏⡇⢾⣷⡀⠀⠀⠀⠀
             ⠀⣀⠀⣰⣿⣿⣟⢏⠻⣿⣿⣶⣿⠇⠀
@@ -62,7 +63,20 @@ let gametext = {
                 "sending you further in",
                 "a unit with a confirmed kill is rare",
                 "remember this, we are smarter than them"
-            ]
+            ],
+            "handler": `
+               handler one
+            ⠀⠀⠀⠀⢀⣤⣄⣀⣤⡀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⣼⣿⡏⡇⢾⣷⡀⠀⠀⠀⠀
+            ⠀⣀⠀⣰⣿⣿⣟⢏⠻⣿⣿⣶⣿⠇⠀
+            ⠀⠘⢿⡿⣭⣭⣭⢭⣬⣭⡽⣮⠏⠀⠀
+            ⠀⠀⠀⢙⢻⠛⡿⠿⢺⠟⢻⠀⠀⠀⠀
+            ⠀⠀⠀⠈⢸⣇⠠⢘⣰⢈⡇⠀⠀⠀⠀
+            ⠀⠀⠀⠀⢀⣿⡞⡙⠮⣹⣫⡄⠀⠀⠀
+            ⠀⠀⠀⠀⣸⣥⣫⣓⣾⣿⣿⣿⣦⣄⡀
+            ⢀⣤⣶⣿⢿⣿⣷⣷⣿⣿⣿⣛⣿⣿⣿
+            ⠿⠿⠿⠿⠹⠿⠿⠿⠿⠿⠿⠭⠿⠿⠿
+            `
         }
     }
 }
