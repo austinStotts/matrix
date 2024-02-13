@@ -623,11 +623,11 @@ let checkForWinner = () => {
     if(PLAYER.hp <= 0) {
         playerCanAct = false;
         console.log("YOU LOSE");
-        showMessage(gametext.missions.one.failure, true);
+        showMessage(gametext.missions[1].failure, true);
     } else if (ENEMY.hp <= 0) {
         playerCanAct = false;
         console.log("YOU WIN");
-        showMessage(gametext.missions.one.closing, true);
+        showMessage(gametext.missions[1].closing, true);
     }
 }
 
@@ -978,7 +978,7 @@ document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.abilit
 // checkAroundCell(9,5)
 
 
-showMessage(gametext.missions[2].opening);
+showMessage(gametext.missions[1].opening);
 drawCanvas();
 updateLabels();
 setInterval(() => {
