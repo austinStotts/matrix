@@ -24,7 +24,19 @@ let gametext = {
                 "you exist to find and protect",
                 "defeating our enemies is worth more than your life alone",
                 "do not fail",
-            ]
+            ],
+            "handler": `
+            ⠀⠀⠀⠀⢀⣤⣄⣀⣤⡀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⣼⣿⡏⡇⢾⣷⡀⠀⠀⠀⠀
+            ⠀⣀⠀⣰⣿⣿⣟⢏⠻⣿⣿⣶⣿⠇⠀
+            ⠀⠘⢿⡿⣭⣭⣭⢭⣬⣭⡽⣮⠏⠀⠀
+            ⠀⠀⠀⢙⢻⠛⡿⠿⢺⠟⢻⠀⠀⠀⠀
+            ⠀⠀⠀⠈⢸⣇⠠⢘⣰⢈⡇⠀⠀⠀⠀
+            ⠀⠀⠀⠀⢀⣿⡞⡙⠮⣹⣫⡄⠀⠀⠀
+            ⠀⠀⠀⠀⣸⣥⣫⣓⣾⣿⣿⣿⣦⣄⡀
+            ⢀⣤⣶⣿⢿⣿⣷⣷⣿⣿⣿⣛⣿⣿⣿
+            ⠿⠿⠿⠿⠹⠿⠿⠿⠿⠿⠿⠭⠿⠿⠿
+            `
         },
         "2": {
             "opening": [    

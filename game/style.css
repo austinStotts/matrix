@@ -3,6 +3,21 @@ body {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .game-wrapper-body {
   border: 1px solid white;
   max-width: 900px;
@@ -26,7 +41,7 @@ body {
 }
 
 .hidden-t {
-  display: none;
+  display: none !important;
 }
 
 .fadeout-t {
@@ -42,21 +57,45 @@ body {
   }
 }
 
-#typedtext {
+#typedtext-wrapper {
   font-family: "Courier New", Courier, monospace;
   position: fixed;
   top: 300px;
   left: 150px;
-  font-size: 25px;
+  
   background-color: rgb(25, 25, 25);
   min-height: 125px;
   width: 80%;
   max-width: 600px;
-  text-align: center;
+  /* text-align: center; */
   color: white;
   border: 3px solid white;
   border-radius: 4px;
+  display: grid;
+  grid-template-columns: 20% 80%;
 }
+
+#typedtext {
+  display: inline-block;
+  height: 125px;
+  text-align: center;
+  width: 100%;
+  font-size: 20px;
+}
+
+.handlerimg {
+  display: inline-block;
+  text-align: left;
+  height: 125px;
+  width: 100%;
+  /* border-right: 1px solid red; */
+  font-size: 8px;
+  text-align: center;
+}
+
+
+
+
 
 .game-help-dialog {
   position: fixed;

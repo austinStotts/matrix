@@ -4,12 +4,22 @@
 
 
 let ttwrapper = document.getElementById("typedtext-wrapper");
-let ttheader = document.getElementById("typedtext-header");
+let tthandler = document.getElementById("handlerimg");
 let ttbody = document.getElementById("typedtext");
 
 
 
-let showMessage = (aText, goHome=false) => {
+let showMessage = (mission, state, goHome=false) => {
+
+    console.log(mission)
+    let aText;
+    if(state == "opening") {
+        aText = mission.opening;
+    } else if(state == "closing") {
+        aText = mission.closing;
+    } else if(state == "failure") {
+        aText = mission.failure;
+    }
 
     let iSpeed = 100; // time delay of print out
     let iIndex = 0; // start printing array at this posision
@@ -61,6 +71,7 @@ let showMessage = (aText, goHome=false) => {
         }
     }
 
+    tthandler.innerText = mission.handler
     ttwrapper.classList.remove("hidden-t");
     typewriter();
 }
@@ -623,11 +634,11 @@ let checkForWinner = () => {
     if(PLAYER.hp <= 0) {
         playerCanAct = false;
         console.log("YOU LOSE");
-        showMessage(gametext.missions[1].failure, true);
+        showMessage(gametext.missions[missiondata.level], "failure", true);
     } else if (ENEMY.hp <= 0) {
         playerCanAct = false;
         console.log("YOU WIN");
-        showMessage(gametext.missions[1].closing, true);
+        showMessage(gametext.missions[missiondata.level], "closing", true);
     }
 }
 
@@ -938,11 +949,12 @@ let getSavedAbilities = () => {
 // _________________________________________________________
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // init and game loop
-
+let missiondata = JSON.parse(window.localStorage.getItem("missiondata"));
+console.log(missiondata)
 let matrix = makeMatrix(11);
 drawMatrix(11);
 let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Slice());
-let ENEMY = new Enemy(0, 5, new Shell(), new Shell(), new Slice());
+let ENEMY = new Seeker(0, 5);
 PLAYER.gameIndex = 0;
 ENEMY.gameIndex = 1;
 let _players = [PLAYER, ENEMY];
@@ -978,7 +990,7 @@ document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.abilit
 // checkAroundCell(9,5)
 
 
-showMessage(gametext.missions[1].opening);
+showMessage(gametext.missions[missiondata.level], "opening");
 drawCanvas();
 updateLabels();
 setInterval(() => {

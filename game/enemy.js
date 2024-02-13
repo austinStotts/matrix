@@ -89,17 +89,16 @@ let moveTowardsPlayer = (er, ec, pr, pc) => {
 
 }
 
-class Enemy {
-    constructor(r, c, a1, a2, a3, name=generateName()) {
+class Seeker {
+    constructor(r, c, name=generateName()) {
         this.name = name;
         this.type = "player";
         this.classname = "enemy";
         this.id = getID();
         this.row = r;
         this.column = c;
-        this.ability1 = a1;
-        this.ability2 = a2;
-        this.ability3 = a3;
+        this.ability1 = new Shell();
+        this.ability3 = new Slice();
         this.hp = 5;
         this.maxMovements = 2;
         this.movements = 1;
@@ -109,7 +108,6 @@ class Enemy {
         this.gameIndex = 1;
 
         this.ability1.owner = this.name;
-        this.ability2.owner = this.name;
         this.ability3.owner = this.name;
     } 
 
@@ -150,16 +148,7 @@ class Enemy {
                 inputMethod = "movement";
             }
         } else if(this.selectedAbility == 2) {
-            if(this.power >= this.ability2.cost) {
-                addLog({ type: "ability", name: this.name, content: ` used ${this.ability2.name}` })
-                let p = this.ability2.cell(PLAYER.row, PLAYER.column);
-                drawAbility(p, dr, dc, this.ability2.speed);
-                this.power = this.power - this.ability2.cost;
-                updateLabels();
-                inputMethod = "movement";
-            } else {
-                inputMethod = "movement";
-            }
+            console.log("a mistake was made")
         } else if(this.selectedAbility == 3) {
             if(this.power >= this.ability3.cost) {
                 if(this.ability3.custom) {
@@ -207,7 +196,6 @@ class Enemy {
     takeDamage (n) {
         this.hp -= n;
         addLog({ type: "damage", name: this.name, content: ` took ${n} damage` })
-        // console.log("player take damage - hp:", this.hp)
         if(this.hp <= 0) { this.delete = true }
     }
 
