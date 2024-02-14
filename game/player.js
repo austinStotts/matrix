@@ -10,6 +10,7 @@ class Player {
         this.ability2 = a2;
         this.ability3 = a3;
         this.hp = 3;
+        this.bonusHP = 0;
         this.projectiles = [];
         this.maxMovements = 2;
         this.bonusMovements = 0;
@@ -41,8 +42,10 @@ class Player {
     updateTurn () {
         this.movements = this.maxMovements + this.bonusMovements;
         this.power = this.maxPower + this.bonusPower;
+        this.hp = this.hp + this.bonusHP;
         this.bonusMovements = 0;
         this.bonusPower = 0;
+        this.bonusHP = 0;
     }
 
     ability (x) {

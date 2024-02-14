@@ -454,6 +454,12 @@ body {
   background-color: rgba(82, 174, 255, 0.5);
 }
 
+.reinforced-wall {
+  border-color: rgb(37, 81, 255);
+  background-image: none;
+  background-color: rgba(37, 81, 255, 0.5);
+}
+
 .cell-tooltip {
   position: absolute;
   z-index: 110;

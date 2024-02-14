@@ -655,6 +655,10 @@ let drawMatrix = (n) => {
     }
 }
 
+let setHighestMission = (n) => {
+    window.localStorage.setItem("highestmissioncleared", n)
+}
+
 let checkForWinner = () => {
     if(PLAYER.hp <= 0) {
         playerCanAct = false;
@@ -667,6 +671,7 @@ let checkForWinner = () => {
         playerCanAct = false;
         console.log("YOU WIN");
         showMessage(gametext.missions[missiondata.level], "closing", true);
+        setHighestMission(missiondata.level)
     }
 }
 

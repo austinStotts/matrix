@@ -1,4 +1,4 @@
-done: 
+done: ✅
 use S.A.M. to speak the handlers opening and closing dialog
 make sure it is in sync with the ttpewriter
 

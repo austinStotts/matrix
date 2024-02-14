@@ -2,6 +2,24 @@ let missionlist = document.getElementById("missions-wrapper");
 let missions = Object.keys(gametext.missions);
 console.log(missions)
 
+
+
+let setHighestMission = (n) => {
+    window.localStorage.setItem("highestmissioncleared", n)
+}
+
+let getHighestMission = () => {
+    let old = window.localStorage.getItem("highestmissioncleared");
+    if(old != undefined) {
+        return old;
+    } else {
+        setHighestMission(0);
+        return 0;
+    }
+}
+
+let hm = getHighestMission();
+
 let missionclick = (i) => {
     let current = JSON.parse(window.localStorage.getItem("missiondata"));
     console.log(current);
@@ -32,7 +50,7 @@ let buildMission = (i, data) => {
 
 
 missions.map((mission, i) => {
-    missionlist.appendChild(buildMission(mission, gametext.missions[mission]));
+    if(i <= hm) {missionlist.appendChild(buildMission(mission, gametext.missions[mission]));}
 })
 
 // missionlist.innerHTML = a.join("");

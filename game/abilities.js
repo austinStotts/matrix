@@ -54,6 +54,29 @@ class Wall {
     }
 }
 
+class Reinforced_wall {
+    constructor(owner) {
+        this.name = "reinforced wall";
+        this.owner = owner;
+        this.blocksMovement = true;
+        this.hp = 3;
+        this.classname = "reinforced-wall";
+        this.type = "construct";
+        this.id = getID();
+        this.delete = false;
+    }
+
+    takeDamage (n) {
+        this.hp -= n;
+        console.log("Wall construct take damage - hp:", this.hp)
+        if(this.hp <= 0) { this.delete = true }
+    }
+
+    beforeDelete () {
+        console.log("wall construct before delete", this.hp);
+    }
+}
+
 
 class Projectile { // not doing anything
     constructor(r, c, deltaR, deltaC, name, a) {
@@ -525,8 +548,8 @@ class Focus {
     constructor() {
         this.type = "spell";
         this.damage = 0;
-        this.cost = 2;
-        this.info = "end turn and gain +1 movement & +1 power next turn";
+        this.cost = 3;
+        this.info = "end turn and gain +2 power next turn";
         this.damage_type = "none";
         this.name = "focus";
         // this.name = "terraform y";
@@ -540,8 +563,67 @@ class Focus {
 
     use (r, c) {
         PLAYER.endTurn();
-        PLAYER.bonusMovements = 1;
-        PLAYER.bonusPower = 1;
+        // PLAYER.bonusMovements = 1;
+        PLAYER.bonusPower = 2;
+        return true;
+    }
+
+    beforeDelete () {
+
+    }
+}
+
+class Rest {
+    constructor() {
+        this.type = "spell";
+        this.damage = 0;
+        this.cost = 3;
+        this.info = "end turn and gain +2 movement next turn";
+        this.damage_type = "none";
+        this.name = "rest";
+        // this.name = "terraform y";
+        this.speed = 50;
+        this.maxDistance = 0;
+        this.abilityClass = 3;
+        this.custom = true;
+        this.allowClick = false;
+    }
+
+
+    use (r, c) {
+        PLAYER.endTurn();
+        PLAYER.bonusMovements = 2;
+        // PLAYER.bonusPower = 1;
+        return true;
+    }
+
+    beforeDelete () {
+
+    }
+}
+
+class Heal {
+    constructor() {
+        this.type = "spell";
+        this.damage = 0;
+        this.cost = 3;
+        this.info = "end turn and gain +1 hp next turn";
+        this.damage_type = "none";
+        this.name = "heal";
+        // this.name = "terraform y";
+        this.speed = 50;
+        this.maxDistance = 0;
+        this.abilityClass = 3;
+        this.custom = true;
+        this.allowClick = false;
+    }
+
+
+    use (r, c) {
+        PLAYER.endTurn();
+        PLAYER.bonusHP = 1;
+        // PLAYER.bonusMovements = 2;
+        // PLAYER.bonusPower = 1;
         return true;
     }
 
@@ -774,6 +856,32 @@ class Lava {
     }
 }
 
-let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun];
-let tiles = {Plains, Frozen, Lava}
-let worldconstructs = {Wall}
+class Mercury {
+    constructor() {
+        this.type = "tile"
+        this.allowsMovement = true;
+        this.movementCost = 2;
+        this.classname = "mercury"
+        this.name = "mercury pool"
+        this.dot = 2;
+    }
+}
+
+class Granite {
+    constructor() {
+        this.type = "tile"
+        this.allowsMovement = true;
+        this.movementCost = 1;
+        this.classname = "granite"
+        this.name = "granite"
+    }
+}
+
+
+
+
+
+
+let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun, Rest, Heal];
+let tiles = {Plains, Frozen, Lava, Mercury, Granite}
+let worldconstructs = {Wall, Reinforced_wall}
