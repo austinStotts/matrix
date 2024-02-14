@@ -1,0 +1,22 @@
+done: 
+use S.A.M. to speak the handlers opening and closing dialog
+make sure it is in sync with the ttpewriter
+
+done:
+add relics to missions / make assets for the relics
+add relic pickup logic
+
+done:
+add an after mission screen showing completion data and general mission data
+
+done:
+reword all ability descriptions to be more informative
+give a better idea of what it does without having to try it out
+
+done:
+give more info ingame about what is happening
+- upgrade the log
+- upgrade the inputs
+
+done:
+use missiondata to build the matrix to allow for levels to be loaded

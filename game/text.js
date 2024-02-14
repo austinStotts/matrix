@@ -9,10 +9,7 @@ let gametext = {
             "closing": [     
                 "mission complete",
                 "you are one of the few still alive",
-                "alive",
-                "alive",
-                "alive",
-                "live",
+                "death does not teach us much anymore",
                 ".-.. .. ...- ."
             ],
             "failure": [
@@ -26,7 +23,6 @@ let gametext = {
                 "do not fail",
             ],
             "handler": `
-               handler one
             ⠀⠀⠀⠀⢀⣤⣄⣀⣤⡀⠀⠀⠀⠀⠀
             ⠀⠀⠀⠀⣼⣿⡏⡇⢾⣷⡀⠀⠀⠀⠀
             ⠀⣀⠀⣰⣿⣿⣟⢏⠻⣿⣿⣶⣿⠇⠀
@@ -45,7 +41,7 @@ let gametext = {
                 "our sovereignty does not reach these lands",
                 "the enemy will not wait for you",
                 "too many of you have failed me",
-                "use their corpses as stepping stones"
+                "use the lost as stepping stones"
             ],
             "closing": [    
                 "mission complete", 
@@ -65,7 +61,6 @@ let gametext = {
                 "remember this, we are smarter than them"
             ],
             "handler": `
-               handler one
             ⠀⠀⠀⠀⢀⣤⣄⣀⣤⡀⠀⠀⠀⠀⠀
             ⠀⠀⠀⠀⣼⣿⡏⡇⢾⣷⡀⠀⠀⠀⠀
             ⠀⣀⠀⣰⣿⣿⣟⢏⠻⣿⣿⣶⣿⠇⠀

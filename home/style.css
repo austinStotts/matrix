@@ -84,14 +84,15 @@ body {
     margin-left: 10px;
 }
 
-.matrix-play-levels {
+.matrix-play-missions {
     transition-duration: 0.2s;
     width: fit-content;
 }
 
-.matrix-play-levels:hover {
-    /* cursor: pointer;
-    margin-left: 10px; */
+.matrix-play-missions:hover {
+    cursor: pointer;
+    margin-left: 10px;
+    text-decoration: underline;
 }
 
 .matrix-play-game {

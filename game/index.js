@@ -1,11 +1,23 @@
 
 
-// set up text to print, each item in array is new line
+
+ 
 
 
 let ttwrapper = document.getElementById("typedtext-wrapper");
 let tthandler = document.getElementById("handlerimg");
 let ttbody = document.getElementById("typedtext");
+
+
+opts = {
+    debug: 1,
+    pitch: 120,
+    speed: 100,
+    mouth: 128,
+    throat: 128
+  };
+
+let sam = new SamJs(opts);
 
 
 
@@ -30,8 +42,12 @@ let showMessage = (mission, state, goHome=false) => {
     let sContents = ''; // initialise contents letiable
     let iRow; // initialise current row
     
+    let speak = (string) => {
+        sam.speak(string)
+    }
         
     function typewriter() {
+        // console.log("hello")
         sContents = " ";
         iRow = Math.max(0, iIndex - iScrollAt);
         
@@ -46,7 +62,7 @@ let showMessage = (mission, state, goHome=false) => {
             iIndex++;
             if (iIndex != aText.length) {
                 iArrLength = aText[iIndex].length;
-                setTimeout(typewriter, 500);
+                setTimeout(() => {typewriter(); if(aText[f] != undefined) {speak(aText[f]); f++}}, 500);
                 
             } else {
                 // runs at the end of message
@@ -74,6 +90,15 @@ let showMessage = (mission, state, goHome=false) => {
     tthandler.innerText = mission.handler
     ttwrapper.classList.remove("hidden-t");
     typewriter();
+    let f = 0;
+    speak(aText[f]);
+    f++
+
+    // let index = 0;
+    // sam.speak(aText[index]);
+    // setInterval(() => {
+    //     sam.speak(aText[index]); 
+    // }, interval);
 }
     
     
@@ -527,14 +552,14 @@ let showSelectedAbility = (n) => {
 // __________________________________________________
 // matrix creation and management
 
-let makeMatrix = (n) => {
+let makeMatrix = (n, tile) => {
     class Cell {
         constructor (r, c) {
             this.row = r;
             this.cell = c;
             this.class = ["cell"];
             this.children = {};
-            this.tile = new Plains();
+            this.tile = new tile();
             this.canvas = undefined;
         }
     }
@@ -635,6 +660,9 @@ let checkForWinner = () => {
         playerCanAct = false;
         console.log("YOU LOSE");
         showMessage(gametext.missions[missiondata.level], "failure", true);
+        let old = JSON.parse(window.localStorage.getItem("missiondata"));
+        old.level += 1;
+        window.localStorage.setItem("missiondata", JSON.stringify(old))
     } else if (ENEMY.hp <= 0) {
         playerCanAct = false;
         console.log("YOU WIN");
@@ -945,40 +973,48 @@ let getSavedAbilities = () => {
 
 }
 
+let buildWorldConstructs = (list) => {
+    list.forEach(con => {
+        addToCell(con.row, con.column, new worldconstructs[con.id]())
+    })
+}
+
+// let addEnemies = (list) => {
+//     list.forEach((enemy, i) => {
+
+//     })
+// }
+
 
 // _________________________________________________________
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // init and game loop
 let missiondata = JSON.parse(window.localStorage.getItem("missiondata"));
-console.log(missiondata)
-let matrix = makeMatrix(11);
+let matrix = makeMatrix(11, tiles[missionmatrixdata.missions[missiondata.level].tile.id]);
 drawMatrix(11);
+
 let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Slice());
-let ENEMY = new Seeker(0, 5);
 PLAYER.gameIndex = 0;
+addToCell(PLAYER.row, PLAYER.column, PLAYER);
+
+let enemy = missionmatrixdata.missions[missiondata.level].enemies[0]
+let ENEMY = new enemies[enemy.id](enemy.row, enemy.column);
 ENEMY.gameIndex = 1;
+addToCell(enemy.row, enemy.column, ENEMY);
+
 let _players = [PLAYER, ENEMY];
 let _activePlayer = 0;
 let turn = 1;
 let playerCanAct = false;
 let inputMethod = "movement";
+
 getSavedAbilities();
 
-// matrix[7][5].tile = new Frozen();
+buildWorldConstructs(missionmatrixdata.missions[missiondata.level].constructs);
 
-let w1 = new Wall("steve");
-addToCell(5,5,w1);
-let w2 = new Wall("steve");
-addToCell(5,7,w2);
-let w3 = new Wall("steve");
-addToCell(5,9,w3);
-let w4 = new Wall("steve");
-addToCell(5,3,w4);
-let w5 = new Wall("steve");
-addToCell(5,1,w5);
 
-addToCell(PLAYER.row, PLAYER.column, PLAYER);
-addToCell(ENEMY.row, ENEMY.column, ENEMY);
+
+// addToCell(ENEMY.row, ENEMY.column, ENEMY);
 
 createAbilityBox(1, PLAYER.ability1);
 createAbilityBox(2, PLAYER.ability2);
@@ -989,8 +1025,18 @@ document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.abilit
 
 // checkAroundCell(9,5)
 
+let str = document.getElementById("start");
 
-showMessage(gametext.missions[missiondata.level], "opening");
+let start = (e) => {
+    let audiocontext = new AudioContext();
+    document.getElementById("game-wrapper-body").classList.remove("blur");
+    showMessage(gametext.missions[missiondata.level], "opening");
+    str.classList.add("hide");
+}
+
+
+str.addEventListener("click", start);
+
 drawCanvas();
 updateLabels();
 setInterval(() => {

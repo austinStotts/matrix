@@ -774,4 +774,6 @@ class Lava {
     }
 }
 
-let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun]
+let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun];
+let tiles = {Plains, Frozen, Lava}
+let worldconstructs = {Wall}

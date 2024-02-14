@@ -1,0 +1,68 @@
+html {
+    background-color: black;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+
+.fadeout {
+    background-color: black;
+    animation: fadeout 3.1s linear infinite;
+}
+
+@keyframes fadeout {
+    100% {
+        opacity: 0%;
+    }
+}
+
+
+.home-link-wrapper {
+    margin: 20px 0px 0px 20px;
+}
+
+.home-link {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.home-link:hover {
+    text-decoration: underline;
+}
+
+.missions-wrapper {
+
+}
+
+.mission {
+    border: 1px solid white;
+    width: 200px;
+    color: white;
+    margin: 20px;
+}
+
+.mission:hover {
+    cursor: pointer;
+}
+
+.title {
+    font-size: 20px;
+    text-align: center;
+    border-bottom: 1px solid #33FF33;
+}
+
+.brief {
+    padding: 10px;
+    font-size: 14px;
+}
+
+
+.intel {
+    padding: 10px;
+}
+
+.intel-img {
+    width: 32px;
+    height: 32px;
+    border: 1px dashed #33FF33;
+}
