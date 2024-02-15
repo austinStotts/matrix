@@ -92,7 +92,7 @@ let moveTowardsPlayer = (er, ec, pr, pc) => {
 class Seeker {
     constructor(r, c, name=generateName()) {
         this.name = name;
-        this.type = "player";
+        this.type = "enemy";
         this.classname = "enemy";
         this.id = getID();
         this.row = r;

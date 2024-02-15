@@ -9,9 +9,8 @@ var stage = new Konva.Stage({
 
 var layer = new Konva.Layer();
 
-console.log(spritedata)
 let a = [];
-spritedata.frames.forEach(frame => {
+seekerdata.frames.forEach(frame => {
     Object.keys(frame.frame).forEach(key => {
         a.push(frame.frame[key]);
     })
@@ -22,14 +21,15 @@ var animations = {
 };
 
 var imageObj = new Image();
+imageObj.src = '../game/sprites/seeker.png';
 imageObj.onload = function () {
   var blob = new Konva.Sprite({
-    x: 50,
-    y: 50,
+    x: 32,
+    y: 32,
     image: imageObj,
     animation: 'idle',
     animations: animations,
-    frameRate: 4,
+    frameRate: 16,
     frameIndex: 0,
   });
 
@@ -43,7 +43,8 @@ imageObj.onload = function () {
   blob.start();
 
 };
-imageObj.src = '../game/sprites/enemyone_d.png';
+
+
 
 
 

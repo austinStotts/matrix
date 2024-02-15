@@ -7,17 +7,18 @@
 let ttwrapper = document.getElementById("typedtext-wrapper");
 let tthandler = document.getElementById("handlerimg");
 let ttbody = document.getElementById("typedtext");
-
+console.log(window)
 
 opts = {
-    debug: 1,
+    debug: 0,
     pitch: 120,
     speed: 100,
     mouth: 128,
-    throat: 128
+    throat: 128,
   };
 
 let sam = new SamJs(opts);
+// console.log(sam)
 
 
 
@@ -43,7 +44,10 @@ let showMessage = (mission, state, goHome=false) => {
     let iRow; // initialise current row
     
     let speak = (string) => {
-        sam.speak(string)
+        console.log(sam)
+        let b = sam.speak(string, 0)
+        // let b = sam.buf32(string);
+        console.log(b)
     }
         
     function typewriter() {
@@ -180,6 +184,18 @@ let checkIfPlayer = (r,c) => {
     })
     return isPlayer;
 }
+
+let checkIfEnemy = (r,c) => {
+    let isEnemy = false;
+    Object.keys(matrix[r][c].children).forEach((key) => {
+        if(matrix[r][c].children[key].type == "enemy") {
+            // contains players
+            isEnemy = true;
+        }
+    })
+    return isEnemy;
+}
+
 
 let getRandomColor = () => {
     let letters = '0123456789ABCDEF';
@@ -614,16 +630,65 @@ let playerimage = new Image()
 playerimage.src = "./assets/player.png"
 
 
+let makeEnemyImg = (x, y) => {
+    let a = [];
+    seekerdata.frames.forEach(frame => {
+        Object.keys(frame.frame).forEach(key => {
+            a.push(frame.frame[key]);
+        })
+    })
+    
+    var animations = {
+      idle: a
+    };
+    
+    var enemyImg = new Image();
+    enemyImg.src = '../game/sprites/seeker.png';
+    enemyImg.onload = function () {
+      var blob = new Konva.Sprite({
+        x: x,
+        y: y,
+        image: enemyImg,
+        animation: 'idle',
+        animations: animations,
+        frameRate: 16,
+        frameIndex: 0,
+      });
+    
+      // add the shape to the layer
+    //   layer.add(blob);
+    
+      // add the layer to the stage
+    //   stage.add(layer);
+    
+      // start sprite animation
+    //   blob.start();
+    blob.start()
+
+    return blob;
+    
+    };
+}
+
+
+
+
 let updateCanvas = () => {
     for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix[i].length; j++) {
+            // console.log(matrix[i][j].canvas)
             if(checkIfPlayer(i, j)) {
-                
-                matrix[i][j].canvas.opacity(1);
-                // matrix[i][j].canvas.strokeWidth(2);
-                // matrix[i][j].canvas.draw();
-                matrix[i][j].canvas.fillPatternImage(playerimage);
-            } else {
+                if(matrix[i][j].canvas.attrs.opacity == 1) {
+
+                } else {
+                    matrix[i][j].canvas.opacity(1);
+                    matrix[i][j].canvas.fillPatternImage(playerimage);
+                }
+
+            } else if (checkIfEnemy(i, j)) {
+                // console.log(matrix[i][j].canvas)
+            }
+            else {
                 matrix[i][j].canvas.fillPatternImage(undefined)
                 matrix[i][j].canvas.opacity(0);
                 // matrix[i][j].canvas.strokeWidth(0);
@@ -1034,6 +1099,8 @@ let str = document.getElementById("start");
 
 let start = (e) => {
     let audiocontext = new AudioContext();
+    let gain = audiocontext.createGain();
+    gain.gain.value = 0.2;
     document.getElementById("game-wrapper-body").classList.remove("blur");
     showMessage(gametext.missions[missiondata.level], "opening");
     str.classList.add("hide");
