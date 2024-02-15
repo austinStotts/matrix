@@ -15,3 +15,10 @@ if(loadeddata != undefined) {
 } else {
     window.localStorage.setItem("missiondata", JSON.stringify({ level: Number(hm)+1, name: undefined }))
 }
+
+let relics = window.localStorage.getItem("relics");
+if(relics == undefined) {
+    window.localStorage.setItem("relics", JSON.stringify([]))
+} else {
+    
+}

@@ -19,7 +19,7 @@ let gametext = {
             ],
             "brief": [
                 "you exist to find and protect",
-                "defeating our enemies is worth more than your life alone",
+                "defeating our enemies is worth more than your individual life",
                 "do not fail",
             ],
             "handler": `
@@ -55,9 +55,9 @@ let gametext = {
                 "another stain on my victory"
             ],
             "brief": [
-                "sending you further in",
-                "a unit with a confirmed kill is rare",
-                "remember this, we are smarter than them"
+                "go beyond our nest",
+                "their number and kind will be ███████████",
+                "remember we are smarter than them"
             ],
             "handler": `
             ⠀⠀⠀⠀⢀⣤⣄⣀⣤⡀⠀⠀⠀⠀⠀

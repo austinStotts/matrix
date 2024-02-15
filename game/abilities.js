@@ -737,11 +737,11 @@ class Shotgun {
 
         // console.log(r2, c2, r3, c3)
 
-        d1.push({x: matrix[r1][c1].canvas.attrs.x+16, y: matrix[r1][c1].canvas.attrs.y});
-        d1.push({x: matrix[r2][c2].canvas.attrs.x+16, y: matrix[r2][c2].canvas.attrs.y});
+        d1.push({x: matrix[r1][c1].canvas.x+16, y: matrix[r1][c1].canvas.y});
+        d1.push({x: matrix[r2][c2].canvas.x+16, y: matrix[r2][c2].canvas.y});
 
-        d2.push({x: matrix[r1][c1].canvas.attrs.x+16, y: matrix[r1][c1].canvas.attrs.y});
-        d2.push({x: matrix[r3][c3].canvas.attrs.x+16, y: matrix[r3][c3].canvas.attrs.y});
+        d2.push({x: matrix[r1][c1].canvas.x+16, y: matrix[r1][c1].canvas.y});
+        d2.push({x: matrix[r3][c3].canvas.x+16, y: matrix[r3][c3].canvas.y});
 
         // console.log(d1, d2)
         for(let k = 1; k < 10; k++) {

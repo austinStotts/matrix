@@ -4,6 +4,7 @@ let relics = {
         effect: "allows use of meteor fire & meteor cryo",
         name: "tape measure",
         class: "tape-measure",
+        id: "tape_measure",
         found: "mission 1"
     }
 }

@@ -205,6 +205,7 @@ let checkIfEnemy = (r,c) => {
 }
 
 
+
 let getRandomColor = () => {
     let letters = '0123456789ABCDEF';
     let color = '#';
@@ -235,6 +236,7 @@ let damageConstructs = (r,c,damage) => {
     Object.keys(matrix[r][c].children).forEach(key => {
         if(matrix[r][c].children[key].type == "construct") {
             matrix[r][c].children[key].takeDamage(damage);
+            markForUpdate(r,c)
         }
     })
 }
@@ -248,10 +250,11 @@ let damagePlayers = (r,c,damage) => {
 }
 
 let calculateCell = (r, c) => {
-
+    console.log("calculate")
     let projectiles = [];
     let constructs = [];
     let players = [];
+    let enemies = [];
     Object.keys(matrix[r][c].children).forEach(key => {
 
         if(matrix[r][c].children[key].type == "projectile") {
@@ -260,6 +263,8 @@ let calculateCell = (r, c) => {
             constructs.push(matrix[r][c].children[key]);
         } else if(matrix[r][c].children[key].type == "player") {
             players.push(matrix[r][c].children[key]);
+        } else if(matrix[r][c].children[key].type == "enemy") {
+            enemies.push(matrix[r][c].children[key]);
         }
     })
 
@@ -292,6 +297,8 @@ let calculateCell = (r, c) => {
     if(constructs.length > 0 || players.length > 0) {
         projectiles.forEach(p => { p.delete = true; })
     }
+
+    
 }
 
 let calculateTiles = () => {
@@ -482,6 +489,10 @@ let childFormatter = (node) => {
     return (`<div class="child-line-tt"><span class="child-type-tt ${node.type}-tt">${node.type}</span> <span class="child-name-tt">${node.name}</span> <span class="child-hp-tt">${node.hp}</span></div>`)
 }
 
+let relicFormatter = (node) => {
+    return (`<div class="child-line-tt"><span class="child-type-tt relic-tt">relic</span> <span class="child-name-tt">${node.id.split("_").join(" ")}</span></div>`)
+}
+
 let cellHover = (e) => {
     let t = document.createElement("div");
     let [row, column] = idToCord(e.target.id);
@@ -492,7 +503,10 @@ let cellHover = (e) => {
     t.style.top = (e.target.offsetTop) + "px";
     t.innerHTML = `
         <div class="cordinates">X <span class="x-cord">${column}</span> Y <span class="y-cord">${row}</span> <span class="tile-label-tt ${matrix[row][column].tile.name}-tt">${matrix[row][column].tile.dot ? '<span class="mc-dot-tt">'+ matrix[row][column].tile.dot + '</span>' : ""}<span class="mc-tt">${matrix[row][column].tile.movementCost}</span>${matrix[row][column].tile.name}</span></div>
-        <div class="cell-children-tt">${Object.keys(matrix[row][column].children).map((key) => { return (childFormatter(matrix[row][column].children[key])) }).join(`<div class="children-break-tt"></div>`)}</div>`
+        <div class="cell-children-tt">
+            ${Object.keys(matrix[row][column].children).map((key) => { return (childFormatter(matrix[row][column].children[key])) }).join(`<div class="children-break-tt"></div>`)}
+            ${matrix[row][column].relic ? relicFormatter(matrix[row][column].relic) : ""}
+        </div>`
     e.target.parentElement.appendChild(t)
 }
 
@@ -585,6 +599,7 @@ let makeMatrix = (n, tile) => {
             this.children = {};
             this.tile = new tile();
             this.canvas = undefined;
+            this.relic = null;
         }
     }
 
@@ -658,6 +673,20 @@ let makePlayerImg = (x, y) => {
 }
 
 
+let relicimg = new Image();
+relicimg.src = `./assets/tape_measure.png`;
+let makeRelicImg = (x, y, src) => {
+    let relic_ = new Konva.Rect({
+        x: x,
+        y: y,
+        width: 32,
+        height: 32
+    });
+
+    relic_.fillPatternImage(relicimg);
+
+    return relic_
+}
 
 
 let makeEnemyImg = (x, y) => {
@@ -709,6 +738,12 @@ let updateCanvas = () => {
                     matrix[i][j].canvas.sprite = image;
                     layer.add(image);
                     image.start();
+                    matrix[i][j].canvas.needsUpdate = false;
+                }
+                else if(matrix[i][j].relic && !checkForConstruct(i,j)) {
+                    let image = makeRelicImg(matrix[i][j].canvas.x, matrix[i][j].canvas.y);
+                    matrix[i][j].relic.sprite = image;
+                    layer.add(image);
                     matrix[i][j].canvas.needsUpdate = false;
                 }
                 else {
@@ -1015,13 +1050,37 @@ let addToCell = (r, c, x, update=true) => {
     calculateCell(r, c);
 }
 
+let addRelic = (name) => {
+    let relics = JSON.parse(window.localStorage.getItem("relics"));
+    let hasRelic = false;
+    relics.forEach(relic => {
+        if(relic.id == name) { hasRelic = true }
+    })
+    if(!hasRelic) {
+        relics.push({id: name});
+        window.localStorage.setItem("relics", JSON.stringify(relics))
+    }
+}
+
+let checkForRelic = (r,c) => {
+    if(matrix[r][c].relic) {
+        addRelic(matrix[r][c].relic.id)
+        addLog({ type: "relic", name: "you", content: ` found the ${matrix[r][c].relic.id.split("_").join(" ")}` });
+        matrix[r][c].relic.sprite.destroy();
+        matrix[r][c].relic = null;
+        markForUpdate(r,c);
+        // save that the player found the relic
+    }
+}   
+
 let movePlayer = (r, c) => {
     if(checkForBoundry(r,c) && PLAYER.movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c) && !checkForConstruct(r,c)) {
         markForUpdate(PLAYER.row, PLAYER.column); 
         removefromCell(PLAYER.row, PLAYER.column, PLAYER.id);
         addToCell(r, c, PLAYER);
         PLAYER.move(r,c, matrix[r][c].tile.movementCost);
-        markForUpdate(r, c); 
+        markForUpdate(r,c); 
+        checkForRelic(r,c);
     }
 }
 
@@ -1088,6 +1147,12 @@ let buildWorldConstructs = (list) => {
     })
 }
 
+let placeRelics = (list) => {
+    list.forEach(relic => {
+        matrix[relic.row][relic.column].relic = relic;
+    })
+}
+
 // let addEnemies = (list) => {
 //     list.forEach((enemy, i) => {
 
@@ -1101,6 +1166,7 @@ let buildWorldConstructs = (list) => {
 let LEVEL = JSON.parse(window.localStorage.getItem("missiondata")).level;
 console.log(LEVEL)
 if(LEVEL > Object.keys(missionmatrixdata.missions).length) { LEVEL = Object.keys(missionmatrixdata.missions).length }
+console.log(missionmatrixdata.missions[LEVEL])
 let matrix = makeMatrix(11, tiles[missionmatrixdata.missions[LEVEL].tile.id]);
 drawMatrix(11);
 
@@ -1122,7 +1188,7 @@ let inputMethod = "movement";
 getSavedAbilities();
 
 buildWorldConstructs(missionmatrixdata.missions[LEVEL].constructs);
-
+placeRelics(missionmatrixdata.missions[LEVEL].relics);
 
 
 // addToCell(ENEMY.row, ENEMY.column, ENEMY);
@@ -1155,6 +1221,7 @@ str.addEventListener("click", start);
 
 drawCanvas();
 updateLabels();
+
 setInterval(() => {
     // pruneMatrix();
     compairMatrix();

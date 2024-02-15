@@ -588,6 +588,10 @@ body {
   color: #ff3355;
 }
 
+.relic-tt {
+  color: gold;
+}
+
 .x-cord {
   text-shadow: 1px 1px red;
 }

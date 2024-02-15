@@ -1,0 +1,64 @@
+
+html {
+    background-color: black;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.home-link-wrapper {
+    margin: 20px 0px 0px 20px;
+}
+
+.home-link {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.home-link:hover {
+    text-decoration: underline;
+}
+
+.relics-wrapper {
+
+    margin-top: 30px;
+    margin-left: 20px;
+}
+
+.relic-wrapper {
+    border: 1px solid white;
+    width: 200px;
+    height: 300px;
+    padding: 10px;
+}
+
+.relic-img-wrapper {
+    text-align: center;
+}
+
+.relic-img {
+    
+}
+
+.relic-name {
+    font-size: 24px;
+    text-align: center;
+}
+
+.relic-found {
+    text-align: center;
+}
+
+.relic-effect {
+    border-top: 1px solid grey;
+    margin: 20px 0px;
+    padding: 10px 0px;
+    font-size: 12px;
+}
+
+.relic-description {
+    border-top: 1px solid grey;
+    margin: 20px 0px;
+    padding: 10px 0px;
+    font-size: 12px;
+}
