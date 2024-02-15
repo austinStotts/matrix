@@ -18,11 +18,24 @@ opts = {
   };
 
 let sam = new SamJs(opts);
-// console.log(sam)
+// sam.setVolume(0.2)
+console.log(sam)
 
 
 
 let showMessage = (mission, state, goHome=false) => {
+
+    let CONTEXT = new AudioContext();
+
+    let speak = (string) => {
+        // console.log(sam)
+        let b = sam.speak(string)
+        // let b = sam.buf8(string);
+        console.log(b)
+    }
+
+
+
 
     console.log(mission)
     let aText;
@@ -43,12 +56,7 @@ let showMessage = (mission, state, goHome=false) => {
     let sContents = ''; // initialise contents letiable
     let iRow; // initialise current row
     
-    let speak = (string) => {
-        console.log(sam)
-        let b = sam.speak(string, 0)
-        // let b = sam.buf32(string);
-        console.log(b)
-    }
+
         
     function typewriter() {
         // console.log("hello")
@@ -233,7 +241,7 @@ let damageConstructs = (r,c,damage) => {
 
 let damagePlayers = (r,c,damage) => {
     Object.keys(matrix[r][c].children).forEach(key => {
-        if(matrix[r][c].children[key].type == "player") {
+        if(matrix[r][c].children[key].type == "player" || matrix[r][c].children[key].type == "enemy") {
             matrix[r][c].children[key].takeDamage(damage);
         }
     })
@@ -290,7 +298,7 @@ let calculateTiles = () => {
     for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix[i].length; j++) {
             Object.keys(matrix[i][j].children).forEach((key) => {
-                if(matrix[i][j].children[key].type == "player") {
+                if(matrix[i][j].children[key].type == "player" || matrix[i][j].children[key].type == "enemy") {
                     // contains players
                     if(matrix[i][j].tile.dot > 0) { matrix[i][j].children[key].takeDamage(matrix[i][j].tile.dot) }
                 }
@@ -608,26 +616,48 @@ let drawCanvas = () => {
     for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix[i].length; j++) {
 
-            let box = new Konva.Rect({
+
+            matrix[i][j].canvas = {
                 x: 2+(j*32)+(j*2),
                 y: 2+(i*32)+(i*2),
-                width: 32,
-                height: 32,
-                opacity: 0,
-                // fill: getRandomColor(),
-                stroke: 'black',
-                strokeWidth: 0,
-                draggable: false,
-            });
-            matrix[i][j].canvas = box;
-            layer.add(box);
+                needsUpdate: true,
+                sprite: null
+            }
+
+            // let box = new Konva.Rect({
+            //     x: 2+(j*32)+(j*2),
+            //     y: 2+(i*32)+(i*2),
+            //     width: 32,
+            //     height: 32,
+            //     opacity: 0,
+            //     // fill: getRandomColor(),
+            //     stroke: 'black',
+            //     strokeWidth: 0,
+            //     draggable: false,
+            // });
+            // matrix[i][j].canvas = box;
+            // layer.add(box);
         
         }
     }
 }
 
-let playerimage = new Image()
-playerimage.src = "./assets/player.png"
+let playerimage = new Image();
+playerimage.src = "./assets/player.png";
+let makePlayerImg = (x, y) => {
+    let player_ = new Konva.Rect({
+        x: x,
+        y: y,
+        width: 32,
+        height: 32
+    });
+
+    player_.fillPatternImage(playerimage);
+
+    return player_
+}
+
+
 
 
 let makeEnemyImg = (x, y) => {
@@ -638,14 +668,13 @@ let makeEnemyImg = (x, y) => {
         })
     })
     
-    var animations = {
+    let animations = {
       idle: a
     };
     
-    var enemyImg = new Image();
+    let enemyImg = new Image();
     enemyImg.src = '../game/sprites/seeker.png';
-    enemyImg.onload = function () {
-      var blob = new Konva.Sprite({
+    let enemy_ = new Konva.Sprite({
         x: x,
         y: y,
         image: enemyImg,
@@ -653,47 +682,48 @@ let makeEnemyImg = (x, y) => {
         animations: animations,
         frameRate: 16,
         frameIndex: 0,
-      });
+    });
     
-      // add the shape to the layer
-    //   layer.add(blob);
-    
-      // add the layer to the stage
-    //   stage.add(layer);
-    
-      // start sprite animation
-    //   blob.start();
-    blob.start()
-
-    return blob;
-    
-    };
+    return enemy_;
 }
 
-
+let markForUpdate = (row, column) => {
+    matrix[row][column].canvas.needsUpdate = true;
+}
 
 
 let updateCanvas = () => {
     for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix[i].length; j++) {
-            // console.log(matrix[i][j].canvas)
-            if(checkIfPlayer(i, j)) {
-                if(matrix[i][j].canvas.attrs.opacity == 1) {
 
-                } else {
-                    matrix[i][j].canvas.opacity(1);
-                    matrix[i][j].canvas.fillPatternImage(playerimage);
+            if(matrix[i][j].canvas.needsUpdate) {
+                if(checkIfPlayer(i, j)) {
+                    let image = makePlayerImg(matrix[i][j].canvas.x, matrix[i][j].canvas.y);
+                    matrix[i][j].canvas.sprite = image;
+                    layer.add(image);
+                    // image.start();
+                    matrix[i][j].canvas.needsUpdate = false;
                 }
+                else if(checkIfEnemy(i, j)) {
+                    let image = makeEnemyImg(matrix[i][j].canvas.x, matrix[i][j].canvas.y);
+                    matrix[i][j].canvas.sprite = image;
+                    layer.add(image);
+                    image.start();
+                    matrix[i][j].canvas.needsUpdate = false;
+                }
+                else {
+                    if(matrix[i][j].canvas.sprite != null) {
+                        matrix[i][j].canvas.sprite.destroy();
+                        matrix[i][j].canvas.sprite = null;
+                    }
+                    matrix[i][j].canvas.needsUpdate = false;
+                }
+            }
 
-            } else if (checkIfEnemy(i, j)) {
-                // console.log(matrix[i][j].canvas)
-            }
-            else {
-                matrix[i][j].canvas.fillPatternImage(undefined)
-                matrix[i][j].canvas.opacity(0);
-                // matrix[i][j].canvas.strokeWidth(0);
-                // matrix[i][j].canvas.draw();
-            }
+
+
+
+
         }
     }
     layer.draw()
@@ -728,15 +758,15 @@ let checkForWinner = () => {
     if(PLAYER.hp <= 0) {
         playerCanAct = false;
         console.log("YOU LOSE");
-        showMessage(gametext.missions[missiondata.level], "failure", true);
+        showMessage(gametext.missions[LEVEL], "failure", true);
         let old = JSON.parse(window.localStorage.getItem("missiondata"));
         old.level += 1;
         window.localStorage.setItem("missiondata", JSON.stringify(old))
     } else if (ENEMY.hp <= 0) {
         playerCanAct = false;
         console.log("YOU WIN");
-        showMessage(gametext.missions[missiondata.level], "closing", true);
-        setHighestMission(missiondata.level)
+        showMessage(gametext.missions[LEVEL], "closing", true);
+        setHighestMission(LEVEL)
     }
 }
 
@@ -751,11 +781,11 @@ let compairMatrix = () => {
                     // do nothing
                 } else {
                     classname = classname + " " + matrix[i][j].children[key].classname;
+                    
                 }
             })
 
             classname = classname + " " + matrix[i][j].tile.classname;
-
             cell.className = classname;
         }
     }
@@ -806,6 +836,11 @@ let calculateProjectile = (a, ir, ic, dr, dc) => {
             damagePlayers(cr,cc,a.damage);
             try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
             stop = true;
+        }
+        else if (checkIfEnemy(cr,cc)) { // animate the movement then damage the player
+            damagePlayers(cr,cc,a.damage);
+            try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
+            stop = true;
         } 
         else {
             cellsTraveled.push([cr,cc]);
@@ -843,8 +878,8 @@ let animateProjectile = (cells, dr, dc, imagename, speed) => {
         let r2 = cells[cells.length-1][0];
         let c2 = cells[cells.length-1][1];
 
-        data.push({x: matrix[r1][c1].canvas.attrs.x, y: matrix[r1][c1].canvas.attrs.y});
-        data.push({x: matrix[r2][c2].canvas.attrs.x, y: matrix[r2][c2].canvas.attrs.y});
+        data.push({x: matrix[r1][c1].canvas.x, y: matrix[r1][c1].canvas.y});
+        data.push({x: matrix[r2][c2].canvas.x, y: matrix[r2][c2].canvas.y});
 
 
 
@@ -982,17 +1017,21 @@ let addToCell = (r, c, x, update=true) => {
 
 let movePlayer = (r, c) => {
     if(checkForBoundry(r,c) && PLAYER.movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c) && !checkForConstruct(r,c)) {
+        markForUpdate(PLAYER.row, PLAYER.column); 
         removefromCell(PLAYER.row, PLAYER.column, PLAYER.id);
         addToCell(r, c, PLAYER);
         PLAYER.move(r,c, matrix[r][c].tile.movementCost);
+        markForUpdate(r, c); 
     }
 }
 
 let moveEnemy = (r, c) => {
     if(checkForBoundry(r,c) && ENEMY.movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c) && !checkForConstruct(r,c)) {
+        markForUpdate(ENEMY.row, ENEMY.column);
         removefromCell(ENEMY.row, ENEMY.column, ENEMY.id);
         addToCell(r, c, ENEMY);
         ENEMY.move(r,c, matrix[r][c].tile.movementCost);
+        markForUpdate(r, c); 
     }
 }
 
@@ -1059,15 +1098,17 @@ let buildWorldConstructs = (list) => {
 // _________________________________________________________
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // init and game loop
-let missiondata = JSON.parse(window.localStorage.getItem("missiondata"));
-let matrix = makeMatrix(11, tiles[missionmatrixdata.missions[missiondata.level].tile.id]);
+let LEVEL = JSON.parse(window.localStorage.getItem("missiondata")).level;
+console.log(LEVEL)
+if(LEVEL > Object.keys(missionmatrixdata.missions).length) { LEVEL = Object.keys(missionmatrixdata.missions).length }
+let matrix = makeMatrix(11, tiles[missionmatrixdata.missions[LEVEL].tile.id]);
 drawMatrix(11);
 
 let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Slice());
 PLAYER.gameIndex = 0;
 addToCell(PLAYER.row, PLAYER.column, PLAYER);
 
-let enemy = missionmatrixdata.missions[missiondata.level].enemies[0]
+let enemy = missionmatrixdata.missions[LEVEL].enemies[0]
 let ENEMY = new enemies[enemy.id](enemy.row, enemy.column);
 ENEMY.gameIndex = 1;
 addToCell(enemy.row, enemy.column, ENEMY);
@@ -1080,7 +1121,7 @@ let inputMethod = "movement";
 
 getSavedAbilities();
 
-buildWorldConstructs(missionmatrixdata.missions[missiondata.level].constructs);
+buildWorldConstructs(missionmatrixdata.missions[LEVEL].constructs);
 
 
 
@@ -1098,16 +1139,19 @@ document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.abilit
 let str = document.getElementById("start");
 
 let start = (e) => {
-    let audiocontext = new AudioContext();
-    let gain = audiocontext.createGain();
-    gain.gain.value = 0.2;
     document.getElementById("game-wrapper-body").classList.remove("blur");
-    showMessage(gametext.missions[missiondata.level], "opening");
+    showMessage(gametext.missions[LEVEL], "opening");
     str.classList.add("hide");
 }
 
 
 str.addEventListener("click", start);
+
+// setInterval(() => {
+//     console.log("--------------------------");
+//     console.log(matrix);
+//     console.log("\n\n")
+// }, 1000)
 
 drawCanvas();
 updateLabels();

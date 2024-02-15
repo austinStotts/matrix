@@ -13,9 +13,9 @@ let gametext = {
                 ".-.. .. ...- ."
             ],
             "failure": [
-                "(647,2847)",
                 "mission failure",
-                "diagnostics unrecoverable"
+                "i am still below quata for now",
+                "the next must do better"
             ],
             "brief": [
                 "you exist to find and protect",
@@ -50,7 +50,6 @@ let gametext = {
                 "do not fail me now"
             ],
             "failure": [
-                "(699,3841)",
                 "mission failure",
                 "another waist",
                 "another stain on my victory"

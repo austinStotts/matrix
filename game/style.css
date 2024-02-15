@@ -12,7 +12,11 @@ body {
 
 
 
-
+.warning {
+  display: block;
+  font-size: 12px;
+  color: #ff3355;
+}
 
 .hide {
   display: none !important;
@@ -578,6 +582,10 @@ body {
 
 .player-tt {
   color: rgb(0, 149, 255);
+}
+
+.enemy-tt {
+  color: #ff3355;
 }
 
 .x-cord {
