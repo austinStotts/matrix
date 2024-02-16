@@ -502,7 +502,7 @@ let cellHover = (e) => {
     t.style.left = (e.target.offsetLeft + 32) + "px";
     t.style.top = (e.target.offsetTop) + "px";
     t.innerHTML = `
-        <div class="cordinates">X <span class="x-cord">${column}</span> Y <span class="y-cord">${row}</span> <span class="tile-label-tt ${matrix[row][column].tile.name}-tt">${matrix[row][column].tile.dot ? '<span class="mc-dot-tt">'+ matrix[row][column].tile.dot + '</span>' : ""}<span class="mc-tt">${matrix[row][column].tile.movementCost}</span>${matrix[row][column].tile.name}</span></div>
+        <div class="cordinates">X <span class="x-cord">${column}</span> Y <span class="y-cord">${row}</span> <span class="tile-label-tt ${matrix[row][column].tile.classname}-tt">${matrix[row][column].tile.dot ? '<span class="mc-dot-tt">'+ matrix[row][column].tile.dot + '</span>' : ""}<span class="mc-tt">${matrix[row][column].tile.movementCost}</span>${matrix[row][column].tile.name}</span></div>
         <div class="cell-children-tt">
             ${Object.keys(matrix[row][column].children).map((key) => { return (childFormatter(matrix[row][column].children[key])) }).join(`<div class="children-break-tt"></div>`)}
             ${matrix[row][column].relic ? checkForConstruct(row, column) ? "" : relicFormatter(matrix[row][column].relic) : ""}
@@ -1186,6 +1186,12 @@ let spawnEnemies = (list) => {
     return enemylist;
 }
 
+let tileOverides = (list) => {
+    list.forEach(tile => {
+        matrix[tile.row][tile.column].tile = new tiles[tile.id]();
+    })
+}
+
 
 
 // _________________________________________________________
@@ -1256,7 +1262,7 @@ str.addEventListener("click", start);
 
 drawCanvas();
 updateLabels();
-
+tileOverides(missionmatrixdata.missions[LEVEL].tile_overides);
 setInterval(() => {
     // pruneMatrix();
     compairMatrix();

@@ -319,6 +319,14 @@ body {
   background-image: url("./assets/plains.gif");
 }
 
+.cracked-earth {
+  background-image: url("./assets/cracked_earth.png");
+}
+
+.plains-pool {
+  background-image: url("./assets/plains_pool.png");
+}
+
 .frozen {
   background-image: url("./assets/frozen.gif");
   /* background-color: white; */

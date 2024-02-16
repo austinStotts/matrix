@@ -831,6 +831,17 @@ class Plains {
     }
 }
 
+class Cracked_earth {
+    constructor() {
+        this.type = "tile"
+        this.allowsMovement = true;
+        this.movementCost = 1;
+        this.classname = "cracked-earth"
+        this.name = "cracked earth"
+        this.dot = 0;
+    }
+}
+
 class Frozen {
     constructor() {
         this.type = "tile"
@@ -867,6 +878,16 @@ class Mercury {
     }
 }
 
+class Plains_pool {
+    constructor() {
+        this.type = "tile"
+        this.allowsMovement = true;
+        this.movementCost = 4;
+        this.classname = "plains-pool"
+        this.name = "plains pool"
+    }
+}
+
 class Granite {
     constructor() {
         this.type = "tile"
@@ -883,5 +904,5 @@ class Granite {
 
 
 let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun, Rest, Heal];
-let tiles = {Plains, Frozen, Lava, Mercury, Granite}
+let tiles = {Plains, Frozen, Lava, Mercury, Granite, Cracked_earth, Plains_pool}
 let worldconstructs = {Wall, Reinforced_wall}
