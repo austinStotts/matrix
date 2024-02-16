@@ -6,5 +6,13 @@ let relics = {
         class: "tape-measure",
         id: "tape_measure",
         found: "mission 1"
-    }
+    },
+    toothpaste: {
+        description: "a tube of toothpaste... helps prevent gingivitis?",
+        effect: "permanent +1 power & +1 hp",
+        name: "toothpaste",
+        class: "toothpaste",
+        id: "toothpaste",
+        found: "mission 2"
+    },
 }

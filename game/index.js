@@ -674,7 +674,9 @@ let makePlayerImg = (x, y) => {
 
 
 let relicimg = new Image();
-relicimg.src = `./assets/tape_measure.png`;
+let loadRelic = (id) => {
+    relicimg.src = `./assets/${id}.png`;
+}
 let makeRelicImg = (x, y, src) => {
     let relic_ = new Konva.Rect({
         x: x,
@@ -1191,11 +1193,11 @@ let spawnEnemies = (list) => {
 // init and game loop
 let LEVEL = JSON.parse(window.localStorage.getItem("missiondata")).level;
 if(LEVEL > Object.keys(missionmatrixdata.missions).length) { LEVEL = Object.keys(missionmatrixdata.missions).length }
-console.log("level:", LEVEL)
+console.log("level:", LEVEL);
 console.log("level data:", missionmatrixdata.missions[LEVEL])
 let matrix = makeMatrix(11, tiles[missionmatrixdata.missions[LEVEL].tile.id]);
 drawMatrix(11);
-
+loadRelic(missionmatrixdata.missions[LEVEL].relics[0].id)
 // let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Slice());
 // PLAYER.gameIndex = 0;
 // addToCell(PLAYER.row, PLAYER.column, PLAYER);
