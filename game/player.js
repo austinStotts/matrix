@@ -9,7 +9,7 @@ class Player {
         this.ability1 = a1;
         this.ability2 = a2;
         this.ability3 = a3;
-        this.hp = 3;
+        this.hp = 4;
         this.bonusHP = 0;
         this.projectiles = [];
         this.maxMovements = 2;

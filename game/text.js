@@ -39,7 +39,6 @@ let gametext = {
             "opening": [    
                 "mission 2:", 
                 "our sovereignty does not reach these lands",
-                "the enemy will not wait for you",
                 "too many of you have failed me",
                 "use the lost as stepping stones"
             ],

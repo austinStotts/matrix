@@ -505,7 +505,7 @@ let cellHover = (e) => {
         <div class="cordinates">X <span class="x-cord">${column}</span> Y <span class="y-cord">${row}</span> <span class="tile-label-tt ${matrix[row][column].tile.name}-tt">${matrix[row][column].tile.dot ? '<span class="mc-dot-tt">'+ matrix[row][column].tile.dot + '</span>' : ""}<span class="mc-tt">${matrix[row][column].tile.movementCost}</span>${matrix[row][column].tile.name}</span></div>
         <div class="cell-children-tt">
             ${Object.keys(matrix[row][column].children).map((key) => { return (childFormatter(matrix[row][column].children[key])) }).join(`<div class="children-break-tt"></div>`)}
-            ${matrix[row][column].relic ? relicFormatter(matrix[row][column].relic) : ""}
+            ${matrix[row][column].relic ? checkForConstruct(row, column) ? "" : relicFormatter(matrix[row][column].relic) : ""}
         </div>`
     e.target.parentElement.appendChild(t)
 }
@@ -797,11 +797,19 @@ let checkForWinner = () => {
         let old = JSON.parse(window.localStorage.getItem("missiondata"));
         old.level += 1;
         window.localStorage.setItem("missiondata", JSON.stringify(old))
-    } else if (ENEMY.hp <= 0) {
-        playerCanAct = false;
-        console.log("YOU WIN");
-        showMessage(gametext.missions[LEVEL], "closing", true);
-        setHighestMission(LEVEL)
+    } else {
+        let numberdead = 0;
+        for(let i = 0; i < ENEMIES.length; i++) {
+            if (ENEMIES[i].hp <= 0) {
+                numberdead++
+            }
+        }
+        if(numberdead == ENEMIES.length) {
+            playerCanAct = false;
+            console.log("YOU WIN");
+            showMessage(gametext.missions[LEVEL], "closing", true);
+            setHighestMission(LEVEL)
+        }
     }
 }
 
@@ -1084,12 +1092,13 @@ let movePlayer = (r, c) => {
     }
 }
 
-let moveEnemy = (r, c) => {
-    if(checkForBoundry(r,c) && ENEMY.movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c) && !checkForConstruct(r,c)) {
-        markForUpdate(ENEMY.row, ENEMY.column);
-        removefromCell(ENEMY.row, ENEMY.column, ENEMY.id);
-        addToCell(r, c, ENEMY);
-        ENEMY.move(r,c, matrix[r][c].tile.movementCost);
+let moveEnemy = (r, c, enemyid) => {
+    console.log(enemyid)
+    if(checkForBoundry(r,c) && ENEMIES[enemyid].movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c) && !checkForConstruct(r,c)) {
+        markForUpdate(ENEMIES[enemyid].row, ENEMIES[enemyid].column);
+        removefromCell(ENEMIES[enemyid].row, ENEMIES[enemyid].column, ENEMIES[enemyid].id);
+        addToCell(r, c, ENEMIES[enemyid]);
+        ENEMIES[enemyid].move(r,c, matrix[r][c].tile.movementCost);
         markForUpdate(r, c); 
     }
 }
@@ -1113,7 +1122,8 @@ let updateTurns = () => {
     _activePlayer = 0;
     _players[_activePlayer].startTurn()
     PLAYER.updateTurn();
-    ENEMY.updateTurn();
+    ENEMIES.forEach(enemy => { enemy.updateTurn() })
+    // ENEMY.updateTurn();
     console.log(matrix);
     updateLabels();
 
@@ -1153,39 +1163,61 @@ let placeRelics = (list) => {
     })
 }
 
-// let addEnemies = (list) => {
-//     list.forEach((enemy, i) => {
+let spawnPlayer = (player_) => {
+    console.log(player_)
+    let newplayer = new Player(player_.row, player_.column, new Shell(), new Terraform_gamma(), new Slice());
+    newplayer.gameIndex = 0;
+    addToCell(newplayer.row, newplayer.column, newplayer);
+    _players.push(newplayer);
+    return newplayer;
+}
 
-//     })
-// }
+let spawnEnemies = (list) => {
+    let enemylist = [];
+    for(let i = 0; i < list.length; i++) {
+        let newenemy = new enemies[list[i].id](list[i].row, list[i].column, i);
+        newenemy.gameIndex = i+1;
+        enemylist.push(newenemy);
+        addToCell(newenemy.row, newenemy.column, newenemy);
+        _players.push(newenemy);
+    }
+    return enemylist;
+}
+
 
 
 // _________________________________________________________
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // init and game loop
 let LEVEL = JSON.parse(window.localStorage.getItem("missiondata")).level;
-console.log(LEVEL)
 if(LEVEL > Object.keys(missionmatrixdata.missions).length) { LEVEL = Object.keys(missionmatrixdata.missions).length }
-console.log(missionmatrixdata.missions[LEVEL])
+console.log("level:", LEVEL)
+console.log("level data:", missionmatrixdata.missions[LEVEL])
 let matrix = makeMatrix(11, tiles[missionmatrixdata.missions[LEVEL].tile.id]);
 drawMatrix(11);
 
-let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Slice());
-PLAYER.gameIndex = 0;
-addToCell(PLAYER.row, PLAYER.column, PLAYER);
+// let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Slice());
+// PLAYER.gameIndex = 0;
+// addToCell(PLAYER.row, PLAYER.column, PLAYER);
 
-let enemy = missionmatrixdata.missions[LEVEL].enemies[0]
-let ENEMY = new enemies[enemy.id](enemy.row, enemy.column);
-ENEMY.gameIndex = 1;
-addToCell(enemy.row, enemy.column, ENEMY);
 
-let _players = [PLAYER, ENEMY];
+// let ENEMY = new enemies[enemy.id](enemy.row, enemy.column);
+// ENEMY.gameIndex = 1;
+// addToCell(enemy.row, enemy.column, ENEMY);
+
+let _players = [];
 let _activePlayer = 0;
 let turn = 1;
 let playerCanAct = false;
 let inputMethod = "movement";
 
+let PLAYER = spawnPlayer(missionmatrixdata.missions[LEVEL].player);
+let ENEMIES = spawnEnemies(missionmatrixdata.missions[LEVEL].enemies);
+console.log(ENEMIES);
+
+
 getSavedAbilities();
+
 
 buildWorldConstructs(missionmatrixdata.missions[LEVEL].constructs);
 placeRelics(missionmatrixdata.missions[LEVEL].relics);
@@ -1206,7 +1238,8 @@ let str = document.getElementById("start");
 
 let start = (e) => {
     document.getElementById("game-wrapper-body").classList.remove("blur");
-    showMessage(gametext.missions[LEVEL], "opening");
+    // showMessage(gametext.missions[LEVEL], "opening");
+    playerCanAct = true;
     str.classList.add("hide");
 }
 

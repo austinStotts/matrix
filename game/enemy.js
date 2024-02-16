@@ -21,79 +21,81 @@ let moveToAttack = () => {
 
 }
 
-let attackPlayer = (er, ec, pr, pc) => {
+let attackPlayer = (er, ec, pr, pc, enemyid) => {
     let d = distanceFromPlayer(er, ec, pr, pc);
     if((Math.abs(d.rows) + Math.abs(d.columns)) < 3) {
         console.log("real close");
-        ENEMY.ability(3);
+        ENEMIES[enemyid].ability(3);
     } else {
-        ENEMY.ability(1);
+        ENEMIES[enemyid].ability(1);
     }
     let dx = (pc-ec);
     let dy = (pr-er);
-    if(dx > dy) {
+    console.log("dx:", dx);
+    console.log("dy:", dy);
+    if(Math.abs(dx) > Math.abs(dy)) {
+        console.log("ATTACK TO SIDES")
         if(dx > 0) {
             // move right
-            ENEMY.useAbility(0, 1);
+            ENEMIES[enemyid].useAbility(0, 1);
         } else if(dx < 0) {
             // move left
-            ENEMY.useAbility(0, -1);
+            ENEMIES[enemyid].useAbility(0, -1);
         } else {
             // dont move
         }
     } else {
         if(dy > 0) {
             // move down
-            ENEMY.useAbility(1, 0);
+            ENEMIES[enemyid].useAbility(1, 0);
         } else if(dy < 0) {
             // move up
-            ENEMY.useAbility(-1, 0);
+            ENEMIES[enemyid].useAbility(-1, 0);
         } else {
             // dont move
         }
     }
 }
 
-let moveTowardsPlayer = (er, ec, pr, pc) => {
+let moveTowardsPlayer = (er, ec, pr, pc, enemyid) => {
     let d = distanceFromPlayer(er, ec, pr, pc);
-    if(Math.round(Math.random())) {
-        if(canHit(er, ec, pr, pc) || (d.rows + d.columns) < 3) {
+    if(Math.ceil(Math.random()*4) > 1) {
+        if(canHit(er, ec, pr, pc) || (Math.abs(d.rows) + Math.abs(d.columns)) < 3) {
             //attack
             console.log("ATTACK");
         } else {
-            if(Math.abs(d.rows) <= ENEMY.movements) {
+            if(Math.abs(d.rows) <= ENEMIES[enemyid].movements) {
                 console.log("in range of rows!")
                 // move 1 row towards player
-                moveEnemy(er + reduceToOne(d.rows), ec);
-            } else if (Math.abs(d.columns) <= ENEMY.movements) {
+                moveEnemy(er + reduceToOne(d.rows), ec, enemyid);
+            } else if (Math.abs(d.columns) <= ENEMIES[enemyid].movements) {
                 console.log("in range of columns!")
                 // move 1 column towards player
-                moveEnemy(er, ec + reduceToOne(d.columns));
+                moveEnemy(er, ec + reduceToOne(d.columns), enemyid);
             } else {
                 // out of range and cannot hit
                 if(d.rows >= d.columns) {
-                    moveEnemy(er + reduceToOne(d.rows), ec);
+                    moveEnemy(er + reduceToOne(d.rows), ec, enemyid);
                 } else {
-                    moveEnemy(er, ec + reduceToOne(d.columns))
+                    moveEnemy(er, ec + reduceToOne(d.columns), enemyid)
                 }
             }
         }
     } else {
         if(d.rows >= d.columns) {
-            moveEnemy(er + reduceToOne(d.rows), ec);
+            moveEnemy(er + reduceToOne(d.rows), ec, enemyid);
         } else {
-            moveEnemy(er, ec + reduceToOne(d.columns))
+            moveEnemy(er, ec + reduceToOne(d.columns), enemyid);
         }
     }
-
-
 }
 
 class Seeker {
-    constructor(r, c, name=generateName()) {
+    constructor(r, c, enemyid, name=generateName()) {
         this.name = name;
         this.type = "enemy";
         this.classname = "enemy";
+        this.enemyid = enemyid;
         this.id = getID();
         this.row = r;
         this.column = c;
@@ -204,7 +206,7 @@ class Seeker {
         if(this.hp > 0) {
             // move first
             for(let i = 0; i < this.maxMovements; i++) {
-                moveTowardsPlayer(this.row, this.column, PLAYER.row, PLAYER.column);
+                moveTowardsPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
                 await sleep(500);
                 console.log(distanceFromPlayer(this.row, this.column, PLAYER.row, PLAYER.column));
                 console.log("can hit player?: ", canHit(this.row, this.column, PLAYER.row, PLAYER.column));
@@ -213,7 +215,7 @@ class Seeker {
             // attack
 
             for(let i = 0; i < this.maxPower; i++) {
-                attackPlayer(this.row, this.column, PLAYER.row, PLAYER.column);
+                attackPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
                 await sleep(500);
             }
 
