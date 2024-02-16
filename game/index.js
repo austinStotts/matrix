@@ -658,7 +658,7 @@ let drawCanvas = () => {
 }
 
 let playerimage = new Image();
-playerimage.src = "./assets/player.png";
+playerimage.src = "./sprites/player.png";
 let makePlayerImg = (x, y) => {
     let player_ = new Konva.Rect({
         x: x,
