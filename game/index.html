@@ -57,32 +57,12 @@
         </div>
         
         <dialog id="game-help-dialog" class="game-help-dialog grad-border">
+            <div class="help-tab-bar">
+                <div id="help-tab-controls" class="tab tab-controls tab-selected">controls</div><div id="help-tab-interface" class="tab tab-interface">interface</div><div id="help-tab-game" class="tab tab-game">game</div>
+            </div>
             <div class="help-top-bar"><button id="closehelp" class="togglehelp">close</button></div>
             <!-- would like a large dialog with tabs for controls - ui info - enemy info -->
-            <div class="help-text">
-                <br>
-                (will make this prettier later)
-                <br>
-                <br>
-                all controlls use:
-                <br>
-                [w] [a] [s] [d] + [f] [e] [q] + [l mouse]
-                <br>
-                <br>
-                use [w] [a] [s] [d] to move when the input method is [movement]
-                <br>
-                <br>
-                to use an ability > press the key shown above the ability
-                <br>
-                when pressed, the input method will switch in the info panel on the right
-                <br>
-                now the game is waiting for a directional input using [w] [a] [s] [d]
-                <br>
-                some abilities allow for a mouse click to select a cell in the matrix
-                <br>
-                a grid will be shown on the matrix when this is an option
-                <br>
-            </div>
+            <div id="helptext" class="help-text"></div>
         </dialog>
         <!-- <dialog id="textbox">
         </dialog> -->
@@ -103,6 +83,7 @@
     <script src="./player.js"></script>
     <script src="./enemy.js"></script>
     <script src="./text.js"></script>
+    <script src="./help.js"></script>
     <script src="./index.js"></script>
 </body>
 </html>

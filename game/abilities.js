@@ -54,6 +54,31 @@ class Wall {
     }
 }
 
+
+class Switch {
+    constructor(owner) {
+        this.name = "switch";
+        this.owner = owner;
+        this.blocksMovement = true;
+        this.classname = "switch";
+        this.type = "mechanism";
+        this.id = getID();
+        this.delete = false;
+        this.state = false;
+    }
+
+    beforeDelete () {
+        console.log("wall construct before delete", this.hp);
+    }
+
+    activate () {
+        this.state = !this.state;
+    }
+}
+
+
+
+
 class Reinforced_wall {
     constructor(owner) {
         this.name = "reinforced wall";
@@ -187,7 +212,7 @@ class Terraform_alpha {
             }
         }
 
-        addToCell(pr, pc, new Terraformation(), false)
+        if(checkIfEmpty(pr,pc)) {addToCell(pr, pc, new Terraformation(), false)}
         let s = findSides(pr, pc, cr-pr, cc-pc);
         if(checkIfEmpty(s.left[0], s.left[1])) { addToCell(s.left[0], s.left[1], new Terraformation(), false) }
         if(checkIfEmpty(s.right[0], s.right[1])) { addToCell(s.right[0], s.right[1], new Terraformation(), false) }

@@ -138,6 +138,8 @@ body {
   overflow: scroll;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none;
+  padding: 0px;
+  font-size: 13px;
 }
 
 .game-help-dialog::-webkit-scrollbar {
@@ -165,6 +167,7 @@ body {
 
 .help-text {
   font-family: "Courier New", Courier, monospace;
+  padding: 10px;
 }
 
 .grad-border {
@@ -601,6 +604,10 @@ body {
   color: gold;
 }
 
+.mechanism-tt {
+  color: rgb(255, 137, 255);
+}
+
 .x-cord {
   text-shadow: 1px 1px red;
 }
@@ -829,4 +836,71 @@ body {
   font-size: 12px;
   /* border: 1px solid orchid; */
   padding: 5px;
+}
+
+
+
+
+
+
+
+
+
+.help-tab-bar {
+  /* border: 1px dashed salmon; */
+  position: relative;
+  width: 100%;
+  height: 30px;
+}
+
+.tab {
+  display: inline-block;
+  width: 33%;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  height: 100%;
+  height: 25px;
+  padding-top: 5px;
+  transition-duration: 0.2s;
+}
+
+.tab:hover {
+  cursor: pointer;
+  background-color: white;
+  color: black;
+}
+
+.tab-selected {
+  background-color: white;
+  color: black;
+}
+
+.newline::before {
+  content: ">";
+  color: #33ff33;
+}
+
+.help-tt-wrapper {
+  width: 250px;
+  height: 100px;
+  padding: 5px;
+  border: 1px solid;
+  --angle: 0deg;
+  border-image: linear-gradient(
+      var(--angle),
+      rgb(253, 114, 255),
+      rgb(114, 196, 255)
+    )
+    1;
+  animation: 3s rotate linear infinite;
+}
+
+
+.tile-label-tta {
+  /* float: right; */
+  margin-right: 5px;
+}
+
+.tt-help-label {
+
 }

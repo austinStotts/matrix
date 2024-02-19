@@ -493,6 +493,10 @@ let relicFormatter = (node) => {
     return (`<div class="child-line-tt"><span class="child-type-tt relic-tt">relic</span> <span class="child-name-tt">${node.id.split("_").join(" ")}</span></div>`)
 }
 
+let mechanismFormatter = (node) => {
+    return (`<div class="child-line-tt"><span class="child-type-tt mechanism-tt">mechanism</span> <span class="child-name-tt">${node.id.split("_").join(" ")}</span></div>`)
+}
+
 let cellHover = (e) => {
     let t = document.createElement("div");
     let [row, column] = idToCord(e.target.id);
@@ -506,6 +510,7 @@ let cellHover = (e) => {
         <div class="cell-children-tt">
             ${Object.keys(matrix[row][column].children).map((key) => { return (childFormatter(matrix[row][column].children[key])) }).join(`<div class="children-break-tt"></div>`)}
             ${matrix[row][column].relic ? checkForConstruct(row, column) ? "" : relicFormatter(matrix[row][column].relic) : ""}
+            ${matrix[row][column].mechanism ? mechanismFormatter(matrix[row][column].mechanism) : ""}
         </div>`
     e.target.parentElement.appendChild(t)
 }
@@ -600,6 +605,7 @@ let makeMatrix = (n, tile) => {
             this.tile = new tile();
             this.canvas = undefined;
             this.relic = null;
+            this.mechanism = null;
         }
     }
 
@@ -1165,6 +1171,12 @@ let placeRelics = (list) => {
     })
 }
 
+let placeMechanisms = (list) => {
+    list.forEach(mechanism => {
+        matrix[mechanism.row][mechanism.column].mechanism = mechanism;
+    })
+}
+
 let spawnPlayer = (player_) => {
     console.log(player_)
     let newplayer = new Player(player_.row, player_.column, new Shell(), new Terraform_gamma(), new Slice());
@@ -1203,7 +1215,9 @@ console.log("level:", LEVEL);
 console.log("level data:", missionmatrixdata.missions[LEVEL])
 let matrix = makeMatrix(11, tiles[missionmatrixdata.missions[LEVEL].tile.id]);
 drawMatrix(11);
-loadRelic(missionmatrixdata.missions[LEVEL].relics[0].id)
+if(missionmatrixdata.missions[LEVEL].relics[0]) {
+    loadRelic(missionmatrixdata.missions[LEVEL].relics[0].id)
+}
 // let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Slice());
 // PLAYER.gameIndex = 0;
 // addToCell(PLAYER.row, PLAYER.column, PLAYER);
@@ -1229,6 +1243,7 @@ getSavedAbilities();
 
 buildWorldConstructs(missionmatrixdata.missions[LEVEL].constructs);
 placeRelics(missionmatrixdata.missions[LEVEL].relics);
+placeMechanisms(missionmatrixdata.missions[LEVEL].mechanisms)
 
 
 // addToCell(ENEMY.row, ENEMY.column, ENEMY);
