@@ -23,6 +23,9 @@ html {
 
     margin-top: 30px;
     margin-left: 20px;
+    /* width: 90%; */
+    display: grid;
+    grid-template-columns: 50% 50%;
 }
 
 .relic-wrapper {
@@ -30,6 +33,7 @@ html {
     width: 200px;
     height: 300px;
     padding: 10px;
+    margin: 20px;
 }
 
 .relic-img-wrapper {

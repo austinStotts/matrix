@@ -15,4 +15,12 @@ let relics = {
         id: "toothpaste",
         found: "mission 2"
     },
+    calculator: {
+        description: "solar powered calculator",
+        effect: "allows the use of rest and focus",
+        name: "calculator",
+        class: "calculator",
+        id: "calculator",
+        found: "mission 3"
+    },
 }
