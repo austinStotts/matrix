@@ -54,6 +54,33 @@ class Wall {
     }
 }
 
+class Boolean_block {
+    constructor(state=false) {
+        this.name = "boolean block";
+        this.blocksMovement = false;
+        this.mechanism_block = true;
+        this.hp = 100;
+        this.type = "mechanism";
+        this.id = getID();
+        this.delete = false;
+        this.state = state;
+        this.classname = `boolean-block ${state ? "boolean-true" : "boolean-false"}`;
+    }
+
+    takeDamage (n) {
+        this.hp -= n;
+        console.log("Wall construct take damage - hp:", this.hp)
+        if(this.hp <= 0) { this.delete = true }
+    }
+
+    switch () {
+        this.state = !this.state;
+        this.blocksMovement = this.state;
+        this.classname = `boolean-block boolean-${this.state}`;
+        this.state ? this.type = "construct" : this.type = "mechanism"
+    }
+}
+
 
 class Switch {
     constructor(owner) {
@@ -73,6 +100,7 @@ class Switch {
 
     activate () {
         this.state = !this.state;
+        switchMatrix()
     }
 }
 
@@ -930,4 +958,5 @@ class Granite {
 
 let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun, Rest, Heal];
 let tiles = {Plains, Frozen, Lava, Mercury, Granite, Cracked_earth, Plains_pool}
-let worldconstructs = {Wall, Reinforced_wall}
+let worldconstructs = {Wall, Reinforced_wall, Boolean_block}
+let mechanisms = {Switch}

@@ -19,7 +19,6 @@ opts = {
 
 let sam = new SamJs(opts);
 // sam.setVolume(0.2)
-console.log(sam)
 
 
 
@@ -204,6 +203,17 @@ let checkIfEnemy = (r,c) => {
     return isEnemy;
 }
 
+// let checkIfMechanism = (r,c) => {
+//     let isMechanism = false;
+//     Object.keys(matrix[r][c].children).forEach((key) => {
+//         if(matrix[r][c].mechanism) {
+//             // contains mechanism
+//             isMechanism = true;
+//         }
+//     })
+//     return isMechanism;
+// }
+
 
 
 let getRandomColor = () => {
@@ -236,7 +246,7 @@ let damageConstructs = (r,c,damage) => {
     Object.keys(matrix[r][c].children).forEach(key => {
         if(matrix[r][c].children[key].type == "construct") {
             matrix[r][c].children[key].takeDamage(damage);
-            markForUpdate(r,c)
+            markForUpdate(r,c);
         }
     })
 }
@@ -494,7 +504,7 @@ let relicFormatter = (node) => {
 }
 
 let mechanismFormatter = (node) => {
-    return (`<div class="child-line-tt"><span class="child-type-tt mechanism-tt">mechanism</span> <span class="child-name-tt">${node.id.split("_").join(" ")}</span></div>`)
+    return (`<div class="child-line-tt"><span class="child-type-tt mechanism-tt">mechanism</span> <span class="child-name-tt">${node.name}</span> <span class="switch-${node.state}">${node.state ? "on" : "off"}</span></div>`)
 }
 
 let cellHover = (e) => {
@@ -696,6 +706,24 @@ let makeRelicImg = (x, y, src) => {
     return relic_
 }
 
+let switchon = new Image();
+let switchoff = new Image();
+switchon.src = `./assets/switch_on.png`;
+switchoff.src = `./assets/switch_off.png`;
+
+let makeMechanismImg = (x, y, state) => {
+    let mechanism_ = new Konva.Rect({
+        x: x,
+        y: y,
+        width: 32,
+        height: 32
+    });
+
+    mechanism_.fillPatternImage(state ? switchon : switchoff);
+
+    return mechanism_
+}
+
 
 let makeEnemyImg = (x, y) => {
     let a = [];
@@ -751,6 +779,12 @@ let updateCanvas = () => {
                 else if(matrix[i][j].relic && !checkForConstruct(i,j)) {
                     let image = makeRelicImg(matrix[i][j].canvas.x, matrix[i][j].canvas.y);
                     matrix[i][j].relic.sprite = image;
+                    layer.add(image);
+                    matrix[i][j].canvas.needsUpdate = false;
+                }
+                else if(matrix[i][j].mechanism && !checkForConstruct(i,j)) {
+                    let image = makeMechanismImg(matrix[i][j].canvas.x, matrix[i][j].canvas.y, matrix[i][j].mechanism.state);
+                    matrix[i][j].mechanism.sprite = image;
                     layer.add(image);
                     matrix[i][j].canvas.needsUpdate = false;
                 }
@@ -856,6 +890,19 @@ let pruneMatrix = () => {
     }
 }
 
+let switchMatrix = () => {
+    for(let i = 0; i < matrix.length; i++) {
+        for(let j = 0; j < matrix[i].length; j++) {
+            Object.keys(matrix[i][j].children).forEach(key => {
+                if(matrix[i][j].children[key].mechanism_block) {
+                    matrix[i][j].children[key].switch();
+                }
+            })
+        }
+    }
+    pruneMatrix()
+}
+
 // new idea
 // when a projectile is used
 // do all the calculations before
@@ -869,7 +916,15 @@ let calculateProjectile = (a, ir, ic, dr, dc) => {
     let cc = ic+dc;
     let stop = false;
     while(!stop) {
+        console.log(cr,cc)
         // console.log(matrix[cr][cc].canvas)
+        if(matrix[cr]) {
+            if(matrix[cr][cc].mechanism) {
+                matrix[cr][cc].mechanism.activate();
+                matrix[cr][cc].mechanism.sprite.destroy();
+                markForUpdate(cr,cc);
+            }
+        }
         if(cellsTraveled.length >= a.maxDistance && a.maxDistance != -1) {
             try { a.beforeDelete(cr,cc,cr-dr,cc-dc) } catch {}
             stop = true;
@@ -1161,7 +1216,7 @@ let getSavedAbilities = () => {
 
 let buildWorldConstructs = (list) => {
     list.forEach(con => {
-        addToCell(con.row, con.column, new worldconstructs[con.id]())
+        addToCell(con.row, con.column, new worldconstructs[con.id](con.state ? con.state : ""))
     })
 }
 
@@ -1173,7 +1228,7 @@ let placeRelics = (list) => {
 
 let placeMechanisms = (list) => {
     list.forEach(mechanism => {
-        matrix[mechanism.row][mechanism.column].mechanism = mechanism;
+        matrix[mechanism.row][mechanism.column].mechanism = new mechanisms[mechanism.id]();
     })
 }
 

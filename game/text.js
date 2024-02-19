@@ -70,6 +70,44 @@ let gametext = {
             ⢀⣤⣶⣿⢿⣿⣷⣷⣿⣿⣿⣛⣿⣿⣿
             ⠿⠿⠿⠿⠹⠿⠿⠿⠿⠿⠿⠭⠿⠿⠿
             `
+        },
+        "3": {
+            "opening": [    
+                "mission 3:", 
+                "consider yourself a poineer",
+                "unknown in all directions",
+                "closer than those before"
+            ],
+            "closing": [    
+                "mission complete", 
+                "inspiring",
+                "thrilling",
+                "you must keep going",
+                "do not fail me"
+            ],
+            "failure": [
+                "mission failure",
+                "you are not special after all",
+                "i cannot live like this",
+                "why must you all fail me"
+            ],
+            "brief": [
+                "the ground you walk on is cold",
+                "you are us",
+                "the tip of the spear"
+            ],
+            "handler": `
+            ⠀⠀⠀⠀⢀⣤⣄⣀⣤⡀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⣼⣿⡏⡇⢾⣷⡀⠀⠀⠀⠀
+            ⠀⣀⠀⣰⣿⣿⣟⢏⠻⣿⣿⣶⣿⠇⠀
+            ⠀⠘⢿⡿⣭⣭⣭⢭⣬⣭⡽⣮⠏⠀⠀
+            ⠀⠀⠀⢙⢻⠛⡿⠿⢺⠟⢻⠀⠀⠀⠀
+            ⠀⠀⠀⠈⢸⣇⠠⢘⣰⢈⡇⠀⠀⠀⠀
+            ⠀⠀⠀⠀⢀⣿⡞⡙⠮⣹⣫⡄⠀⠀⠀
+            ⠀⠀⠀⠀⣸⣥⣫⣓⣾⣿⣿⣿⣦⣄⡀
+            ⢀⣤⣶⣿⢿⣿⣷⣷⣿⣿⣿⣛⣿⣿⣿
+            ⠿⠿⠿⠿⠹⠿⠿⠿⠿⠿⠿⠭⠿⠿⠿
+            `
         }
     }
 }

@@ -664,6 +664,24 @@ body {
   }
 }
 
+.boolean-block {
+  border: 1px dashed rgb(255, 77, 249);
+}
+
+.boolean-true {
+  border: 1px solid rgb(255, 77, 249);
+  background-image: none;
+  background-color: rgb(255, 164, 220);
+}
+
+.switch-true {
+  color: #ff3355;
+}
+
+.switch-false {
+  color: #33ff33;
+}
+
 .tile-label-tt {
   float: right;
   margin-right: 5px;
