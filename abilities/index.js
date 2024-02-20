@@ -3,6 +3,14 @@ let a2w = document.getElementById("ac-2");
 let a3w = document.getElementById("ac-3");
 
 let sn = document.getElementById("saved-notif");
+let getAbilitiesFromRelics = () => {
+    let as = [];
+    let relics_ = JSON.parse(window.localStorage.getItem("relics")).map(r => relics[r.id] );
+    relics_.forEach(r => { r.abilities.forEach(a => { as.push(a) }) })
+    return as;
+}
+
+console.log(getAbilitiesFromRelics())
 
 let _a = {
 
@@ -52,23 +60,27 @@ let formatAbility = (a) => {
     `)
 }
 
+let valid = getAbilitiesFromRelics();
+
 let listAbilities = () => {
     for(let i = 0; i < abilities.length; i++) {
         let x = new abilities[i];
-        let a = document.createElement("div");
-        a.classList.add("ability-box", "available");
-        a.id = `a-${i}-${x.abilityClass}`
-        a.addEventListener("click", (e) => { clickAbility(a, i) })
-        a.innerHTML = formatAbility(x)
-        
-        if(x.abilityClass == 1) {
-            a1w.appendChild(a);
-        } else if(x.abilityClass == 2) {
-            a2w.appendChild(a);
-        } else if(x.abilityClass == 3) {
-            a3w.appendChild(a);
-        } else {
-
+        if(valid.includes(x.id)) {
+            let a = document.createElement("div");
+            a.classList.add("ability-box", "available");
+            a.id = `a-${i}-${x.abilityClass}`
+            a.addEventListener("click", (e) => { clickAbility(a, i) })
+            a.innerHTML = formatAbility(x)
+            
+            if(x.abilityClass == 1) {
+                a1w.appendChild(a);
+            } else if(x.abilityClass == 2) {
+                a2w.appendChild(a);
+            } else if(x.abilityClass == 3) {
+                a3w.appendChild(a);
+            } else {
+    
+            }
         }
     }
     

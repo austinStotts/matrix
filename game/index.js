@@ -135,7 +135,9 @@ let showMessage = (mission, state, goHome=false) => {
 
 
 
-
+let getChildType = (r, c, type) => {
+    return Object.keys(matrix[r][c].children).map(child => { if(matrix[r][c].children[child].type == type) { return matrix[r][c].children[child] }});
+}
 
 // fix enemy projectiles to hit first cell infront of them
 // add this.blocksMovement to all construct cells
@@ -724,32 +726,65 @@ let makeMechanismImg = (x, y, state) => {
     return mechanism_
 }
 
+let enemyassets = {
 
-let makeEnemyImg = (x, y) => {
-    let a = [];
-    seekerdata.frames.forEach(frame => {
-        Object.keys(frame.frame).forEach(key => {
-            a.push(frame.frame[key]);
-        })
+}
+
+let loadEnemyAssets = (list) => {
+    list.forEach(enemy => {
+        enemyassets[enemy.id] = new Image();
+        enemyassets[enemy.id].src = `./sprites/${new enemies[enemy.id]().spriteid.toLowerCase()}.png`;
     })
-    
-    let animations = {
+    console.log(enemyassets)
+}
+
+
+let makeEnemyImg = (x, y, enemy) => {
+    // console.log(id)
+    let a = [];
+    if(enemy.animate) {
+        animations[enemy.spriteid.toLowerCase()].frames.forEach(frame => {
+            Object.keys(frame.frame).forEach(key => {
+                a.push(frame.frame[key]);
+            })
+        })
+    }
+    let ani = {
       idle: a
     };
     
-    let enemyImg = new Image();
-    enemyImg.src = '../game/sprites/seeker.png';
-    let enemy_ = new Konva.Sprite({
-        x: x,
-        y: y,
-        image: enemyImg,
-        animation: 'idle',
-        animations: animations,
-        frameRate: 16,
-        frameIndex: 0,
-    });
+
+
+
+    // let enemyImg = new Image();
+    // enemyImg.src = '../game/sprites/seeker.png';
+    if(enemy.animate) {
+        let enemy_ = new Konva.Sprite({
+            x: x,
+            y: y,
+            image: enemyassets[enemy.spriteid],
+            animation: 'idle',
+            animations: ani,
+            frameRate: 16,
+            frameIndex: 0,
+        });
+
+        return enemy_;
+    } else {
+        let enemy_ = new Konva.Rect({
+            x: x,
+            y: y,
+            width: 32,
+            height: 32
+        });
+
+        enemy_.fillPatternImage(enemyassets[enemy.spriteid])
+        
+        return enemy_;
+    }
+
     
-    return enemy_;
+
 }
 
 let markForUpdate = (row, column) => {
@@ -770,11 +805,18 @@ let updateCanvas = () => {
                     matrix[i][j].canvas.needsUpdate = false;
                 }
                 else if(checkIfEnemy(i, j)) {
-                    let image = makeEnemyImg(matrix[i][j].canvas.x, matrix[i][j].canvas.y);
-                    matrix[i][j].canvas.sprite = image;
-                    layer.add(image);
-                    image.start();
-                    matrix[i][j].canvas.needsUpdate = false;
+                    // console.log(matrix[i][j])
+                    let list = getChildType(i,j,"enemy");
+                    // console.log(list)
+                    list.forEach(enemy => {
+                        let image = makeEnemyImg(matrix[i][j].canvas.x, matrix[i][j].canvas.y, enemy);
+                        matrix[i][j].canvas.sprite = image;
+                        layer.add(image);
+                        if(enemy.animate) {
+                            image.start();
+                        }
+                        matrix[i][j].canvas.needsUpdate = false;
+                    })
                 }
                 else if(matrix[i][j].relic && !checkForConstruct(i,j)) {
                     let image = makeRelicImg(matrix[i][j].canvas.x, matrix[i][j].canvas.y);
@@ -919,10 +961,12 @@ let calculateProjectile = (a, ir, ic, dr, dc) => {
         console.log(cr,cc)
         // console.log(matrix[cr][cc].canvas)
         if(matrix[cr]) {
-            if(matrix[cr][cc].mechanism) {
-                matrix[cr][cc].mechanism.activate();
-                matrix[cr][cc].mechanism.sprite.destroy();
-                markForUpdate(cr,cc);
+            if(matrix[cr][cc]) {
+                if(matrix[cr][cc].mechanism) {
+                    matrix[cr][cc].mechanism.activate();
+                    matrix[cr][cc].mechanism.sprite.destroy();
+                    markForUpdate(cr,cc);
+                }
             }
         }
         if(cellsTraveled.length >= a.maxDistance && a.maxDistance != -1) {
@@ -1157,7 +1201,7 @@ let movePlayer = (r, c) => {
 
 let moveEnemy = (r, c, enemyid) => {
     console.log(enemyid)
-    if(checkForBoundry(r,c) && ENEMIES[enemyid].movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c) && !checkForConstruct(r,c)) {
+    if(checkForBoundry(r,c) && ENEMIES[enemyid].movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c) && !checkForConstruct(r,c) && !checkIfEnemy(r,c)) {
         markForUpdate(ENEMIES[enemyid].row, ENEMIES[enemyid].column);
         removefromCell(ENEMIES[enemyid].row, ENEMIES[enemyid].column, ENEMIES[enemyid].id);
         addToCell(r, c, ENEMIES[enemyid]);
@@ -1271,8 +1315,10 @@ console.log("level data:", missionmatrixdata.missions[LEVEL])
 let matrix = makeMatrix(11, tiles[missionmatrixdata.missions[LEVEL].tile.id]);
 drawMatrix(11);
 if(missionmatrixdata.missions[LEVEL].relics[0]) {
-    loadRelic(missionmatrixdata.missions[LEVEL].relics[0].id)
+    loadRelic(missionmatrixdata.missions[LEVEL].relics[0].id);
 }
+loadEnemyAssets(missionmatrixdata.missions[LEVEL].enemies)
+
 // let PLAYER = new Player(10,5,new Shell(), new Terraform_gamma(), new Slice());
 // PLAYER.gameIndex = 0;
 // addToCell(PLAYER.row, PLAYER.column, PLAYER);

@@ -159,6 +159,7 @@ class Projectile { // not doing anything
 
 class Shell {
     constructor() {
+        this.id = "Shell";
         this.type = "projectile";
         this.damage = 1;
         this.cost = 2;
@@ -201,6 +202,7 @@ class Shell {
 
 class Terraform_alpha {
     constructor() {
+        this.id = "Terraform_alpha";
         this.type = "construct";
         this.damage = 2;
         this.cost = 5;
@@ -252,6 +254,7 @@ class Terraform_alpha {
 
 class Terraform_beta {
     constructor() {
+        this.id = "Terraform_beta";
         this.type = "construct";
         this.damage = 1;
         this.cost = 3;
@@ -318,6 +321,7 @@ class Terraform_beta {
 
 class Terraform_gamma {
     constructor() {
+        this.id = "Terraform_gamma";
         this.type = "construct";
         this.damage = 1;
         this.cost = 2;
@@ -378,6 +382,7 @@ class Terraform_gamma {
 
 class Slice {
     constructor() {
+        this.id = "Slice";
         this.type = "spell";
         this.damage = 2;
         this.cost = 3;
@@ -461,6 +466,7 @@ class Slice {
 
 class Meteor_cryo {
     constructor() {
+        this.id = "Meteor_cryo";
         this.type = "construct";
         this.damage = 1;
         this.cost = 4;
@@ -530,6 +536,7 @@ class Meteor_cryo {
 
 class Meteor_fire {
     constructor() {
+        this.id = "Meteor_fire";
         this.type = "construct";
         this.damage = 1;
         this.cost = 4;
@@ -599,6 +606,7 @@ class Meteor_fire {
 
 class Focus {
     constructor() {
+        this.id = "Focus";
         this.type = "spell";
         this.damage = 0;
         this.cost = 3;
@@ -628,6 +636,7 @@ class Focus {
 
 class Rest {
     constructor() {
+        this.id = "Rest";
         this.type = "spell";
         this.damage = 0;
         this.cost = 3;
@@ -657,6 +666,7 @@ class Rest {
 
 class Heal {
     constructor() {
+        this.id = "Heal";
         this.type = "spell";
         this.damage = 0;
         this.cost = 3;
@@ -687,6 +697,7 @@ class Heal {
 
 class Shotgun {
     constructor() {
+        this.id = "Shotgun";
         this.type = "projectile";
         this.damage = 2;
         this.cost = 5;

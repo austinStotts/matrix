@@ -1,4 +1,5 @@
-let seekerdata = { "frames": [
+animations = { 
+  seeker: { "frames": [
     {
      "filename": "Sprite-0001 0.",
      "frame": { "x": 0, "y": 0, "w": 32, "h": 32 },
@@ -198,4 +199,4 @@ let seekerdata = { "frames": [
    "scale": "1"
   }
  }
- 
+}

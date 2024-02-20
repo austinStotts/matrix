@@ -18,7 +18,7 @@ if(loadeddata != undefined) {
 
 let relics = window.localStorage.getItem("relics");
 if(relics == undefined) {
-    window.localStorage.setItem("relics", JSON.stringify([]))
+    window.localStorage.setItem("relics", JSON.stringify([{id:"standard_issue"}]))
 } else {
     
 }
