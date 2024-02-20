@@ -380,6 +380,8 @@ class Terraform_gamma {
 
 
 
+
+
 class Slice {
     constructor() {
         this.id = "Slice";
@@ -939,6 +941,9 @@ class Mercury {
         this.classname = "mercury"
         this.name = "mercury pool"
         this.dot = 2;
+        this.decay = 1;
+        this.currentDecay = 0;
+        this.maxDecay = 3;
     }
 }
 

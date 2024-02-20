@@ -922,3 +922,9 @@ body {
 .tt-help-label {
 
 }
+
+.mercury {
+  border: 1px solid white;
+  background-image: none;
+  background-color: rgb(206, 192, 192);
+}

@@ -262,7 +262,7 @@ let damagePlayers = (r,c,damage) => {
 }
 
 let calculateCell = (r, c) => {
-    console.log("calculate")
+    // console.log("calculate")
     let projectiles = [];
     let constructs = [];
     let players = [];
@@ -1200,7 +1200,7 @@ let movePlayer = (r, c) => {
 }
 
 let moveEnemy = (r, c, enemyid) => {
-    console.log(enemyid)
+    // console.log(enemyid)
     if(checkForBoundry(r,c) && ENEMIES[enemyid].movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c) && !checkForConstruct(r,c) && !checkIfEnemy(r,c)) {
         markForUpdate(ENEMIES[enemyid].row, ENEMIES[enemyid].column);
         removefromCell(ENEMIES[enemyid].row, ENEMIES[enemyid].column, ENEMIES[enemyid].id);

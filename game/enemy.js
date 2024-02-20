@@ -24,17 +24,17 @@ let moveToAttack = () => {
 let attackPlayer = (er, ec, pr, pc, enemyid) => {
     let d = distanceFromPlayer(er, ec, pr, pc);
     if((Math.abs(d.rows) + Math.abs(d.columns)) < 3) {
-        console.log("real close");
+        // console.log("real close");
         ENEMIES[enemyid].ability(3);
     } else {
         ENEMIES[enemyid].ability(1);
     }
     let dx = (pc-ec);
     let dy = (pr-er);
-    console.log("dx:", dx);
-    console.log("dy:", dy);
+    // console.log("dx:", dx);
+    // console.log("dy:", dy);
     if(Math.abs(dx) > Math.abs(dy)) {
-        console.log("ATTACK TO SIDES")
+        // console.log("ATTACK TO SIDES")
         if(dx > 0) {
             // move right
             ENEMIES[enemyid].useAbility(0, 1);
@@ -62,14 +62,14 @@ let moveTowardsPlayer = (er, ec, pr, pc, enemyid) => {
     if(Math.ceil(Math.random()*4) > 1) {
         if(canHit(er, ec, pr, pc) || (Math.abs(d.rows) + Math.abs(d.columns)) < 3) {
             //attack
-            console.log("ATTACK");
+            // console.log("ATTACK");
         } else {
             if(Math.abs(d.rows) <= ENEMIES[enemyid].movements) {
-                console.log("in range of rows!")
+                // console.log("in range of rows!")
                 // move 1 row towards player
                 moveEnemy(er + reduceToOne(d.rows), ec, enemyid);
             } else if (Math.abs(d.columns) <= ENEMIES[enemyid].movements) {
-                console.log("in range of columns!")
+                // console.log("in range of columns!")
                 // move 1 column towards player
                 moveEnemy(er, ec + reduceToOne(d.columns), enemyid);
             } else {
@@ -241,9 +241,145 @@ class Seeker {
 
 
 
+// I should probably make a path finding algorithm for these...
+
+let canEnter = (r,c) => {
+    if(matrix[r]) {
+        if(matrix[r][c]) {
+            if(Object.keys(matrix[r][c].children).length < 1) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+let totalMovementCost = (path) => {
+    let total = 0;
+    for(let i = 1; i < path.length; i++) {
+        total = total + matrix[path[i][0]][path[i][1]].tile.movementCost;
+    }
+
+    return total;
+}
+
+// need to account for movement costs
+let findBestPath = (er, ec, pr, pc, enemyid) => { // returns an array of all possible paths
+
+    let maxMoves = ENEMIES[enemyid].maxMovements;
+    let paths = [];
+
+    let loop = (path) => {
+        console.log("number of moves:",path.length,"/",maxMoves);
+        let d = distanceFromPlayer(path[path.length-1][0], path[path.length-1][1], pr, pc);
+        console.log(d)
+        if(path.length+1 >= maxMoves || totalMovementCost(path) >= maxMoves) {
+            console.log("MAX MOVES!");
+            paths.push(path);
+            return
+        } 
+        else if (Math.abs(d.rows) + Math.abs(d.columns) < 2) {
+            console.log("NEXT TO PLAYER");
+            paths.push(path);
+            return
+        }
+        else {
+            // down > left > up > right
+            let r = path[path.length-1][0];
+            let c = path[path.length-1][1];
+            if(canEnter(r+1,c)) { //down
+                loop([...path,[r+1,c]]);
+            }
+            if(canEnter(r,c-1)) { //left
+                loop([...path,[r,c-1]]);
+            }
+            if(canEnter(r-1,c)) { //up
+                loop([...path,[r-1,c]]);
+            }
+            if(canEnter(r,c+1)) {// right
+                loop([...path,[r,c+1]]);
+            }
+            return
+        }
+    }
+
+    loop([[er,ec]]);
+    console.log(paths);
+}
 
 
 
+
+let grexAttackPlayer = (er, ec, pr, pc, enemyid) => {
+    let d = distanceFromPlayer(er, ec, pr, pc);
+    if((Math.abs(d.rows) + Math.abs(d.columns)) < 3) {
+        console.log("real close");
+        ENEMIES[enemyid].ability(3);
+        let dx = (pc-ec);
+        let dy = (pr-er);
+        // console.log("dx:", dx);
+        // console.log("dy:", dy);
+        if(Math.abs(dx) > Math.abs(dy)) {
+            // console.log("ATTACK TO SIDES")
+            if(dx > 0) {
+                // move right
+                ENEMIES[enemyid].useAbility(0, 1);
+            } else if(dx < 0) {
+                // move left
+                ENEMIES[enemyid].useAbility(0, -1);
+            } else {
+                // dont move
+            }
+        } else {
+            if(dy > 0) {
+                // move down
+                ENEMIES[enemyid].useAbility(1, 0);
+            } else if(dy < 0) {
+                // move up
+                ENEMIES[enemyid].useAbility(-1, 0);
+            } else {
+                // dont move
+            }
+        }
+    }
+}
+
+
+
+
+
+let grexMoveTowardsPlayer = (er, ec, pr, pc, enemyid) => {
+    let d = distanceFromPlayer(er, ec, pr, pc);
+    if(Math.ceil(Math.random()*4) > 1) {
+        if(canHit(er, ec, pr, pc) || (Math.abs(d.rows) + Math.abs(d.columns)) < 3) {
+            //attack
+            // console.log("ATTACK");
+        } else {
+            if(Math.abs(d.rows) <= ENEMIES[enemyid].movements) {
+                // console.log("in range of rows!")
+                // move 1 row towards player
+                moveEnemy(er + reduceToOne(d.rows), ec, enemyid);
+            } else if (Math.abs(d.columns) <= ENEMIES[enemyid].movements) {
+                // console.log("in range of columns!")
+                // move 1 column towards player
+                moveEnemy(er, ec + reduceToOne(d.columns), enemyid);
+            } else {
+                // out of range and cannot hit
+                if(d.rows >= d.columns) {
+                    moveEnemy(er + reduceToOne(d.rows), ec, enemyid);
+                } else {
+                    moveEnemy(er, ec + reduceToOne(d.columns), enemyid)
+                }
+            }
+        }
+    } else {
+        if(d.rows >= d.columns) {
+            moveEnemy(er + reduceToOne(d.rows), ec, enemyid);
+        } else {
+            moveEnemy(er, ec + reduceToOne(d.columns), enemyid);
+        }
+    }
+}
 
 
 class Grex {
@@ -258,7 +394,6 @@ class Grex {
         this.id = getID();
         this.row = r;
         this.column = c;
-        this.ability1 = new Shell();
         this.ability3 = new Slice();
         this.hp = 3;
         this.maxMovements = 4;
@@ -268,7 +403,6 @@ class Grex {
         this.selectedAbility = 1;
         this.gameIndex = 1;
 
-        this.ability1.owner = this.name;
         this.ability3.owner = this.name;
     } 
 
@@ -285,6 +419,7 @@ class Grex {
         return abilitiesAvailable;
     }
 
+
     updateTurn () {
         this.movements = this.maxMovements;
         this.power = this.maxPower;
@@ -296,55 +431,39 @@ class Grex {
     }
 
     useAbility (dr, dc) {
-        if(this.selectedAbility == 1) {
-            if(this.power >= this.ability1.cost) {
-                addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
-                // let p = this.ability1.cell(this.row, this.column);
-                // drawAbility(p, dr, dc, this.ability1.speed);
-                calculateProjectile(this.ability1, this.row, this.column, dr, dc)
-                this.power = this.power - this.ability1.cost;
-                updateLabels();
-                inputMethod = "movement";
-            } else {
-                inputMethod = "movement";
-            }
-        } else if(this.selectedAbility == 2) {
-            console.log("a mistake was made")
-        } else if(this.selectedAbility == 3) {
-            if(this.power >= this.ability3.cost) {
-                if(this.ability3.custom) {
-                    let used = this.ability3.use(dr, dc);
-                    if(used) {
-                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
-                        this.power = this.power - this.ability2.cost;
-                        updateLabels();
-                        inputMethod = "movement";
-                        this.selectedAbility = 0;
-                        removeGridlines();
-                    } else {
-                        
-                    }
-                } else {
+
+        if(this.power >= this.ability3.cost) {
+            if(this.ability3.custom) {
+                let used = this.ability3.use(dr, dc);
+                if(used) {
                     addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
-                    let p = this.ability3.cell(this.row, this.column, dr, dc);
-                    drawAbility(p, dr, dc, this.ability3.speed);
-                    this.power = this.power - this.ability3.cost;
+                    this.power = this.power - this.ability2.cost;
                     updateLabels();
                     inputMethod = "movement";
                     this.selectedAbility = 0;
                     removeGridlines();
+                } else {
+                    
                 }
             } else {
+                addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
+                let p = this.ability3.cell(this.row, this.column, dr, dc);
+                drawAbility(p, dr, dc, this.ability3.speed);
+                this.power = this.power - this.ability3.cost;
+                updateLabels();
                 inputMethod = "movement";
+                this.selectedAbility = 0;
+                removeGridlines();
             }
-        } 
-        else {
-            console.log("invalid ability selected: ", this.selectedAbility)
+        } else {
+            inputMethod = "movement";
         }
+    
     }
 
     move (r,c, cost) {
         if(this.movements >= cost) {
+            matrix[this.row][this.column].tile = new Mercury();
             this.set(r,c);
             this.movements -= cost;
             updateLabels();
@@ -361,20 +480,21 @@ class Grex {
     }
 
     async startTurn () {
+        findBestPath(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid)
         console.log("enemy ai v0.0.1");
         if(this.hp > 0) {
             // move first
             for(let i = 0; i < this.maxMovements; i++) {
-                moveTowardsPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
+                grexMoveTowardsPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
                 await sleep(500);
-                console.log(distanceFromPlayer(this.row, this.column, PLAYER.row, PLAYER.column));
-                console.log("can hit player?: ", canHit(this.row, this.column, PLAYER.row, PLAYER.column));
+                // console.log(distanceFromPlayer(this.row, this.column, PLAYER.row, PLAYER.column));
+                // console.log("can hit player?: ", canHit(this.row, this.column, PLAYER.row, PLAYER.column));
             }
 
             // attack
 
             for(let i = 0; i < this.maxPower; i++) {
-                attackPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
+                grexAttackPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
                 await sleep(500);
             }
 
@@ -390,6 +510,8 @@ class Grex {
     beforeDelete () {
         addLog({ type: "death", name: this.name, content: ` died` })
     }
+
+
 }
 
 

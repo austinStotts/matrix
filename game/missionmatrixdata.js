@@ -35,7 +35,7 @@ let missionmatrixdata = {
         "3": {
             relics: [{id: "calculator", row: 5, column: 3}],
             player: {row: 10, column: 5},
-            enemies: [{id: "Seeker", row: 0, column: 5},{id: "Grex", row: 0, column: 3}, {id: "Grex", row: 0, column: 7}],
+            enemies: [{id: "Grex", row: 0, column: 7}],
             constructs: [
                 {id: "Boolean_block", row: 3, column: 4, state: true},
                 {id: "Boolean_block", row: 3, column: 5, state: true},
@@ -51,7 +51,7 @@ let missionmatrixdata = {
                 {id: "Wall", row: 6, column: 7},
             ],
             mechanisms: [{id: "Switch", row: 5, column: 5}],
-            tile: {id: "Plains"},
+            tile: {id: "Frozen"},
             tile_overides: []
         },
     }
