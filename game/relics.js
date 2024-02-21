@@ -1,12 +1,12 @@
 let relics = {
     standard_issue: {
-        description: "the bare minimum required to survive... if that",
-        effect: "allows the use of some abilities and base hp, movements, and power",
+        description: "the bare minimum required to survive... if that. incudes a one-way radio. where does a bag like this get made?",
+        effect: "allows the use of some abilities",
         name: "standard issue",
         class: "standard-issue",
         id: "standard_issue",
         found: "mission 0",
-        abilities: ["Shell", "Shotgun", "Terraform_beta", "Terraform_gamma", "Slice", "Focus"],
+        abilities: ["Shell", "Shotgun", "Terraform_beta", "Terraform_gamma", "Slice", "Heal"],
         bonus: {
             hp: 4,
             movements: 2,
@@ -28,7 +28,7 @@ let relics = {
         }
     },
     toothpaste: {
-        description: "a tube of toothpaste... helps prevent gingivitis?",
+        description: "a tube of toothpaste... helps prevent gingivitis? feels very familiar",
         effect: "permanent +1 power & +1 hp",
         name: "toothpaste",
         class: "toothpaste",
@@ -42,13 +42,13 @@ let relics = {
         }
     },
     calculator: {
-        description: "solar powered calculator",
+        description: "solar powered calculator... 9.8m/s² written on the cover",
         effect: "allows the use of rest and focus",
         name: "calculator",
         class: "calculator",
         id: "calculator",
         found: "mission 3",
-        abilities: ["Heal", "Rest"],
+        abilities: ["Focus", "Rest"],
         bonus: {
             hp: 0,
             movements: 0,
