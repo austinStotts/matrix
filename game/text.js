@@ -112,7 +112,7 @@ let gametext = {
         "4": {
             "opening": [    
                 "mission 4:", 
-                "knowlage of the area is limited",
+                "knowledge of the area is limited",
                 "report on anything alien",
                 "those that follow you will appreciate it"
             ],
@@ -125,7 +125,7 @@ let gametext = {
             "failure": [
                 "mission failure",
                 "the next should make it further",
-                "we are remembered by our achievments",
+                "we are remembered by our achievements",
                 "i hope they remember me"
             ],
             "brief": [
