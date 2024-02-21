@@ -239,14 +239,58 @@ class Seeker {
 
 
 
+// ENEMY PATHFINDING
 
+let trimPaths = (sortedPath) => {
+    let trimmedPaths = [];
+    trimmedPaths.push(sortedPath[0]);
+    for(let i = 1; i < sortedPath.length; i++) {
+        let isNew = true;
+        for(let j = 0; j < trimmedPaths.length; j++) {
+            let p = trimmedPaths[j][trimmedPaths[j].length-1];
+            let s = sortedPath[i][sortedPath[i].length-1];
+            if(s[0] == p[0] && s[1] == p[1]) {
+                isNew = false;
+            }
+        }
+        if(isNew) {
+            trimmedPaths.push(sortedPath[i])
+        }
+    }
+    return trimmedPaths
+}
 
-// I should probably make a path finding algorithm for these...
+let findAbsDistance = (r1,c1,r2,c2) => {
+    let rows = r2 - r1;
+    let columns = c2 - c1;
+    return Math.abs(rows) + Math.abs(columns);
+}
+
+let findClosestPath = (paths, pr, pc) => {
+    return trimPaths(paths.sort((a,b) => {
+        return findAbsDistance(a[a.length-1][0], a[a.length-1][1], pr, pc) - findAbsDistance(b[b.length-1][0], b[b.length-1][1], pr, pc)
+    }))
+}
+
+let pickPath = (paths) => {
+    console.log(paths);
+    let top25 = paths.slice(0, Math.floor(paths.length/4));
+    let r = Math.floor(Math.random() * top25.length);
+    console.log(r)
+    return top25[r]
+}
+
+let walkPath = async (path, enemyid) => {
+    for(let i = 1; i < path.length; i++) {
+        moveEnemy(path[i][0], path[i][1], enemyid);
+        await sleep(100);
+    }
+}
 
 let canEnter = (r,c) => {
     if(matrix[r]) {
         if(matrix[r][c]) {
-            if(Object.keys(matrix[r][c].children).length < 1) {
+            if(!checkForConstruct(r,c) && !checkIfPlayer(r,c) && !checkIfEnemy(r,c)) {
                 return true;
             }
         }
@@ -259,7 +303,6 @@ let totalMovementCost = (path) => {
     for(let i = 1; i < path.length; i++) {
         total = total + matrix[path[i][0]][path[i][1]].tile.movementCost;
     }
-
     return total;
 }
 
@@ -270,16 +313,12 @@ let findBestPath = (er, ec, pr, pc, enemyid) => { // returns an array of all pos
     let paths = [];
 
     let loop = (path) => {
-        console.log("number of moves:",path.length,"/",maxMoves);
         let d = distanceFromPlayer(path[path.length-1][0], path[path.length-1][1], pr, pc);
-        console.log(d)
-        if(path.length+1 >= maxMoves || totalMovementCost(path) >= maxMoves) {
-            console.log("MAX MOVES!");
+        if(path.length >= maxMoves+1 || totalMovementCost(path) >= maxMoves) {
             paths.push(path);
             return
         } 
         else if (Math.abs(d.rows) + Math.abs(d.columns) < 2) {
-            console.log("NEXT TO PLAYER");
             paths.push(path);
             return
         }
@@ -304,7 +343,10 @@ let findBestPath = (er, ec, pr, pc, enemyid) => { // returns an array of all pos
     }
 
     loop([[er,ec]]);
-    console.log(paths);
+    let possiblePaths = findClosestPath(paths, pr, pc);
+    let finalPath = pickPath(possiblePaths);
+    console.log(finalPath);
+    walkPath(finalPath, enemyid);
 }
 
 
@@ -397,7 +439,7 @@ class Grex {
         this.ability3 = new Slice();
         this.hp = 3;
         this.maxMovements = 4;
-        this.movements = 2;
+        this.movements = 4;
         this.maxPower = 5;
         this.power = 2;
         this.selectedAbility = 1;
@@ -485,7 +527,7 @@ class Grex {
         if(this.hp > 0) {
             // move first
             for(let i = 0; i < this.maxMovements; i++) {
-                grexMoveTowardsPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
+                // grexMoveTowardsPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
                 await sleep(500);
                 // console.log(distanceFromPlayer(this.row, this.column, PLAYER.row, PLAYER.column));
                 // console.log("can hit player?: ", canHit(this.row, this.column, PLAYER.row, PLAYER.column));

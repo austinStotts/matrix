@@ -779,6 +779,9 @@ class Shotgun {
                 newCells.push(cells[f])
                 damageConstructs(cells[f][0], cells[f][1], this.damage);
                 damagePlayers(cells[f][0], cells[f][1], this.damage);
+                if(matrix[cells[f][0]][cells[f][1]].mechanism) {
+                    matrix[cells[f][0]][cells[f][1]].mechanism.activate()
+                }
                 matrix[cells[f][0]][cells[f][1]].children.shotgunpath = new ShotgunSpread();
                 setTimeout(() => {
                     delete matrix[cells[f][0]][cells[f][1]].children.shotgunpath;

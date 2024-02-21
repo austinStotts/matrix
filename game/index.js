@@ -1303,6 +1303,23 @@ let tileOverides = (list) => {
     })
 }
 
+let setStatsFromRelics = () => {
+    let relics_ = JSON.parse(window.localStorage.getItem("relics"));
+    console.log(relics_)
+    let h = 0;
+    let p = 0;
+    let m = 0;
+    relics_.forEach(r => {
+        h += relics[r.id].bonus.hp;
+        p += relics[r.id].bonus.power;
+        m += relics[r.id].bonus.movements;
+    })
+    PLAYER.maxMovements = m;
+    PLAYER.hp = h;
+    PLAYER.maxPower = p;
+    PLAYER.updateTurn()
+}
+
 
 
 // _________________________________________________________
@@ -1357,13 +1374,13 @@ document.getElementById("as-2").addEventListener("click", (e) => { PLAYER.abilit
 document.getElementById("as-3").addEventListener("click", (e) => { PLAYER.ability(3) })
 
 // checkAroundCell(9,5)
-
+setStatsFromRelics()
 let str = document.getElementById("start");
 
 let start = (e) => {
     document.getElementById("game-wrapper-body").classList.remove("blur");
-    // showMessage(gametext.missions[LEVEL], "opening");
-    playerCanAct = true;
+    showMessage(gametext.missions[LEVEL], "opening");
+    // playerCanAct = true;
     str.classList.add("hide");
 }
 

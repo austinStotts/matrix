@@ -108,6 +108,43 @@ let gametext = {
             ⢀⣤⣶⣿⢿⣿⣷⣷⣿⣿⣿⣛⣿⣿⣿
             ⠿⠿⠿⠿⠹⠿⠿⠿⠿⠿⠿⠭⠿⠿⠿
             `
+        },
+        "4": {
+            "opening": [    
+                "mission 4:", 
+                "knowlage of the area is limited",
+                "report on anything alien",
+                "those that follow you will appreciate it"
+            ],
+            "closing": [    
+                "mission complete", 
+                "remember to rest",
+                "you are like a child",
+                "learning to live again"
+            ],
+            "failure": [
+                "mission failure",
+                "the next should make it further",
+                "we are remembered by our achievments",
+                "i hope they remember me"
+            ],
+            "brief": [
+                "you are the progress",
+                "each step is salvation to all",
+                "kill everything"
+            ],
+            "handler": `
+            ⠀⠀⠀⠀⢀⣤⣄⣀⣤⡀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⣼⣿⡏⡇⢾⣷⡀⠀⠀⠀⠀
+            ⠀⣀⠀⣰⣿⣿⣟⢏⠻⣿⣿⣶⣿⠇⠀
+            ⠀⠘⢿⡿⣭⣭⣭⢭⣬⣭⡽⣮⠏⠀⠀
+            ⠀⠀⠀⢙⢻⠛⡿⠿⢺⠟⢻⠀⠀⠀⠀
+            ⠀⠀⠀⠈⢸⣇⠠⢘⣰⢈⡇⠀⠀⠀⠀
+            ⠀⠀⠀⠀⢀⣿⡞⡙⠮⣹⣫⡄⠀⠀⠀
+            ⠀⠀⠀⠀⣸⣥⣫⣓⣾⣿⣿⣿⣦⣄⡀
+            ⢀⣤⣶⣿⢿⣿⣷⣷⣿⣿⣿⣛⣿⣿⣿
+            ⠿⠿⠿⠿⠹⠿⠿⠿⠿⠿⠿⠭⠿⠿⠿
+            `
         }
     }
 }
