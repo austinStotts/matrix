@@ -336,7 +336,7 @@ body {
 }
 
 .lava {
-  background-color: orangered;
+  background-image: url("./assets/lava.gif");
 }
 
 .gridlines {
