@@ -485,6 +485,7 @@ class Meteor_cryo {
 
     use (r, c) {
         if(r == PLAYER.row || c == PLAYER.column) {
+            PLAYER.power = PLAYER.power - PLAYER.ability2.cost;
             let playerCheck = isPlayerHere(r,c)
             if(playerCheck.playerFound) {
                 playerCheck.playersFound.forEach(player => { player.takeDamage(this.damage) })
@@ -498,6 +499,16 @@ class Meteor_cryo {
             return true;
         } else {
             return false;
+        }
+    }
+
+    showGridLines (r, c) {
+        for(let i = 0; i < matrix.length; i++) {
+            for(let j = 0; j < matrix[i].length; j++) {
+                if(i == r || j == c) {
+                    matrix[i][j].children.gridlines = new Gridline();
+                } 
+            }
         }
     }
 
@@ -555,6 +566,7 @@ class Meteor_fire {
 
     use (r, c) {
         if(r == PLAYER.row || c == PLAYER.column) {
+            PLAYER.power = PLAYER.power - PLAYER.ability2.cost;
             let playerCheck = isPlayerHere(r,c)
             if(playerCheck.playerFound) {
                 playerCheck.playersFound.forEach(player => { player.takeDamage(this.damage) })
@@ -568,6 +580,16 @@ class Meteor_fire {
             return true;
         } else {
             return false;
+        }
+    }
+
+    showGridLines (r, c) {
+        for(let i = 0; i < matrix.length; i++) {
+            for(let j = 0; j < matrix[i].length; j++) {
+                if(i == r || j == c) {
+                    matrix[i][j].children.gridlines = new Gridline();
+                } 
+            }
         }
     }
 
@@ -862,6 +884,208 @@ class Shotgun {
     }
 }
 
+
+class Leap {
+    constructor() {
+        this.id = "Leap";
+        this.type = "spell";
+        this.damage = 0;
+        this.cost = 4;
+        this.info = "move anywhere in a 5 cell area";
+        this.damage_type = "none";
+        this.name = "leap";
+        // this.name = "terraform y";
+        this.speed = 50;
+        this.maxDistance = 5;
+        this.abilityClass = 3;
+        this.custom = true;
+        this.allowClick = true;
+    }
+
+
+    use (r, c) {
+        console.log(r,c)
+        let d = distanceFromPlayer(r,c,PLAYER.row, PLAYER.column);
+        console.log(d)
+        if((Math.abs(d.rows) + Math.abs(d.columns)) < 5) {
+            if(checkForBoundry(r,c) && !checkIfPlayer(r,c) && !checkForConstruct(r,c) && !checkIfEnemy(r,c)) {
+                markForUpdate(PLAYER.row, PLAYER.column); 
+                removefromCell(PLAYER.row, PLAYER.column, PLAYER.id);
+                addToCell(r, c, PLAYER);
+                PLAYER.set(r,c);
+                updateLabels();
+                markForUpdate(r,c); 
+                checkForRelic(r,c);
+            }
+            
+        } 
+        return true;
+    }
+
+    showGridLines (r, c) {
+        for(let i = 0; i < matrix.length; i++) {
+            for(let j = 0; j < matrix[i].length; j++) {
+                let d = distanceFromPlayer(i,j,r,c);
+                if((Math.abs(d.rows) + Math.abs(d.columns)) < 5) {
+                    matrix[i][j].children.gridlines = new Gridline();
+                } 
+            }
+        }
+    }
+
+    beforeDelete () {
+
+    }
+
+    
+}
+
+
+
+class Mine {
+    constructor() {
+        this.id = "Mine";
+        this.type = "construct";
+        this.damage = 3;
+        this.cost = 4;
+        this.info = "set mine at feet - then detonate from anywhere";
+        this.damage_type = "none";
+        this.name = "mine";
+        // this.name = "terraform y";
+        this.speed = 50;
+        this.maxDistance = 0;
+        this.abilityClass = 2;
+        this.custom = true;
+        this.state = "mine";
+        this.mr = null;
+        this.mc = null;
+
+    }
+
+
+    use (r, c) {
+        console.log(r,c);
+        if(this.state == "mine") {
+            PLAYER.power = PLAYER.power - PLAYER.ability2.cost;
+            this.mr = PLAYER.row;
+            this.mc = PLAYER.column;
+            this.placeSprite(PLAYER.row, PLAYER.column);
+            addToCell(PLAYER.row, PLAYER.column, this.cell());
+            this.state = "detonate";
+            this.cost = 1;
+            this.info = "detonate mine - deals damage in 1 cell radius"
+            createAbilityBox(2, PLAYER.ability2);
+        } 
+        
+        else if(this.state == "detonate") {
+            PLAYER.power = PLAYER.power - PLAYER.ability2.cost;
+            this.explode();
+            this.sprite.destroy();
+            this.state = "mine";
+            this.cost = 4;
+            this.info = "set mine at feet - then detonate from anywhere";
+            createAbilityBox(2, PLAYER.ability2);
+        } 
+        
+        else {
+            console.log("error in mine state")
+        }
+        return true;
+    }
+
+    async explode () {
+        class MineExplosion {
+            constructor() {
+                this.id = getID();
+                this.type = "projectile";
+                this.damage = 3;
+                this.delete = false;
+                this.classname = "slice"
+            }
+
+            beforeDelete () {}
+        }
+
+        
+        
+        let cords = [
+            [this.mr,this.mc],
+            [this.mr-1,this.mc],
+            [this.mr-1,this.mc+1],
+            [this.mr,this.mc+1],
+            [this.mr+1,this.mc+1],
+            [this.mr+1,this.mc],
+            [this.mr+1,this.mc-1],
+            [this.mr,this.mc-1],
+            [this.mr-1,this.mc-1],
+        ]
+        for(let i = 0; i < cords.length; i++) {
+            await sleep(50)
+            let x = new MineExplosion();
+            if(checkForBoundry(cords[i][0], cords[i][1])) { 
+                addToCell(cords[i][0], cords[i][1], x); 
+                if (checkIfPlayer(cords[i][0], cords[i][1]) || checkIfEnemy(cords[i][0], cords[i][1])) {
+                    damagePlayers(cords[i][0], cords[i][1], x.damage);
+                }
+            }
+            setTimeout(() => {
+                removefromCell(cords[i][0], cords[i][1], x.id);
+            },50)
+            
+        }
+    }
+
+    placeSprite (r,c) {
+        let sprite_ = new Konva.Rect({
+            x: matrix[r][c].canvas.x,
+            y: matrix[r][c].canvas.y,
+            width: 32,
+            height: 32
+        });
+    
+        sprite_.fillPatternImage(images.mine);
+        this.sprite = sprite_;
+        layer.add(sprite_);
+    }
+
+    cell (r,c) {
+        return new class Mine_p {
+            constructor () {
+                this.type = "construct";
+                this.classname = "mine";
+                this.blocksMovement = false;
+                this.hp = "x";
+                this.name = "mine";
+                this.damage = 0;
+                this.id = getID();
+                this.row = r;
+                this.column = c;
+                this.delete = false;
+                this.maxDistance = 0;
+                this.distance = 0;
+            }
+
+            takeDamage (n) {
+
+            }
+
+            beforeDelete () {
+
+            }
+        }
+    }
+
+
+
+    beforeDelete () {
+
+    }
+}
+
+
+
+
+
 // new spell class abilities:
 // leap - move anywhere on the matrix - ends turn and lowers movement and power next turn
 // advance - move forward until you hit something
@@ -975,7 +1199,7 @@ class Granite {
 
 
 
-let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun, Rest, Heal];
+let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun, Rest, Heal, Leap, Mine];
 let tiles = {Plains, Frozen, Lava, Mercury, Granite, Cracked_earth, Plains_pool}
 let worldconstructs = {Wall, Reinforced_wall, Boolean_block}
 let mechanisms = {Switch}

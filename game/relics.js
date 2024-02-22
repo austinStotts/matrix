@@ -6,7 +6,7 @@ let relics = {
         class: "standard-issue",
         id: "standard_issue",
         found: "mission 0",
-        abilities: ["Shell", "Shotgun", "Terraform_beta", "Terraform_gamma", "Slice", "Heal"],
+        abilities: ["Shell", "Shotgun", "Terraform_beta", "Terraform_gamma", "Slice", "Heal", "Leap", "Mine"],
         bonus: {
             hp: 4,
             movements: 2,

@@ -53,7 +53,8 @@ class Player {
         showSelectedAbility(x);
         if(PLAYER[`ability${PLAYER.selectedAbility}`]) {
             if(PLAYER[`ability${PLAYER.selectedAbility}`].allowClick) {
-                showGridLines(this.row, this.column)
+                PLAYER[`ability${PLAYER.selectedAbility}`].showGridLines(this.row, this.column)
+                // showGridLines(this.row, this.column)
             }
         }
         inputMethod = "ability";
@@ -97,7 +98,6 @@ class Player {
                     let used = this.ability2.use(dr, dc);
                     if(used) {
                         addLog({ type: "ability", name: this.name, content: ` used ${this.ability2.name}` })
-                        this.power = this.power - this.ability2.cost;
                         updateLabels();
                         inputMethod = "movement";
                         this.selectedAbility = 0;

@@ -261,6 +261,7 @@ let damagePlayers = (r,c,damage) => {
     })
 }
 
+
 let calculateCell = (r, c) => {
     // console.log("calculate")
     let projectiles = [];
@@ -463,7 +464,7 @@ let showGridLines = (r, c) => {
     for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix[i].length; j++) {
             if(i == r || j == c) {
-                matrix[i][j].children.gridlines = new Gridline()
+                matrix[i][j].children.gridlines = new Gridline();
             } 
         }
     }
@@ -1010,11 +1011,13 @@ let images = {
     terraform_alpha: new Image(),
     terraform_beta: new Image(),
     terraform_gamma: new Image(),
+    mine: new Image(),
 }
 images.shell.src = "./assets/shell.png"
 images.terraform_alpha.src = "./assets/shell.png"
 images.terraform_beta.src = "./assets/shell.png"
 images.terraform_gamma.src = "./assets/shell.png"
+images.mine.src = "./assets/mine.png"
 
 let animateProjectile = (cells, dr, dc, imagename, speed) => {
     if(cells.length > 1) {
@@ -1083,6 +1086,8 @@ let animateProjectile = (cells, dr, dc, imagename, speed) => {
     }
 
 }
+
+
 
 let drawAbility = (p, dr, dc, speed) => {    
     p.dr = dr;
@@ -1379,8 +1384,8 @@ let str = document.getElementById("start");
 
 let start = (e) => {
     document.getElementById("game-wrapper-body").classList.remove("blur");
-    showMessage(gametext.missions[LEVEL], "opening");
-    // playerCanAct = true;
+    // showMessage(gametext.missions[LEVEL], "opening");
+    playerCanAct = true;
     str.classList.add("hide");
 }
 
