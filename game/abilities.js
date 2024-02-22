@@ -1005,8 +1005,6 @@ class Mine {
 
             beforeDelete () {}
         }
-
-        
         
         let cords = [
             [this.mr,this.mc],

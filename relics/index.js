@@ -1,8 +1,21 @@
 let relicswrapper = document.getElementById("relics-wrapper");
+let examine = document.getElementById("examine");
+let examineState = false;
+let examineRelic = (relic) => {
+    if(examineState) {
+        examine.close();
+        examineState = !examineState;
+    } else {
+        examine.show();
+        examineState = !examineState;
+    }
+    
+}
 
 let formatRelic = (relic) => {
     let r = document.createElement("div");
-    r.classList.add("relic-wrapper")
+    r.classList.add("relic-wrapper");
+    r.addEventListener("click", () => examineRelic(relic.id))
     r.innerHTML =
     `
         <div class="relic-img-wrapper"><img class="relic-img" src="../game/assets/${relic.id}.png"></div>
@@ -22,7 +35,7 @@ if(relics == undefined) {
 
 } else {
     relicslist.forEach(relic => {
-        console.log(relics[relic.id])
+        // console.log(relics[relic.id])
         relicswrapper.appendChild(formatRelic(relics[relic.id]))
     })
 }

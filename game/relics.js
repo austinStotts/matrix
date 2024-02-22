@@ -6,7 +6,8 @@ let relics = {
         class: "standard-issue",
         id: "standard_issue",
         found: "mission 0",
-        abilities: ["Shell", "Shotgun", "Terraform_beta", "Terraform_gamma", "Slice", "Heal", "Leap", "Mine"],
+        abilities: ["Shell", "Shotgun", "Terraform_beta", "Terraform_gamma", "Slice", "Heal"],
+        canExamine: false,
         bonus: {
             hp: 4,
             movements: 2,
@@ -21,6 +22,7 @@ let relics = {
         id: "tape_measure",
         found: "mission 1",
         abilities: ["Meteor_fire", "Meteor_cryo"],
+        canExamine: false,
         bonus: {
             hp: 0,
             movements: 0,
@@ -35,6 +37,7 @@ let relics = {
         id: "toothpaste",
         found: "mission 2",
         abilities: [],
+        canExamine: false,
         bonus: {
             hp: 1,
             movements: 0,
@@ -49,10 +52,34 @@ let relics = {
         id: "calculator",
         found: "mission 3",
         abilities: ["Focus", "Rest"],
+        canExamine: false,
         bonus: {
             hp: 0,
             movements: 0,
             power: 0,
         }
+    },
+    research_paper: {
+        description: "scientific research paper on irradiation and dna",
+        effect: "allows the use of mine and leap",
+        name: "research paper",
+        class: "research-paper",
+        id: "research_paper",
+        found: "mission 3",
+        abilities: ["Leap", "Mine"],
+        bonus: {
+            hp: 0,
+            movements: 0,
+            power: 0,
+        },
+        canExamine: true,
+        examine: [
+            "pathToImg",
+            "pathToImg",
+            "pathToImg",
+            "pathToImg",
+            "pathToImg",
+            "pathToImg",
+        ]
     },
 }
