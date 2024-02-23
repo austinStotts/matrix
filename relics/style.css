@@ -67,6 +67,23 @@ html {
     font-size: 12px;
 }
 
+
+.canexamine:hover {
+    cursor: pointer;
+}
+
+
+.canclick {
+
+}
+
+.canclick:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+
+
 .examine {
     position: fixed;
     top: 50%;

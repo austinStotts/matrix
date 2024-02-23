@@ -389,41 +389,6 @@ let grexAttackPlayer = (er, ec, pr, pc, enemyid) => {
 
 
 
-
-let grexMoveTowardsPlayer = (er, ec, pr, pc, enemyid) => {
-    let d = distanceFromPlayer(er, ec, pr, pc);
-    if(Math.ceil(Math.random()*4) > 1) {
-        if(canHit(er, ec, pr, pc) || (Math.abs(d.rows) + Math.abs(d.columns)) < 3) {
-            //attack
-            // console.log("ATTACK");
-        } else {
-            if(Math.abs(d.rows) <= ENEMIES[enemyid].movements) {
-                // console.log("in range of rows!")
-                // move 1 row towards player
-                moveEnemy(er + reduceToOne(d.rows), ec, enemyid);
-            } else if (Math.abs(d.columns) <= ENEMIES[enemyid].movements) {
-                // console.log("in range of columns!")
-                // move 1 column towards player
-                moveEnemy(er, ec + reduceToOne(d.columns), enemyid);
-            } else {
-                // out of range and cannot hit
-                if(d.rows >= d.columns) {
-                    moveEnemy(er + reduceToOne(d.rows), ec, enemyid);
-                } else {
-                    moveEnemy(er, ec + reduceToOne(d.columns), enemyid)
-                }
-            }
-        }
-    } else {
-        if(d.rows >= d.columns) {
-            moveEnemy(er + reduceToOne(d.rows), ec, enemyid);
-        } else {
-            moveEnemy(er, ec + reduceToOne(d.columns), enemyid);
-        }
-    }
-}
-
-
 class Grex {
     constructor(r, c, enemyid, name=generateName()) {
         this.name = name;
@@ -522,19 +487,13 @@ class Grex {
     }
 
     async startTurn () {
-        findBestPath(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid)
+        
         console.log("enemy ai v0.0.1");
         if(this.hp > 0) {
             // move first
-            for(let i = 0; i < this.maxMovements; i++) {
-                // grexMoveTowardsPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
-                await sleep(500);
-                // console.log(distanceFromPlayer(this.row, this.column, PLAYER.row, PLAYER.column));
-                // console.log("can hit player?: ", canHit(this.row, this.column, PLAYER.row, PLAYER.column));
-            }
+            findBestPath(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
 
             // attack
-
             for(let i = 0; i < this.maxPower; i++) {
                 grexAttackPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
                 await sleep(500);

@@ -196,11 +196,11 @@ body {
   display: inline-block;
   height: 376px;
   width: 376px;
-  padding-bottom: 1px;
-  border: 1px solid;
-  --angle: 0deg;
+  /* padding-bottom: 1px; */
+  border: 2px solid white;
+  /* --angle: 0deg;
   border-image: linear-gradient(var(--angle), #ff3355, #33ff33) 1;
-  animation: 5s rotate linear infinite;
+  animation: 5s rotate linear infinite; */
 }
 
 .info-wrapper {

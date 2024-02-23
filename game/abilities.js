@@ -1023,7 +1023,7 @@ class Mine {
             if(checkForBoundry(cords[i][0], cords[i][1])) { 
                 addToCell(cords[i][0], cords[i][1], x); 
                 if (checkIfPlayer(cords[i][0], cords[i][1]) || checkIfEnemy(cords[i][0], cords[i][1])) {
-                    damagePlayers(cords[i][0], cords[i][1], x.damage);
+                    // damagePlayers(cords[i][0], cords[i][1], x.damage);
                 }
             }
             setTimeout(() => {

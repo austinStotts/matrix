@@ -156,3 +156,25 @@ body {
     display: inline-block;
 }
 
+
+
+
+
+
+.gamecommands {
+    position: fixed;
+    left: 50px;
+    bottom: 50px;
+    font-family: 'Courier New', Courier, monospace;
+    color: white;
+}
+
+.gamecommands > div {
+
+}
+
+.gamecommands > div:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+

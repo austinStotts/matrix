@@ -15,7 +15,10 @@ let examineRelic = (relic) => {
 let formatRelic = (relic) => {
     let r = document.createElement("div");
     r.classList.add("relic-wrapper");
-    r.addEventListener("click", () => examineRelic(relic.id))
+    if(relic.canExamine) {
+        r.addEventListener("click", () => examineRelic(relic.id));
+        r.classList.add("canexamine");
+    }
     r.innerHTML =
     `
         <div class="relic-img-wrapper"><img class="relic-img" src="../game/assets/${relic.id}.png"></div>
@@ -39,3 +42,5 @@ if(relics == undefined) {
         relicswrapper.appendChild(formatRelic(relics[relic.id]))
     })
 }
+
+document.getElementById("closeexamine").onclick = () => { examineRelic() }

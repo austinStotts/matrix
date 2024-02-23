@@ -677,7 +677,7 @@ let drawCanvas = () => {
 }
 
 let playerimage = new Image();
-playerimage.src = "./sprites/player.png";
+playerimage.src = "./assets/player_04.png";
 let makePlayerImg = (x, y) => {
     let player_ = new Konva.Rect({
         x: x,
@@ -927,6 +927,9 @@ let pruneMatrix = () => {
                 if(matrix[i][j].children[key].delete) {
                     matrix[i][j].children[key].beforeDelete();
                     delete matrix[i][j].children[key];
+                    if(matrix[i][j].canvas.sprite != undefined) {
+                        matrix[i][j].canvas.sprite.destroy();
+                    }
                 }
             })
         }

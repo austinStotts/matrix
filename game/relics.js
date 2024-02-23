@@ -65,7 +65,7 @@ let relics = {
         name: "research paper",
         class: "research-paper",
         id: "research_paper",
-        found: "mission 3",
+        found: "mission 4",
         abilities: ["Leap", "Mine"],
         bonus: {
             hp: 0,
