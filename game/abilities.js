@@ -1082,6 +1082,83 @@ class Mine {
 
 
 
+class Erupt {
+    constructor() {
+        this.id = "Erupt";
+        this.type = "projectile";
+        this.damage = 2;
+        this.cost = 5;
+        this.info = "deals damage to all tiles in a line";
+        this.damage_type = "standard";
+        this.name = "erupt";
+        this.imagename = "erupt";
+        this.speed = 3;
+        this.maxDistance = -1;
+        this.abilityClass = 1;
+        this.allowClick = false;
+        this.custom = true;
+
+    }
+
+    async use (dr,dc, ir, ic) {
+
+        class Eruption {
+            constructor() {
+                this.id = getID();
+                this.type = "projectile";
+                this.damage = 2;
+                this.delete = false;
+                this.classname = "slice"
+            }
+
+            beforeDelete () {}
+        }
+
+        let cr = ir + dr;
+        let cc = ic + dc;
+
+        let cells = [];
+        let loop = true;
+        while(loop) {
+            if(matrix[cr]) {
+                if(matrix[cr][cc]) {
+                    cells.push([cr,cc]);
+                } else {
+                    loop = false;
+                }
+            } else {
+                loop = false;
+            }
+            cr += dr;
+            cc += dc;
+        }
+
+        console.log(cells);
+
+        for(let i = 0; i < cells.length; i++) {
+            await sleep(50);
+            let x = new Eruption();
+            if(checkForBoundry(cells[i][0], cells[i][1])) { 
+                addToCell(cells[i][0], cells[i][1], x); 
+                if (checkIfPlayer(cells[i][0], cells[i][1]) || checkIfEnemy(cells[i][0], cells[i][1])) {
+                    // damagePlayers(cells[i][0], cells[i][1], x.damage);
+                }
+            }
+            setTimeout(() => {
+                removefromCell(cells[i][0], cells[i][1], x.id);
+            },50)
+            
+        }
+
+        pruneMatrix()
+        return true;
+    }
+}
+
+
+
+
+
 
 
 // new spell class abilities:
@@ -1197,7 +1274,7 @@ class Granite {
 
 
 
-let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun, Rest, Heal, Leap, Mine];
+let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun, Rest, Heal, Leap, Mine, Erupt];
 let tiles = {Plains, Frozen, Lava, Mercury, Granite, Cracked_earth, Plains_pool}
 let worldconstructs = {Wall, Reinforced_wall, Boolean_block}
 let mechanisms = {Switch}

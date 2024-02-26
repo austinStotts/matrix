@@ -65,7 +65,7 @@ class Player {
         if(this.selectedAbility == 1) {
             if(this.power >= this.ability1.cost) {
                 if(this.ability1.custom) {
-                    let used = this.ability1.use(dr, dc);
+                    let used = this.ability1.use(dr, dc, this.row, this.column);
                     if(used) {
                         addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
                         this.power = this.power - this.ability1.cost;

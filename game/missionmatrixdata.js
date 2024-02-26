@@ -61,7 +61,7 @@ let missionmatrixdata = {
         "4": {
             relics: [],
             player: {row: 10, column: 5},
-            enemies: [{id: "Seeker", row: 0, column: 5},{id: "Seeker", row: 0, column: 0},{id: "Seeker", row: 0, column: 10}],
+            enemies: [{id: "Caage", row: 0, column: 5}],
             constructs: [
                 {id: "Boolean_block", row: 3, column: 4, state: true},
                 {id: "Boolean_block", row: 3, column: 5, state: true},

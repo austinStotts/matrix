@@ -528,6 +528,220 @@ class Grex {
 
 
 
+let sortLeaps = (leaps, pr, pc) => {
+    return leaps.sort((a,b) => {
+        return findAbsDistance(a[a.length-1][0], a[a.length-1][1], pr, pc) - findAbsDistance(b[b.length-1][0], b[b.length-1][1], pr, pc)
+    })
+}
+
+let getPossibleLeaps = (r,c) => {
+    let leaps = [];
+    for(let i = 0; i < matrix.length; i++) {
+        for(let j = 0; j < matrix[i].length; j++) {
+            let d = distanceFromPlayer(i,j,r,c);
+            if((Math.abs(d.rows) + Math.abs(d.columns)) < 5) {
+                leaps.push([i,j])
+            } 
+        }
+    }
+    return leaps;
+}
+
+
+
+let caageAttackEnemy = (er, ec, pr, pc, enemyid) => {
+    // console.log("real close");
+    ENEMIES[enemyid].ability(1);
+    let dx = (pc-ec);
+    let dy = (pr-er);
+    // console.log("dx:", dx);
+    // console.log("dy:", dy);
+    if(Math.abs(dx) > Math.abs(dy)) {
+        // console.log("ATTACK TO SIDES")
+        if(dx > 0) {
+            // move right
+            ENEMIES[enemyid].useAbility(0, 1);
+        } else if(dx < 0) {
+            // move left
+            ENEMIES[enemyid].useAbility(0, -1);
+        } else {
+            // dont move
+        }
+    } else {
+        if(dy > 0) {
+            // move down
+            ENEMIES[enemyid].useAbility(1, 0);
+        } else if(dy < 0) {
+            // move up
+            ENEMIES[enemyid].useAbility(-1, 0);
+        } else {
+            // dont move
+        }
+    }
+}
+
+
+
+class Caage {
+    constructor(r, c, enemyid, name=generateName()) {
+        this.name = name;
+        this.type = "enemy";
+        this.classname = "enemy";
+        this.spriteid = "Grex";
+        this.animate = false;
+        this.animateid = "Caage";
+        this.enemyid = enemyid;
+        this.id = getID();
+        this.row = r;
+        this.column = c;
+        this.ability1 = new Erupt();
+        this.ability3 = new Leap();
+        this.hp = 3;
+        this.maxMovements = 0;
+        this.movements = 0;
+        this.maxPower = 5;
+        this.power = 5;
+        this.selectedAbility = 1;
+        this.gameIndex = 1;
+        this.state = "erupt";
+
+        this.ability3.owner = this.name;
+    } 
+
+    set(r, c) {
+        this.row = r;
+        this.column = c;
+    }
+
+    canAct () {
+        let abilitiesAvailable = [];
+        if(this.ability1.cost <= this.power) { abilitiesAvailable.push(1) }
+        if(this.ability2.cost <= this.power) { abilitiesAvailable.push(2) }
+        if(this.ability3.cost <= this.power) { abilitiesAvailable.push(3) }
+        return abilitiesAvailable;
+    }
+
+
+    updateTurn () {
+        this.movements = this.maxMovements;
+        this.power = this.maxPower;
+    }
+
+    ability (x) {
+        this.selectedAbility = x;
+        inputMethod = "ability"
+    }
+
+    useAbility (dr, dc) {
+        if(this.selectedAbility == 1) {
+            if(this.power >= this.ability1.cost) {
+                if(this.ability1.custom) {
+                    let used = this.ability1.use(dr, dc, this.row, this.column);
+                    if(used) {
+                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` })
+                        this.power = this.power - this.ability1.cost;
+                        updateLabels();
+                        inputMethod = "movement";
+                        this.selectedAbility = 0;
+                        removeGridlines();
+                    } else {
+                        
+                    }
+                } else {
+                    addLog({ type: "ability", name: this.name, content: ` used ${this.ability1.name}` });
+                    calculateProjectile(this.ability1, this.row, this.column, dr, dc)
+                    // let p = this.ability1.cell(PLAYER.row, PLAYER.column);
+                    // drawAbility(p, dr, dc, this.ability1.speed);
+                    this.power = this.power - this.ability1.cost;
+                    updateLabels();
+                    inputMethod = "movement";
+                    this.selectedAbility = 0;
+                    removeGridlines();
+                }
+            } else {
+                inputMethod = "movement";
+                this.selectedAbility = 0;
+                removeGridlines();
+            }
+        } else if(this.selectedAbility == 2) {
+            console.log("this is not good")
+        } else if(this.selectedAbility == 3) {
+            if(this.power >= this.ability3.cost) {
+                if(this.ability3.custom) {
+                    let used = this.ability3.use(dr, dc, this.row, this.column);
+                    if(used) {
+                        addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
+                        this.power = this.power - this.ability2.cost;
+                        updateLabels();
+                        inputMethod = "movement";
+                        this.selectedAbility = 0;
+                        removeGridlines();
+                    } else {
+                        
+                    }
+                } else {
+                    addLog({ type: "ability", name: this.name, content: ` used ${this.ability3.name}` })
+                    let p = this.ability3.cell(this.row, this.column, dr, dc);
+                    drawAbility(p, dr, dc, this.ability3.speed);
+                    this.power = this.power - this.ability3.cost;
+                    updateLabels();
+                    inputMethod = "movement";
+                    this.selectedAbility = 0;
+                    removeGridlines();
+                }
+            } else {
+                inputMethod = "movement";
+                this.selectedAbility = 0;
+                removeGridlines();
+            }
+        } 
+        else {
+            console.log("invalid ability selected: ", this.selectedAbility)
+        }
+        updateLabels();
+    
+    }
+
+    move (r,c, cost) {
+        if(this.movements >= cost) {
+            matrix[this.row][this.column].tile = new Mercury();
+            this.set(r,c);
+            this.movements -= cost;
+            updateLabels();
+            return true
+        } else {
+            return false
+        }
+    }
+
+    takeDamage (n) {
+        this.hp -= n;
+        addLog({ type: "damage", name: this.name, content: ` took ${n} damage` })
+        if(this.hp <= 0) { this.delete = true }
+    }
+
+    async startTurn () {
+        
+        console.log("caage ai v1");
+
+        if(this.state == "erupt") {
+            attackPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
+            this.state = "leap";
+        } else if (this.state = "leap") {
+            console.log(sortLeaps(getPossibleLeaps(this.row, this.column), PLAYER.row, PLAYER.column))
+        } else {
+            console.log("error");
+        }
+
+        endTurn(this.gameIndex);
+    }
+
+    beforeDelete () {
+        addLog({ type: "death", name: this.name, content: ` died` })
+    }
+
+
+}
 
 
 
@@ -546,5 +760,24 @@ class Grex {
 
 
 
-let enemies = { Seeker, Grex }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let enemies = { Seeker, Grex, Caage }
 
