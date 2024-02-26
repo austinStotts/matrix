@@ -904,9 +904,7 @@ class Leap {
 
 
     use (r, c) {
-        console.log(r,c)
         let d = distanceFromPlayer(r,c,PLAYER.row, PLAYER.column);
-        console.log(d)
         if((Math.abs(d.rows) + Math.abs(d.columns)) < 5) {
             if(checkForBoundry(r,c) && !checkIfPlayer(r,c) && !checkForConstruct(r,c) && !checkIfEnemy(r,c)) {
                 markForUpdate(PLAYER.row, PLAYER.column); 
@@ -917,7 +915,6 @@ class Leap {
                 markForUpdate(r,c); 
                 checkForRelic(r,c);
             }
-            
         } 
         return true;
     }

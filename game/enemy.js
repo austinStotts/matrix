@@ -261,8 +261,13 @@ let trimPaths = (sortedPath) => {
 }
 
 let findAbsDistance = (r1,c1,r2,c2) => {
+    console.log("\n\n----------------")
+    console.log("r1, c1, r2, c2");
+    console.log(r1, c1, r2, c2);
     let rows = r2 - r1;
     let columns = c2 - c1;
+    console.log("rows: ", rows)
+    console.log("columns: ", columns)
     return Math.abs(rows) + Math.abs(columns);
 }
 
@@ -529,9 +534,13 @@ class Grex {
 
 
 let sortLeaps = (leaps, pr, pc) => {
-    return leaps.sort((a,b) => {
-        return findAbsDistance(a[a.length-1][0], a[a.length-1][1], pr, pc) - findAbsDistance(b[b.length-1][0], b[b.length-1][1], pr, pc)
+    console.log(leaps)
+    leaps.sort((a,b) => {
+        console.log(a,b)
+        return (findAbsDistance(a[0], a[1], pr, pc) - findAbsDistance(b[0], b[1], pr, pc))
     })
+
+    return leaps;
 }
 
 let getPossibleLeaps = (r,c) => {
@@ -540,7 +549,9 @@ let getPossibleLeaps = (r,c) => {
         for(let j = 0; j < matrix[i].length; j++) {
             let d = distanceFromPlayer(i,j,r,c);
             if((Math.abs(d.rows) + Math.abs(d.columns)) < 5) {
-                leaps.push([i,j])
+                if(checkForBoundry(i,j) && !checkIfPlayer(i,j) && !checkForConstruct(i,j) && !checkIfEnemy(i,j)) {
+                    leaps.push([i,j])
+                }
             } 
         }
     }
@@ -728,7 +739,18 @@ class Caage {
             attackPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
             this.state = "leap";
         } else if (this.state = "leap") {
-            console.log(sortLeaps(getPossibleLeaps(this.row, this.column), PLAYER.row, PLAYER.column))
+
+            let l = sortLeaps(getPossibleLeaps(this.row, this.column), PLAYER.row, PLAYER.column);
+            console.log(l)
+            markForUpdate(ENEMIES[this.enemyid].row, ENEMIES[this.enemyid].column); 
+            removefromCell(ENEMIES[this.enemyid].row, ENEMIES[this.enemyid].column, ENEMIES[this.enemyid].id);
+            addToCell(l[0][0], l[0][1], ENEMIES[this.enemyid]);
+            ENEMIES[this.enemyid].set(l[0][0], l[0][1]);
+            updateLabels();
+            markForUpdate(l[0][0], l[0][1]); 
+
+            this.state = "erupt";
+            
         } else {
             console.log("error");
         }
