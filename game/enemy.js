@@ -598,7 +598,7 @@ class Caage {
         this.name = name;
         this.type = "enemy";
         this.classname = "enemy";
-        this.spriteid = "Grex";
+        this.spriteid = "Caage";
         this.animate = false;
         this.animateid = "Caage";
         this.enemyid = enemyid;
@@ -732,6 +732,9 @@ class Caage {
     }
 
     async startTurn () {
+
+        // add delay to moves and what not so its not so instant
+        // add the grex random top 25% thing to the pathing so its not so exact
         
         console.log("caage ai v1");
 
