@@ -820,12 +820,14 @@ let updateCanvas = () => {
                     })
                 }
                 else if(matrix[i][j].relic && !checkForConstruct(i,j)) {
+                    console.log("UPDATING CONSTRUCT")
                     let image = makeRelicImg(matrix[i][j].canvas.x, matrix[i][j].canvas.y);
                     matrix[i][j].relic.sprite = image;
                     layer.add(image);
                     matrix[i][j].canvas.needsUpdate = false;
                 }
-                else if(matrix[i][j].mechanism && !checkForConstruct(i,j)) {
+                else if(matrix[i][j].mechanism) {
+                    console.log("UPDATEING SWITCH")
                     let image = makeMechanismImg(matrix[i][j].canvas.x, matrix[i][j].canvas.y, matrix[i][j].mechanism.state);
                     matrix[i][j].mechanism.sprite = image;
                     layer.add(image);
@@ -909,7 +911,6 @@ let compairMatrix = () => {
                     // do nothing
                 } else {
                     classname = classname + " " + matrix[i][j].children[key].classname;
-                    
                 }
             })
 
@@ -1268,7 +1269,7 @@ let getSavedAbilities = () => {
 
 let buildWorldConstructs = (list) => {
     list.forEach(con => {
-        addToCell(con.row, con.column, new worldconstructs[con.id](con.state ? con.state : ""))
+        addToCell(con.row, con.column, new worldconstructs[con.id](con.row, con.column, con.state ? con.state : ""))
     })
 }
 
@@ -1280,7 +1281,8 @@ let placeRelics = (list) => {
 
 let placeMechanisms = (list) => {
     list.forEach(mechanism => {
-        matrix[mechanism.row][mechanism.column].mechanism = new mechanisms[mechanism.id]();
+        console.log(mechanism)
+        matrix[mechanism.row][mechanism.column].mechanism = new mechanisms[mechanism.id](mechanism.row, mechanism.column, mechanism.state);
     })
 }
 

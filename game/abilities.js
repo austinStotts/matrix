@@ -55,12 +55,14 @@ class Wall {
 }
 
 class Boolean_block {
-    constructor(state=false) {
+    constructor(r, c, state=false) {
         this.name = "boolean block";
-        this.blocksMovement = false;
+        this.blocksMovement = state ? true : false;
         this.mechanism_block = true;
+        this.row = r;
+        this.column = c;
         this.hp = 100;
-        this.type = "mechanism";
+        this.type = state ? "construct" : "mechanism";
         this.id = getID();
         this.delete = false;
         this.state = state;
@@ -77,15 +79,19 @@ class Boolean_block {
         this.state = !this.state;
         this.blocksMovement = this.state;
         this.classname = `boolean-block boolean-${this.state}`;
-        this.state ? this.type = "construct" : this.type = "mechanism"
+        this.state ? this.type = "construct" : this.type = "mechanism";
+        if(checkIfEnemy(this.row, this.column)) {
+            damagePlayers(this.row, this.column, 100);
+        }
     }
 }
 
 
 class Switch {
-    constructor(owner) {
+    constructor(r,c) {
         this.name = "switch";
-        this.owner = owner;
+        this.row = r;
+        this.column = c;
         this.blocksMovement = true;
         this.classname = "switch";
         this.type = "mechanism";
@@ -100,6 +106,8 @@ class Switch {
 
     activate () {
         this.state = !this.state;
+        this.sprite.destroy();
+        markForUpdate(this.row, this.column);
         switchMatrix()
     }
 }
@@ -794,7 +802,6 @@ class Shotgun {
             distance++;
         }
 
-        console.log(cells);
         let newCells = [];
         for(let f = 0; f < cells.length; f++) {
             if(checkForBoundry(cells[f][0], cells[f][1])) {
@@ -1137,8 +1144,17 @@ class Erupt {
             let x = new Eruption();
             if(checkForBoundry(cells[i][0], cells[i][1])) { 
                 addToCell(cells[i][0], cells[i][1], x); 
-                if (checkIfPlayer(cells[i][0], cells[i][1]) || checkIfEnemy(cells[i][0], cells[i][1])) {
+                if (checkIfPlayer(cells[i][0], cells[i][1])) {
+                    console.log("PLAYER IN CELL")
                     // damagePlayers(cells[i][0], cells[i][1], x.damage);
+                } else if(checkIfEnemy(cells[i][0], cells[i][1])) {
+                    console.log("ENEMY IN CELL");
+                    damagePlayers(cells[i][0], cells[i][1], x.damage);
+                } else if (checkForConstruct(cells[i][0], cells[i][1])) {
+                    console.log("CONSTRUCT IN CELL");
+                    damageConstructs(cells[i][0], cells[i][1], x.damage)
+                } else if(matrix[cells[i][0]][cells[i][1]].mechanism) {
+                    matrix[cells[i][0]][cells[i][1]].mechanism.activate()
                 }
             }
             setTimeout(() => {

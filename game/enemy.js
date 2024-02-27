@@ -261,13 +261,8 @@ let trimPaths = (sortedPath) => {
 }
 
 let findAbsDistance = (r1,c1,r2,c2) => {
-    console.log("\n\n----------------")
-    console.log("r1, c1, r2, c2");
-    console.log(r1, c1, r2, c2);
     let rows = r2 - r1;
     let columns = c2 - c1;
-    console.log("rows: ", rows)
-    console.log("columns: ", columns)
     return Math.abs(rows) + Math.abs(columns);
 }
 
@@ -534,12 +529,9 @@ class Grex {
 
 
 let sortLeaps = (leaps, pr, pc) => {
-    console.log(leaps)
     leaps.sort((a,b) => {
-        console.log(a,b)
         return (findAbsDistance(a[0], a[1], pr, pc) - findAbsDistance(b[0], b[1], pr, pc))
     })
-
     return leaps;
 }
 
@@ -735,30 +727,32 @@ class Caage {
 
         // add delay to moves and what not so its not so instant
         // add the grex random top 25% thing to the pathing so its not so exact
-        
-        console.log("caage ai v1");
+        if(this.hp > 0) {
+            console.log("caage ai v1");
 
-        if(this.state == "erupt") {
-            attackPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
-            this.state = "leap";
-        } else if (this.state = "leap") {
+            if(this.state == "erupt") {
+                await sleep(500);
+                attackPlayer(this.row, this.column, PLAYER.row, PLAYER.column, this.enemyid);
+                this.state = "leap";
+            } else if (this.state = "leap") {
+                await sleep(500);
+                let l = sortLeaps(getPossibleLeaps(this.row, this.column), PLAYER.row, PLAYER.column);
+                markForUpdate(ENEMIES[this.enemyid].row, ENEMIES[this.enemyid].column); 
+                removefromCell(ENEMIES[this.enemyid].row, ENEMIES[this.enemyid].column, ENEMIES[this.enemyid].id);
+                addToCell(l[0][0], l[0][1], ENEMIES[this.enemyid]);
+                ENEMIES[this.enemyid].set(l[0][0], l[0][1]);
+                updateLabels();
+                markForUpdate(l[0][0], l[0][1]); 
 
-            let l = sortLeaps(getPossibleLeaps(this.row, this.column), PLAYER.row, PLAYER.column);
-            console.log(l)
-            markForUpdate(ENEMIES[this.enemyid].row, ENEMIES[this.enemyid].column); 
-            removefromCell(ENEMIES[this.enemyid].row, ENEMIES[this.enemyid].column, ENEMIES[this.enemyid].id);
-            addToCell(l[0][0], l[0][1], ENEMIES[this.enemyid]);
-            ENEMIES[this.enemyid].set(l[0][0], l[0][1]);
-            updateLabels();
-            markForUpdate(l[0][0], l[0][1]); 
-
-            this.state = "erupt";
-            
-        } else {
-            console.log("error");
-        }
-
+                this.state = "erupt";
+                
+            } else {
+                console.log("error");
+            }
+        }   
+        await sleep(500);
         endTurn(this.gameIndex);
+        
     }
 
     beforeDelete () {
