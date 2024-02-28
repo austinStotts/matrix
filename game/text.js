@@ -145,6 +145,43 @@ let gametext = {
             ⢀⣤⣶⣿⢿⣿⣷⣷⣿⣿⣿⣛⣿⣿⣿
             ⠿⠿⠿⠿⠹⠿⠿⠿⠿⠿⠿⠭⠿⠿⠿
             `
+        },
+        "5": {
+            "opening": [    
+                "mission 5:", 
+                "we have been trapped for so long",
+                "every step into darkness brightens our future",
+                "everything must die"
+            ],
+            "closing": [    
+                "mission complete", 
+                "we have learned so much",
+                "and come so far",
+                "your nexts steps will be beyond the splice"
+            ],
+            "failure": [
+                "mission failure",
+                "surpassed all expectations",
+                "recalibrate",
+                "the next could reach the end"
+            ],
+            "brief": [
+                "you approach the edge",
+                "none have been beyond the splice",
+                "do not die now"
+            ],
+            "handler": `
+            ⠀⠀⠀⠀⢀⣤⣄⣀⣤⡀⠀⠀⠀⠀⠀
+            ⠀⠀⠀⠀⣼⣿⡏⡇⢾⣷⡀⠀⠀⠀⠀
+            ⠀⣀⠀⣰⣿⣿⣟⢏⠻⣿⣿⣶⣿⠇⠀
+            ⠀⠘⢿⡿⣭⣭⣭⢭⣬⣭⡽⣮⠏⠀⠀
+            ⠀⠀⠀⢙⢻⠛⡿⠿⢺⠟⢻⠀⠀⠀⠀
+            ⠀⠀⠀⠈⢸⣇⠠⢘⣰⢈⡇⠀⠀⠀⠀
+            ⠀⠀⠀⠀⢀⣿⡞⡙⠮⣹⣫⡄⠀⠀⠀
+            ⠀⠀⠀⠀⣸⣥⣫⣓⣾⣿⣿⣿⣦⣄⡀
+            ⢀⣤⣶⣿⢿⣿⣷⣷⣿⣿⣿⣛⣿⣿⣿
+            ⠿⠿⠿⠿⠹⠿⠿⠿⠿⠿⠿⠭⠿⠿⠿
+            `
         }
     }
 }

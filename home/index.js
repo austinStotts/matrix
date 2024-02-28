@@ -36,9 +36,9 @@ let unlock = document.getElementById("unlockall");
 let reset = document.getElementById("reset");
 
 unlock.onclick = (e) => {
-    window.localStorage.setItem("relics", JSON.stringify([{"id":"standard_issue"},{"id":"tape_measure"},{"id":"calculator"},{"id":"toothpaste"},{"id":"research_paper"}]));
-    window.localStorage.setItem("missiondata", JSON.stringify({"level":4}));
-    window.localStorage.setItem("highestmissioncleared", 4);
+    window.localStorage.setItem("relics", JSON.stringify([{"id":"standard_issue"},{"id":"tape_measure"},{"id":"calculator"},{"id":"toothpaste"},{"id":"research_paper"},{"id":"neptunium"}]));
+    window.localStorage.setItem("missiondata", JSON.stringify({"level":5}));
+    window.localStorage.setItem("highestmissioncleared", 5);
 }
 
 reset.onclick = (e) => {

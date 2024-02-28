@@ -6,7 +6,7 @@ let relics = {
         class: "standard-issue",
         id: "standard_issue",
         found: "mission 0",
-        abilities: ["Shell", "Shotgun", "Terraform_beta", "Terraform_gamma", "Slice", "Heal", "Erupt"],
+        abilities: ["Shell", "Shotgun", "Terraform_beta", "Terraform_gamma", "Slice", "Heal"],
         canExamine: false,
         bonus: {
             hp: 4,
@@ -81,5 +81,20 @@ let relics = {
             "pathToImg",
             "pathToImg",
         ]
+    },
+    neptunium: {
+        description: "small sample of NpF6 - neptunium(VI) fluoride ",
+        effect: "allows the use of erupt and gives +1 hp & +1 movements",
+        name: "neptunium",
+        class: "neptunium",
+        id: "neptunium",
+        found: "mission 5",
+        abilities: ["Erupt"],
+        canExamine: false,
+        bonus: {
+            hp: 1,
+            movements: 1,
+            power: 0,
+        }
     },
 }
