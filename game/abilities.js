@@ -80,7 +80,7 @@ class Boolean_block {
         this.blocksMovement = this.state;
         this.classname = `boolean-block boolean-${this.state}`;
         this.state ? this.type = "construct" : this.type = "mechanism";
-        if(checkIfEnemy(this.row, this.column)) {
+        if(checkIfEnemy(this.row, this.column) || checkIfPlayer(this.row, this.column)) {
             damagePlayers(this.row, this.column, 100);
         }
     }
@@ -214,7 +214,7 @@ class Terraform_alpha {
         this.type = "construct";
         this.damage = 2;
         this.cost = 5;
-        this.info = "forcibly arrange the earth to protect you";
+        this.info = "forcibly arrange the earth to protect you - places 3x 2hp terraformations where it lands";
         this.damage_type = "standard";
         this.name = "terraform α";
         this.imagename = "terraform_alpha";
@@ -266,7 +266,7 @@ class Terraform_beta {
         this.type = "construct";
         this.damage = 1;
         this.cost = 3;
-        this.info = "forcibly arrange the earth to protect you";
+        this.info = "forcibly arrange the earth to protect you - places 1x 1hp terraformation where it lands";
         this.damage_type = "standard";
         this.name = "terraform β";
         this.imagename = "terraform_beta";
@@ -333,7 +333,7 @@ class Terraform_gamma {
         this.type = "construct";
         this.damage = 1;
         this.cost = 2;
-        this.info = "forcibly arrange the earth to protect you";
+        this.info = "forcibly arrange the earth to protect you - places 1x 1hp terraformation where it lands";
         this.damage_type = "standard";
         this.name = "terraform γ";
         this.imagename = "terraform_gamma";
@@ -396,7 +396,7 @@ class Slice {
         this.type = "spell";
         this.damage = 2;
         this.cost = 3;
-        this.info = "cutting attack forward";
+        this.info = "cutting attack forward - deals damage 3 cells wide & 1 cell in front of you";
         this.damage_type = "slice";
         this.name = "slice";
         // this.name = "terraform y";
@@ -480,7 +480,7 @@ class Meteor_cryo {
         this.type = "construct";
         this.damage = 1;
         this.cost = 4;
-        this.info = "call upon a meteor to alter the battlefield";
+        this.info = "call upon a meteor to alter the battlefield - leaves a 1hp constuct where it lands and alters the surrounding tiles to be frozen";
         this.damage_type = "standard";
         this.name = "meteor cryo";
         this.speed = 150;
@@ -561,7 +561,7 @@ class Meteor_fire {
         this.type = "construct";
         this.damage = 1;
         this.cost = 4;
-        this.info = "call upon a meteor to alter the battlefield";
+        this.info = "call upon a meteor to alter the battlefield - leaves a 1hp constuct where it lands and alters the surrounding tiles to be lava";
         this.damage_type = "standard";
         this.name = "meteor fire";
         this.speed = 150;
@@ -733,12 +733,12 @@ class Shotgun {
         this.type = "projectile";
         this.damage = 2;
         this.cost = 5;
-        this.info = "damage in a V shape forward";
+        this.info = "damage in a V shape forward - goes through constructs";
         this.damage_type = "standard";
         this.name = "shotgun";
         this.imagename = "shotgun";
         this.speed = 3;
-        this.maxDistance = 4;
+        this.maxDistance = 3;
         this.abilityClass = 1;
         this.allowClick = false;
         this.custom = true;
@@ -752,7 +752,7 @@ class Shotgun {
         let cr = PLAYER.row + dr;
         let cc = PLAYER.column + dc;
         let dir = getDirection(dr, dc);
-        while(distance < this.maxDistance) {
+        while(distance <= this.maxDistance) {
             
             let l = (Math.floor(width/2)* -1);
             let r = Math.abs(l);
@@ -952,7 +952,7 @@ class Mine {
         this.type = "construct";
         this.damage = 3;
         this.cost = 4;
-        this.info = "set mine at feet - then detonate from anywhere";
+        this.info = "set mine at feet - then detonate from anywhere - setting the mine cost 4 power & detonating it cost 1 power";
         this.damage_type = "none";
         this.name = "mine";
         // this.name = "terraform y";
@@ -1092,7 +1092,7 @@ class Erupt {
         this.type = "projectile";
         this.damage = 2;
         this.cost = 5;
-        this.info = "deals damage to all tiles in a line";
+        this.info = "deals damage to all tiles in a line forward - goes through constructs";
         this.damage_type = "standard";
         this.name = "erupt";
         this.imagename = "erupt";

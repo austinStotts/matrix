@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="../game/assets/favicon.ico">
     <link rel="stylesheet" href="./style.css">
     <title>matrix - mission select</title>
 </head>
@@ -12,8 +13,8 @@
     <div id="relics-wrapper" class="relics-wrapper"></div>
     <dialog id="examine" class="examine">
         <div id="closeexamine" class="canclick">close</div>
-        <div class="navigationbar"><div class="examine-nav">prev</div><div class="examine-nav">1/8</div><div class="examine-nav">next</div></div>
-        <div id="document"></div>
+        <div class="navigationbar"><div class="examine-nav" id="prev">prev</div><div class="examine-nav" id="page">1/8</div><div class="examine-nav" id="next">next</div></div>
+        <div id="document" class="document-wrapper"></div>
     </dialog>
 
     <script src="../game/relics.js"></script>

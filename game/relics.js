@@ -74,12 +74,12 @@ let relics = {
         },
         canExamine: true,
         examine: [
-            "pathToImg",
-            "pathToImg",
-            "pathToImg",
-            "pathToImg",
-            "pathToImg",
-            "pathToImg",
+            "research_paper_01",
+            "research_paper_02",
+            // "pathToImg",
+            // "pathToImg",
+            // "pathToImg",
+            // "pathToImg",
         ]
     },
     neptunium: {

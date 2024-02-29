@@ -219,14 +219,18 @@ body {
 .ability-box:hover {
     cursor: pointer;
     border: 1px solid;
-    --angle: 0deg;
-    border-image: linear-gradient(var(--angle), rgb(253, 114, 255),rgb(114, 196, 255)) 1;
-    animation: 1s rotate linear infinite;
+    animation: blink 1s linear infinite;
 }
   
-@keyframes rotate {
-    to {
-        --angle: 360deg;
+@keyframes blink {
+    0% {
+        border-color: #33FF33;
+    }
+    50% {
+        border-color: transparent;
+    }
+    100% {
+        border-color: #33FF33;
     }
 }
 
@@ -308,5 +312,14 @@ body {
     font-size: 12px;
     /* border: 1px solid orchid; */
     padding: 5px;
+    height: 56px;
+    overflow: scroll;
+}
 
+.ability-info {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+.ability-info::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
 }

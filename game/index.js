@@ -1388,9 +1388,13 @@ setStatsFromRelics()
 let str = document.getElementById("start");
 
 let start = (e) => {
+    let settings = JSON.parse(window.localStorage.getItem("settings"));
+    if(settings.voice) {
+        showMessage(gametext.missions[LEVEL], "opening");
+    } else {
+        playerCanAct = true;
+    }
     document.getElementById("game-wrapper-body").classList.remove("blur");
-    // showMessage(gametext.missions[LEVEL], "opening");
-    playerCanAct = true;
     str.classList.add("hide");
 }
 

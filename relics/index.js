@@ -1,16 +1,64 @@
 let relicswrapper = document.getElementById("relics-wrapper");
+let relicslist = JSON.parse(window.localStorage.getItem("relics"));
 let examine = document.getElementById("examine");
+let d = document.getElementById("document");
+console.log(relicslist)
+let showImg = (i) => {
+    d.innerHTML = `
+        <img class="examineimg" src="../game/assets/${i}.png">
+    `
+}
+
+let currentpage = 1;
+let currentrelic;
+let prev = document.getElementById("prev");
+let next = document.getElementById("next");
+let page = document.getElementById("page");
+
 let examineState = false;
+
+prev.onclick = (e) => {
+    if(currentpage > 1) {
+        currentpage--;
+        showImg(relics[currentrelic].examine[currentpage-1]);
+        updatePage();
+    } else {
+
+    }
+}
+
+next.onclick = (e) => {
+    if(currentpage < relics[currentrelic].examine.length) {
+        currentpage++;
+        showImg(relics[currentrelic].examine[currentpage-1]);
+        updatePage();
+    } else {
+
+    }
+}
+
+let updatePage = () => {
+    let last = relics[currentrelic].examine.length;
+    page.innerText = `${currentpage} / ${last}`
+}
+
 let examineRelic = (relic) => {
     if(examineState) {
         examine.close();
         examineState = !examineState;
     } else {
+        currentrelic = relic;
+        currentpage = 1;
+        updatePage();
+        showImg(relics[relic].examine[currentpage-1])
         examine.show();
         examineState = !examineState;
     }
-    
 }
+
+
+
+
 
 let formatRelic = (relic) => {
     let r = document.createElement("div");
@@ -33,7 +81,7 @@ let formatRelic = (relic) => {
 
 
 
-let relicslist = JSON.parse(window.localStorage.getItem("relics"));
+
 if(relics == undefined) {
 
 } else {

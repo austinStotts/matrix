@@ -38,7 +38,7 @@ let buildMission = (i, data) => {
     m.classList.add("mission");
     m.innerHTML = `
         <div class="title">mission ${i}</div>
-        <div class="brief">${data.brief.join("<br>")}</div>
+        <div class="brief">${data.brief.join("<br><br>")}</div>
         <div class="intel"><img class="intel-img" src="../game/assets/plains.gif"></div>
     `
 

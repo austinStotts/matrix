@@ -854,7 +854,18 @@ body {
   font-size: 12px;
   /* border: 1px solid orchid; */
   padding: 5px;
+  height: 56px;
+  overflow: scroll;
 }
+
+.ability-info {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.ability-info::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
 
 
 
