@@ -32,15 +32,18 @@ let isPlayerHere = (r, c) => {
 
 
 class Wall {
-    constructor(owner) {
+    constructor(r,c) {
         this.name = "wall";
-        this.owner = owner;
+        // this.owner = owner;
         this.blocksMovement = true;
         this.hp = 2;
         this.classname = "wall";
         this.type = "construct";
         this.id = getID();
         this.delete = false;
+        this.canBeMoved = true;
+        this.row = r;
+        this.column = c;
     }
 
     takeDamage (n) {
@@ -66,6 +69,7 @@ class Boolean_block {
         this.id = getID();
         this.delete = false;
         this.state = state;
+        this.canBeMoved = true;
         this.classname = `boolean-block ${state ? "boolean-true" : "boolean-false"}`;
     }
 
@@ -116,7 +120,7 @@ class Switch {
 
 
 class Reinforced_wall {
-    constructor(owner) {
+    constructor(r,c) {
         this.name = "reinforced wall";
         this.owner = owner;
         this.blocksMovement = true;
@@ -125,6 +129,9 @@ class Reinforced_wall {
         this.type = "construct";
         this.id = getID();
         this.delete = false;
+        this.canBeMoved = true;
+        this.row = r;
+        this.column = c;
     }
 
     takeDamage (n) {
@@ -229,7 +236,7 @@ class Terraform_alpha {
     beforeDelete (cr,cc,pr,pc) {
         let _owner = this.owner;
         class Terraformation {
-            constructor() {
+            constructor(r,c) {
                 this.name = "terraformation α";
                 this.classname = "terraformation-alpha";
                 this.owner = _owner;
@@ -238,6 +245,9 @@ class Terraform_alpha {
                 this.type = "construct";
                 this.id = getID();
                 this.delete = false;
+                this.canBeMoved = true;
+                this.row = r;
+                this.column = c;
             }
 
             takeDamage (n) {
@@ -280,7 +290,7 @@ class Terraform_beta {
     beforeDelete (cr,cc,pr,pc) {
         let _owner = this.owner;
         class Terraformation {
-            constructor() {
+            constructor(r,c) {
                 this.name = "terraformation β";
                 this.classname = "terraformation-beta";
                 this.owner = _owner;
@@ -289,6 +299,9 @@ class Terraform_beta {
                 this.type = "construct";
                 this.id = getID();
                 this.delete = false;
+                this.canBeMoved = true;
+                this.row = r;
+                this.column = c;
             }
 
             takeDamage (n) {
@@ -357,7 +370,7 @@ class Terraform_gamma {
     beforeDelete (cr,cc,pr,pc) {
         let _owner = this.owner;
         class Terraformation {
-            constructor() {
+            constructor(r,c) {
                 this.name = "terraformation γ";
                 this.classname = "terraformation-gamma";
                 this.owner = _owner;
@@ -366,6 +379,9 @@ class Terraform_gamma {
                 this.type = "construct";
                 this.id = getID();
                 this.delete = false;
+                this.canBeMoved = true;
+                this.row = r;
+                this.column = c;
             }
 
             takeDamage (n) {
@@ -539,6 +555,7 @@ class Meteor_cryo {
                 this.delete = false;
                 this.maxDistance = 5;
                 this.distance = 0;
+                this.canBeMoved = true;
             }
 
             takeDamage (n) {
@@ -620,6 +637,7 @@ class Meteor_fire {
                 this.delete = false;
                 this.maxDistance = 5;
                 this.distance = 0;
+                this.canBeMoved = true;
             }
 
             takeDamage (n) {
@@ -963,7 +981,7 @@ class Mine {
         this.state = "mine";
         this.mr = null;
         this.mc = null;
-
+        this.minecon = null;
     }
 
 
@@ -974,7 +992,9 @@ class Mine {
             this.mr = PLAYER.row;
             this.mc = PLAYER.column;
             this.placeSprite(PLAYER.row, PLAYER.column);
-            addToCell(PLAYER.row, PLAYER.column, this.cell());
+            let x = this.cell(PLAYER.row, PLAYER.column, this.sprite);
+            this.minecon = x;
+            addToCell(PLAYER.row, PLAYER.column, x);
             this.state = "detonate";
             this.cost = 1;
             this.info = "detonate mine - deals damage in 1 cell radius"
@@ -983,6 +1003,8 @@ class Mine {
         
         else if(this.state == "detonate") {
             PLAYER.power = PLAYER.power - PLAYER.ability2.cost;
+            this.mr = this.minecon.row;
+            this.mc = this.minecon.column;
             this.explode();
             this.sprite.destroy();
             this.state = "mine";
@@ -1050,7 +1072,7 @@ class Mine {
         layer.add(sprite_);
     }
 
-    cell (r,c) {
+    cell (r, c, sprite) {
         return new class Mine_p {
             constructor () {
                 this.type = "construct";
@@ -1065,6 +1087,8 @@ class Mine {
                 this.delete = false;
                 this.maxDistance = 0;
                 this.distance = 0;
+                this.canBeMoved = true;
+                this.sprite = sprite;
             }
 
             takeDamage (n) {
@@ -1104,7 +1128,7 @@ class Erupt {
 
     }
 
-    async use (dr,dc, ir, ic) {
+    async use (dr, dc, ir, ic) {
 
         class Eruption {
             constructor() {
@@ -1163,14 +1187,147 @@ class Erupt {
             
         }
 
-        pruneMatrix()
+        pruneMatrix();
+        updateCanvas()
         return true;
     }
 }
 
 
 
+class Push {
+    constructor () {
+        this.id = "Push";
+        this.type = "projectile";
+        this.damage = 1;
+        this.cost = 3;
+        this.info = "moves everything 1 cell";
+        this.damage_type = "standard";
+        this.name = "push";
+        this.imagename = "push";
+        this.speed = 3;
+        this.maxDistance = -1;
+        this.abilityClass = 1;
+        this.allowClick = false;
+        this.custom = true;
+    }
 
+    async use (dr, dc, ir, ic) {
+        console.log("\nPUSHING");
+        let cr = ir + dr;
+        let cc = ic + dc;
+        let cells = [];
+        let running = true;
+        while (running) {
+            if(!checkForBoundry(cr, cc)) {
+                running = false;
+                console.log("found boundry")
+            } else {
+                cells.push([cr,cc])
+            }
+            cr += dr;
+            cc += dc;
+        }
+        // console.log(cells)
+        let pushing = false;
+        let cellsTraveled = [];
+        let toPush = [];
+        for(let i = 0; i < cells.length; i++) {
+            let r = [cells[i][0]][0];
+            let c = [cells[i][1]][0];
+            
+            if(checkForAllConstructs(r, c)) {
+                console.log("CONSTRUCT AT", r,c);
+                toPush.push([r,c]);
+                pushing = true;
+            } else if(checkIfEnemy(r,c)) {
+                console.log("ENEMY AT", r,c);
+                toPush.push([r,c]);
+                pushing = true;
+            } else {
+                if(pushing) {
+                    console.log("NOTHING TO KEEP PUSHING");
+                    console.log(toPush);
+                    break
+                } else {
+                    
+                }
+            }
+            if(!pushing) { cellsTraveled.push([r,c]) }
+        }
+
+        // console.log(cellsTraveled)
+        animateProjectile(cellsTraveled, dr, dc, "push", 7)
+
+        // deal 1 damage to the first cell
+        if(checkForAllConstructs(toPush[0][0], toPush[0][1])) {
+            damageConstructs(toPush[0][0],toPush[0][1], 1);
+        } else if(checkIfEnemy(toPush[0][0], toPush[0][1])) {
+            damagePlayers(toPush[0][0],toPush[0][1], 1);
+        }
+
+
+        // go backwards and move everything 1 cell
+        for(let i = toPush.length-1; i >= 0; i--) {
+            await sleep(200);
+            let nr = toPush[i][0] + dr;
+            let nc = toPush[i][1] + dc;
+            if(!checkForBoundry(nr,nc)) {
+                console.log("CANNOT MOVE! BOUNDRY");
+                damageConstructs(toPush[i][0], toPush[i][1], 1);
+                damagePlayers(toPush[i][0], toPush[i][1], 1);
+            } else if(checkForAllConstructs(nr,nc)) {
+                console.log("CANNOT MOVE! CONSTRUCT", nr,nc);
+                damageConstructs(toPush[i][0], toPush[i][1], 1);
+                damagePlayers(toPush[i][0], toPush[i][1], 1);
+            } else {
+                if(checkForAllConstructs(toPush[i][0], toPush[i][1])) {
+                    let node = matrix[toPush[i][0]][toPush[i][1]].children;
+                    Object.keys(node).forEach(child => {
+                        console.log(node[child])
+                        if(node[child].type == "construct") {
+                            if(node[child].sprite != undefined) {
+                                console.log("SPRITE")
+                                console.log(node[child].sprite);
+                                matrix[nr][nc].canvas.sprite = node[child].sprite;
+                                matrix[nr][nc].canvas.sprite.attrs.x = matrix[nr][nc].canvas.x;
+                                matrix[nr][nc].canvas.sprite.attrs.y = matrix[nr][nc].canvas.y;
+                                matrix[toPush[i][0]][toPush[i][1]].canvas.sprite = null;
+
+                                markForUpdate([toPush[i][0]],[toPush[i][1]]);
+                                markForUpdate(nr,nc)
+                                
+                            }
+                            console.log("NODE 1 ", node[child]);
+                            matrix[nr][nc].children[child] = node[child];
+                            matrix[nr][nc].children[child].row = nr;
+                            matrix[nr][nc].children[child].column = nc;
+                            console.log("NODE 2 ", matrix[nr][nc].children[child]);
+                            delete node[child];
+                            // moveConstruct(node[child].row + dr, node[child].column + dc, node[child]);
+                        }
+                    })
+                } else if(checkIfEnemy(toPush[i][0], toPush[i][1])) {
+                    console.log("MOVING AN ENEMY");
+                    let node = matrix[toPush[i][0]][toPush[i][1]].children;
+                    Object.keys(node).forEach(child => {
+                        console.log(node[child])
+                        if(node[child].type == "enemy") {
+                            forceMoveEnemy(node[child].row + dr, node[child].column + dc, node[child].enemyid);
+                        }
+                    })
+                    
+                }
+            }
+            
+        }
+        pruneMatrix()
+
+
+
+        return true;
+    }
+}
 
 
 
@@ -1287,7 +1444,7 @@ class Granite {
 
 
 
-let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun, Rest, Heal, Leap, Mine, Erupt];
+let abilities = [Shell, Terraform_alpha, Terraform_beta, Terraform_gamma, Slice, Meteor_cryo, Meteor_fire, Focus, Shotgun, Rest, Heal, Leap, Mine, Erupt, Push];
 let tiles = {Plains, Frozen, Lava, Mercury, Granite, Cracked_earth, Plains_pool}
 let worldconstructs = {Wall, Reinforced_wall, Boolean_block}
 let mechanisms = {Switch}

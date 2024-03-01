@@ -172,6 +172,18 @@ let checkForConstruct = (r,c) => {
     return blocks;
 }
 
+let checkForAllConstructs = (r,c) => {
+    let blocks = false;
+    Object.keys(matrix[r][c].children).forEach((key) => {
+        if(matrix[r][c].children[key].type == "construct") {
+            if(matrix[r][c].children[key].canBeMoved) {
+                blocks = true;
+            }
+        }
+    })
+    return blocks;
+}
+
 let checkAroundCell = (r, c) => {
     let cc = [[r-1,c],[r-1,c+1],[r,c+1],[r+1,c+1],[r+1,c],[r+1,c-1],[r,c-1],[r-1,c-1]];
     for(let i = 0; i < cc.length; i++) {
@@ -499,7 +511,11 @@ let cellClick = (e) => {
 
 
 let childFormatter = (node) => {
-    return (`<div class="child-line-tt"><span class="child-type-tt ${node.type}-tt">${node.type}</span> <span class="child-name-tt">${node.name}</span> <span class="child-hp-tt">${node.hp}</span></div>`)
+    if(node.type == "enemy") {
+        return (`<div class="child-line-tt"><span class="child-type-tt ${node.type}-tt">${node.type}</span> <span class="child-name-tt">${node.spriteid.toLowerCase()}</span> <span class="child-hp-tt">${node.hp}</span></div>`)
+    } else {
+        return (`<div class="child-line-tt"><span class="child-type-tt ${node.type}-tt">${node.type}</span> <span class="child-name-tt">${node.name}</span> <span class="child-hp-tt">${node.hp}</span></div>`)
+    }
 }
 
 let relicFormatter = (node) => {
@@ -1016,12 +1032,14 @@ let images = {
     terraform_beta: new Image(),
     terraform_gamma: new Image(),
     mine: new Image(),
+    push: new Image(),
 }
 images.shell.src = "./assets/shell.png"
 images.terraform_alpha.src = "./assets/shell.png"
 images.terraform_beta.src = "./assets/shell.png"
 images.terraform_gamma.src = "./assets/shell.png"
 images.mine.src = "./assets/mine.png"
+images.push.src = "./assets/shell.png"
 
 let animateProjectile = (cells, dr, dc, imagename, speed) => {
     if(cells.length > 1) {
@@ -1208,6 +1226,14 @@ let movePlayer = (r, c) => {
     }
 }
 
+let forceMoveEnemy = (r, c, enemyid) => {
+    markForUpdate(ENEMIES[enemyid].row, ENEMIES[enemyid].column);
+    removefromCell(ENEMIES[enemyid].row, ENEMIES[enemyid].column, ENEMIES[enemyid].id);
+    addToCell(r, c, ENEMIES[enemyid]);
+    ENEMIES[enemyid].set(r,c);
+    markForUpdate(r, c); 
+}
+
 let moveEnemy = (r, c, enemyid) => {
     // console.log(enemyid)
     if(checkForBoundry(r,c) && ENEMIES[enemyid].movements >= matrix[r][c].tile.movementCost && !checkIfPlayer(r,c) && !checkForConstruct(r,c) && !checkIfEnemy(r,c)) {
@@ -1217,6 +1243,10 @@ let moveEnemy = (r, c, enemyid) => {
         ENEMIES[enemyid].move(r,c, matrix[r][c].tile.movementCost);
         markForUpdate(r, c); 
     }
+}
+
+let moveConstruct = (ir, ic, nr, nc, cid) => {
+    
 }
 
 
