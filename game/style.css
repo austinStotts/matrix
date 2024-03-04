@@ -375,20 +375,27 @@ body {
 }
 
 .player {
-  border: 1px solid #33ff33;
-  animation: pulse1 0.5s infinite;
+  position: relative;
+  border: 1px solid #33ff33 !important;
+  animation: pulse1 1s infinite !important;
   /* background-image: none; */
   /* background-color: #33ff3388; */
   z-index: 101;
 }
 
 .enemy {
-  border: 1px solid #ff3355;
-  animation: pulse2 0.5s infinite;
+  position: relative;
+  border: 1px solid #ff3355 !important;
+  animation: pulse2 1s infinite !important;
   /* background-image: none;
     background-color: #FF335588; */
   z-index: 101;
 }
+
+.konvajs-content {
+  z-index: 102 !important;
+}
+
 
 .barrier {
   border-color: rgb(255, 117, 31);
@@ -465,9 +472,9 @@ body {
 }
 
 .wall {
-  border-color: rgb(82, 174, 255);
-  background-image: none;
-  background-color: rgba(82, 174, 255, 0.5);
+  /* border-color: rgb(82, 174, 255); */
+  /* background-image: none; */
+  /* background-color: rgba(82, 174, 255, 0.5); */
 }
 
 .reinforced-wall {
@@ -936,6 +943,6 @@ body {
 
 .mercury {
   border: 1px solid white;
-  background-image: none;
+  background-image: url("./assets/mercury.gif");
   background-color: rgb(206, 192, 192);
 }

@@ -201,7 +201,7 @@ class Seeker {
 
     takeDamage (n) {
         this.hp -= n;
-        addLog({ type: "damage", name: this.name, content: ` took ${n} damage` })
+        addLog({ type: "damage", name: this.spriteid.toLowerCase(), content: ` took ${n} damage` })
         if(this.hp <= 0) { this.delete = true }
     }
 
@@ -484,7 +484,7 @@ class Grex {
 
     takeDamage (n) {
         this.hp -= n;
-        addLog({ type: "damage", name: this.name, content: ` took ${n} damage` })
+        addLog({ type: "damage", name: this.spriteid.toLowerCase(), content: ` took ${n} damage` })
         if(this.hp <= 0) { this.delete = true }
     }
 
@@ -721,7 +721,7 @@ class Caage {
 
     takeDamage (n) {
         this.hp -= n;
-        addLog({ type: "damage", name: this.name, content: ` took ${n} damage` })
+        addLog({ type: "damage", name: this.spriteid.toLowerCase(), content: ` took ${n} damage` })
         if(this.hp <= 0) { this.delete = true }
     }
 

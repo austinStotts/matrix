@@ -10,8 +10,8 @@ let relics = {
         canExamine: false,
         bonus: {
             hp: 4,
-            movements: 2,
-            power: 5,
+            movements: 4,
+            power: 8,
         }
     },
     tape_measure: {

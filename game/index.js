@@ -290,6 +290,8 @@ let calculateCell = (r, c) => {
     let constructs = [];
     let players = [];
     let enemies = [];
+    let mechanisms = [];
+
     Object.keys(matrix[r][c].children).forEach(key => {
 
         if(matrix[r][c].children[key].type == "projectile") {
@@ -308,11 +310,7 @@ let calculateCell = (r, c) => {
     if(constructs.length > 0 && projectiles.length > 0) {
         constructs.forEach((construct, i) => {
             projectiles.forEach((projectile, i) => {
-                if(construct.owner == projectile.owner) {
-                    //do nothing
-                } else {
-                    construct.takeDamage(projectile.damage);
-                }
+                construct.takeDamage(projectile.damage);
             })
         })
     }
@@ -327,6 +325,18 @@ let calculateCell = (r, c) => {
                 }
             })
         })
+    }
+
+    if(enemies.length > 0 && projectiles.length > 0) {
+        enemies.forEach((enemy, i) => {
+            projectiles.forEach((projectile, i) => {
+                enemy.takeDamage(projectile.damage);
+            })
+        })
+    }
+
+    if(matrix[r][c].mechanism != undefined && projectiles.length > 0) {
+        matrix[r][c].mechanism.activate()
     }
 
     if(constructs.length > 0 || players.length > 0) {
@@ -819,11 +829,11 @@ let markForUpdate = (row, column) => {
 }
 
 
-let updateCanvas = () => {
+let updateCanvas = (force=false) => {
     for(let i = 0; i < matrix.length; i++) {
         for(let j = 0; j < matrix[i].length; j++) {
 
-            if(matrix[i][j].canvas.needsUpdate) {
+            if(matrix[i][j].canvas.needsUpdate || force) {
                 if(checkIfPlayer(i, j)) {
                     let image = makePlayerImg(matrix[i][j].canvas.x, matrix[i][j].canvas.y);
                     matrix[i][j].canvas.sprite = image;
@@ -1043,6 +1053,7 @@ let images = {
     terraform_gamma: new Image(),
     mine: new Image(),
     push: new Image(),
+    wall: new Image(),
 }
 images.shell.src = "./assets/shell.png"
 images.terraform_alpha.src = "./assets/shell.png"
@@ -1050,6 +1061,7 @@ images.terraform_beta.src = "./assets/shell.png"
 images.terraform_gamma.src = "./assets/shell.png"
 images.mine.src = "./assets/mine.png"
 images.push.src = "./assets/shell.png"
+images.wall.src = "./assets/wall.png"
 
 let animateProjectile = (cells, dr, dc, imagename, speed) => {
     if(cells.length > 1) {
@@ -1381,6 +1393,7 @@ console.log("level:", LEVEL);
 console.log("level data:", missionmatrixdata.missions[LEVEL])
 let matrix = makeMatrix(11, tiles[missionmatrixdata.missions[LEVEL].tile.id]);
 drawMatrix(11);
+drawCanvas();
 if(missionmatrixdata.missions[LEVEL].relics[0]) {
     loadRelic(missionmatrixdata.missions[LEVEL].relics[0].id);
 }
@@ -1408,10 +1421,12 @@ console.log(ENEMIES);
 
 getSavedAbilities();
 
+setTimeout(() => {
+    buildWorldConstructs(missionmatrixdata.missions[LEVEL].constructs);
+    placeRelics(missionmatrixdata.missions[LEVEL].relics);
+    placeMechanisms(missionmatrixdata.missions[LEVEL].mechanisms);
+}, 250)
 
-buildWorldConstructs(missionmatrixdata.missions[LEVEL].constructs);
-placeRelics(missionmatrixdata.missions[LEVEL].relics);
-placeMechanisms(missionmatrixdata.missions[LEVEL].mechanisms)
 
 
 // addToCell(ENEMY.row, ENEMY.column, ENEMY);
@@ -1447,7 +1462,9 @@ str.addEventListener("click", start);
 //     console.log("\n\n")
 // }, 1000)
 
-drawCanvas();
+// setTimeout(() => {
+//     updateCanvas(true)
+// }, 500)
 updateLabels();
 tileOverides(missionmatrixdata.missions[LEVEL].tile_overides);
 setInterval(() => {
