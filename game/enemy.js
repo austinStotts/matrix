@@ -99,6 +99,7 @@ class Seeker {
         this.animate = true;
         this.animateid = "./sprites/seeker.png";
         this.enemyid = enemyid;
+        this.fr = 16;
         this.id = getID();
         this.row = r;
         this.column = c;
@@ -395,7 +396,8 @@ class Grex {
         this.type = "enemy";
         this.classname = "enemy";
         this.spriteid = "Grex";
-        this.animate = false;
+        this.fr = 8;
+        this.animate = true;
         this.animateid = "Grex";
         this.enemyid = enemyid;
         this.id = getID();

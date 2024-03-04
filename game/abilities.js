@@ -1411,7 +1411,7 @@ class Mercury {
         this.allowsMovement = true;
         this.movementCost = 2;
         this.classname = "mercury"
-        this.name = "mercury pool"
+        this.name = "mercury"
         this.dot = 2;
         this.decay = 1;
         this.currentDecay = 0;

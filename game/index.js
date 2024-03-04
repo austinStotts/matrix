@@ -9,7 +9,7 @@ let tthandler = document.getElementById("handlerimg");
 let ttbody = document.getElementById("typedtext");
 console.log(window)
 
-opts = {
+handler1 = {
     debug: 0,
     pitch: 120,
     speed: 100,
@@ -17,7 +17,17 @@ opts = {
     throat: 128,
   };
 
-let sam = new SamJs(opts);
+
+  handler2 = {
+    debug: 0,
+    pitch: 35,
+    speed: 51,
+    mouth: 121,
+    throat: 95,
+  };
+
+let sam = new SamJs(handler2);
+// sam.download("boom")
 // sam.setVolume(0.2)
 
 
@@ -782,7 +792,7 @@ let makeEnemyImg = (x, y, enemy) => {
             image: enemyassets[enemy.spriteid],
             animation: 'idle',
             animations: ani,
-            frameRate: 16,
+            frameRate: enemy.fr,
             frameIndex: 0,
         });
 
