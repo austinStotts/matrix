@@ -99,6 +99,7 @@ body {
   border-radius: 4px;
   display: grid;
   grid-template-columns: 20% 80%;
+  z-index: 200;
 }
 
 #typedtext {
@@ -323,7 +324,7 @@ body {
 }
 
 .cracked-earth {
-  background-image: url("./assets/earth.gif");
+  background-image: url("./assets/dirt.gif");
 }
 
 .plains-pool {

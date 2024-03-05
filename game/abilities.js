@@ -138,7 +138,6 @@ class Switch {
 class Reinforced_wall {
     constructor(r,c) {
         this.name = "reinforced wall";
-        this.owner = owner;
         this.blocksMovement = true;
         this.hp = 3;
         this.classname = "reinforced-wall";
@@ -148,6 +147,18 @@ class Reinforced_wall {
         this.canBeMoved = true;
         this.row = r;
         this.column = c;
+
+        let s = new Konva.Rect({
+            x: matrix[r][c].canvas.x,
+            y: matrix[r][c].canvas.y,
+            width: 32,
+            height: 32
+        });
+    
+        s.fillPatternImage(images.reinforced_wall);
+        // matrix[r][c].canvas.sprite = sprite_;
+        layer.add(s);
+        this.sprite = s;
     }
 
     takeDamage (n) {
@@ -1306,39 +1317,22 @@ class Push {
                         let cell1 = matrix[node[child].row][node[child].column];
                         let cell2 = matrix[nr][nc];
                         if(node[child].type == "construct") {
-                            console.log("\n\nPUSHING A CONSTRUCT");
-                            console.log("OLD SPRITE", cell1);
-                            console.log("NEW SPRITE", cell2);
+                            // console.log("\n\nPUSHING A CONSTRUCT");
+                            // console.log("OLD SPRITE", cell1);
+                            // console.log("NEW SPRITE", cell2);
                             if(node[child].sprite != undefined) {
-                                console.log("FOUND A SPRITE IN CELL1")
-                                console.log(node[child].sprite.attrs);
-                                // set attrs to new cell cords
-                                // node[child].sprite.attrs.x = matrix[nr][nc].canvas.x;
-                                // node[child].sprite.attrs.y = matrix[nr][nc].canvas.y;
+                                // console.log("FOUND A SPRITE IN CELL1")
+                                // console.log(node[child].sprite.attrs);
                                 node[child].sprite.absolutePosition({ x: matrix[nr][nc].canvas.x, y: matrix[nr][nc].canvas.y })
-                                console.log(node[child].sprite.attrs);
-                                console.log(node[child].sprite);
+                                // console.log(node[child].sprite.attrs);
+                                // console.log(node[child].sprite);
                     
                             }
-                            // if(node[child].sprite != undefined) {
-     
-                                // console.log(node[child].sprite);
-                                // matrix[nr][nc].canvas.sprite = node[child].sprite;
-                                // matrix[nr][nc].canvas.sprite.attrs.x = matrix[nr][nc].canvas.x;
-                                // matrix[nr][nc].canvas.sprite.attrs.y = matrix[nr][nc].canvas.y;
-                                // matrix[toPush[i][0]][toPush[i][1]].canvas.sprite = null;
 
-                                // markForUpdate([toPush[i][0]],[toPush[i][1]]);
-                                // markForUpdate(nr,nc)
-                                
-                            // }
-                            // console.log("NODE 1 ", node[child]);
                             matrix[nr][nc].children[child] = node[child];
                             matrix[nr][nc].children[child].row = nr;
                             matrix[nr][nc].children[child].column = nc;
-                            // console.log("NODE 2 ", matrix[nr][nc].children[child]);
                             delete node[child];
-                            // moveConstruct(node[child].row + dr, node[child].column + dc, node[child]);
                         }
                     })
                 } else if(checkIfEnemy(toPush[i][0], toPush[i][1])) {

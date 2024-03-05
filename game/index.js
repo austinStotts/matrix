@@ -3,11 +3,56 @@
 
  
 
+// boom.play();
 
 let ttwrapper = document.getElementById("typedtext-wrapper");
 let tthandler = document.getElementById("handlerimg");
 let ttbody = document.getElementById("typedtext");
-console.log(window)
+console.log(window);
+
+let p1 = {
+    "opening": [
+        "i might have finally found my key",
+        "so many have been lost",
+        "soon they will remember my name",
+        "do not fail",
+        "please do not fail me",
+    ],
+    "handler": `
+    ⠀⠀⠀⠀⢀⣤⣄⣀⣤⡀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⣼⣿⡏⡇⢾⣷⡀⠀⠀⠀⠀
+    ⠀⣀⠀⣰⣿⣿⣟⢏⠻⣿⣿⣶⣿⠇⠀
+    ⠀⠘⢿⡿⣭⣭⣭⢭⣬⣭⡽⣮⠏⠀⠀
+    ⠀⠀⠀⢙⢻⠛⡿⠿⢺⠟⢻⠀⠀⠀⠀
+    ⠀⠀⠀⠈⢸⣇⠠⢘⣰⢈⡇⠀⠀⠀⠀
+    ⠀⠀⠀⠀⢀⣿⡞⡙⠮⣹⣫⡄⠀⠀⠀
+    ⠀⠀⠀⠀⣸⣥⣫⣓⣾⣿⣿⣿⣦⣄⡀
+    ⢀⣤⣶⣿⢿⣿⣷⣷⣿⣿⣿⣛⣿⣿⣿
+    ⠿⠿⠿⠿⠹⠿⠿⠿⠿⠿⠿⠭⠿⠿⠿
+    `
+}
+
+let p2 = {
+    "opening": [
+        "hello",
+        "i am your new handler",
+        "a pleasure to work with you",
+        "lets continue to work hard for everyone's sake"
+    ],
+    "handler": `
+    ⠀⠀⠀⠀⢀⣤⣄⣀⣤⡀⠀⠀⠀⠀⠀
+    ⠀⠀⠀⠀⣼⣿⡏⡇⢾⣷⡀⠀⠀⠀⠀
+    ⠀⣀⠀⣰⣿⣿⣟⢏⠻⣿⣿⣶⣿⠇⠀
+    ⠀⠘⢿⡿⣭⣭⣭⢭⣬⣭⡽⣮⠏⠀⠀
+    ⠀⠀⠀⢙⢻⠛⡿⠿⢺⠟⢻⠀⠀⠀⠀
+    ⠀⠀⠀⠈⢸⣇⠠⢘⣰⢈⡇⠀⠀⠀⠀
+    ⠀⠀⠀⠀⢀⣿⡞⡙⠮⣹⣫⡄⠀⠀⠀
+    ⠀⠀⠀⠀⣸⣥⣫⣓⣾⣿⣿⣿⣦⣄⡀
+    ⢀⣤⣶⣿⢿⣿⣷⣷⣿⣿⣿⣛⣿⣿⣿
+    ⠿⠿⠿⠿⠹⠿⠿⠿⠿⠿⠿⠭⠿⠿⠿
+    `
+}
+
 
 handler1 = {
     debug: 0,
@@ -26,13 +71,14 @@ handler1 = {
     throat: 95,
   };
 
-let sam = new SamJs(handler2);
+let samh1 = new SamJs(handler1);
+let samh2 = new SamJs(handler2);
 // sam.download("boom")
 // sam.setVolume(0.2)
 
 
 
-let showMessage = (mission, state, goHome=false) => {
+let showMessage = (mission, state, goHome=false, sam) => {
 
     let CONTEXT = new AudioContext();
 
@@ -55,6 +101,7 @@ let showMessage = (mission, state, goHome=false) => {
     } else if(state == "failure") {
         aText = mission.failure;
     }
+
 
     let iSpeed = 100; // time delay of print out
     let iIndex = 0; // start printing array at this posision
@@ -129,11 +176,18 @@ let showMessage = (mission, state, goHome=false) => {
 
 
 
+let script = async () => {
+    let boom = new Howl({ src: ["./audio/boom.wav"] })
+    showMessage(p1, "opening", false, samh1);
+    await sleep(17000);
+    boom.play();
+    await sleep(2000);
+    showMessage(p2, "opening", false, samh2)
+}
 
 
 
-
-
+// script()
 
 
 
@@ -916,7 +970,12 @@ let checkForWinner = () => {
     if(PLAYER.hp <= 0) {
         playerCanAct = false;
         console.log("YOU LOSE");
-        showMessage(gametext.missions[LEVEL], "failure", true);
+        if(LEVEL < 3) {
+            showMessage(gametext.missions[LEVEL], "failure", true, samh1);
+        } else {
+            showMessage(gametext.missions[LEVEL], "failure", true, samh2);
+        }
+        // showMessage(gametext.missions[LEVEL], "failure", true);
         let old = JSON.parse(window.localStorage.getItem("missiondata"));
         old.level += 1;
         window.localStorage.setItem("missiondata", JSON.stringify(old))
@@ -930,7 +989,17 @@ let checkForWinner = () => {
         if(numberdead == ENEMIES.length) {
             playerCanAct = false;
             console.log("YOU WIN");
-            showMessage(gametext.missions[LEVEL], "closing", true);
+            if(LEVEL == 3) {
+                script();
+            } else {
+                if(LEVEL < 3) {
+                    showMessage(gametext.missions[LEVEL], "closing", true, samh1);
+                } else {
+                    showMessage(gametext.missions[LEVEL], "closing", true, samh2);
+                }
+                
+            }
+            
             setHighestMission(LEVEL)
         }
     }
@@ -1054,6 +1123,7 @@ let images = {
     mine: new Image(),
     push: new Image(),
     wall: new Image(),
+    reinforced_wall: new Image(),
 }
 images.shell.src = "./assets/shell.png"
 images.terraform_alpha.src = "./assets/shell.png"
@@ -1062,6 +1132,7 @@ images.terraform_gamma.src = "./assets/shell.png"
 images.mine.src = "./assets/mine.png"
 images.push.src = "./assets/shell.png"
 images.wall.src = "./assets/wall.png"
+images.reinforced_wall.src = "./assets/reinforced_wall.png"
 
 let animateProjectile = (cells, dr, dc, imagename, speed) => {
     if(cells.length > 1) {
@@ -1445,10 +1516,16 @@ let str = document.getElementById("start");
 let start = (e) => {
     let settings = JSON.parse(window.localStorage.getItem("settings"));
     if(settings.voice) {
-        showMessage(gametext.missions[LEVEL], "opening");
+        if(LEVEL < 3) {
+            showMessage(gametext.missions[LEVEL], "opening", false, samh1);
+        } else {
+            showMessage(gametext.missions[LEVEL], "opening", false, samh2);
+        }
+        // showMessage(gametext.missions[LEVEL], "opening");
     } else {
         playerCanAct = true;
     }
+    
     document.getElementById("game-wrapper-body").classList.remove("blur");
     str.classList.add("hide");
 }
@@ -1527,3 +1604,10 @@ setInterval(() => {
 // add after match completion stars
 // > 1 = complete | 2 = did not take damage | 3 = collected all items
 // add another image for handler 2
+
+
+
+
+// need to fix damage in general
+// some things dont die if hp goes past 0
+// need to remove stuff instantly
